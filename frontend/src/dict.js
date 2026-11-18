@@ -13,6 +13,9 @@ export const dict = {
     'nav.sales': 'Historique des ventes', 'nav.reports': 'Rapports & Excel', 'nav.account': 'Mon compte',
     'nav.clients': 'Clients', 'nav.newClient': 'Nouveau client',
 
+    'plan.sub': 'Sans engagement caché : un prix par durée, toutes les fonctionnalités incluses.', 'plan.popular': 'Le plus choisi', 'plan.perMonth': '{n} DH / mois', 'plan.save': '−{n} %', 'plan.choose': 'Choisir cette durée',
+    'plan.i1': 'Toutes les fonctionnalités', 'plan.i2': 'Stock avec photos illimité', 'plan.i3': 'Reçus A5 et ticket 80 mm', 'plan.i4': 'Support WhatsApp',
+
     'site.features': 'Fonctionnalités', 'site.pricing': 'Tarifs', 'site.blog': 'Blog', 'site.help': 'Aide', 'site.login': 'Se connecter', 'site.try': 'Essayer Orgest',
     'site.footerText': 'La caisse et la gestion de stock des bijoutiers marocains, en français et en العربية.', 'site.product': 'Produit', 'site.support': 'Aide',
     'site.contact': 'WhatsApp', 'site.made': '© 2026 Orgest · Fait au Maroc',
@@ -185,6 +188,9 @@ export const dict = {
     'nav.buyback': 'شراء الذهب القديم', 'nav.workshop': 'الطلبيات عند الصانع', 'nav.installments': 'التقسيط',
     'nav.sales': 'سجل المبيعات', 'nav.reports': 'التقارير و Excel', 'nav.account': 'حسابي',
     'nav.clients': 'الزبناء', 'nav.newClient': 'زبون جديد',
+
+    'plan.sub': 'بلا مفاجآت: ثمن لكل مدة، وكل المميزات داخلة.', 'plan.popular': 'الأكثر اختيارا', 'plan.perMonth': '{n} درهم / شهر', 'plan.save': '−{n} %', 'plan.choose': 'اختار هاد المدة',
+    'plan.i1': 'كل المميزات', 'plan.i2': 'ستوك بالصور بلا حدود', 'plan.i3': 'وصولات A5 وتيكي 80 مم', 'plan.i4': 'دعم عبر واتساب',
 
     'site.features': 'المميزات', 'site.pricing': 'الأثمنة', 'site.blog': 'المدونة', 'site.help': 'المساعدة', 'site.login': 'تسجيل الدخول', 'site.try': 'جرب Orgest',
     'site.footerText': 'الصندوق وتدبير السلعة للجواهرجية المغاربة، بالعربية والفرنسية.', 'site.product': 'المنتوج', 'site.support': 'المساعدة',

@@ -3,7 +3,7 @@
 #  Orgest — déploiement sur VPS Ubuntu avec aaPanel
 #
 #  Usage (en root, depuis la racine du dépôt cloné) :
-#      sudo ./deploy.sh <domaine> [--whatsapp 2126XXXXXXXX]
+#      sudo ./deploy.sh <domaine> [--whatsapp 2126XXXXXXXX] [--prices "1:200,3:550,6:1000,12:1800"]
 #  Exemple :
 #      sudo ./deploy.sh app.orgest.ma --whatsapp 212612345678
 #
@@ -33,10 +33,11 @@ die()  { echo "${c_err}✖ $*${c_off}" >&2; exit 1; }
 trap 'die "Échec à la ligne $LINENO (commande : $BASH_COMMAND)"' ERR
 
 # ---------- Arguments ----------
-DOMAIN=""; WHATSAPP_NUMBER="${WHATSAPP_NUMBER:-}"
+DOMAIN=""; WHATSAPP_NUMBER="${WHATSAPP_NUMBER:-}"; PLAN_PRICES="${PLAN_PRICES:-}"
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --whatsapp) WHATSAPP_NUMBER="${2:-}"; shift 2 ;;
+    --prices) PLAN_PRICES="${2:-}"; shift 2 ;;
     -h|--help)  sed -n '2,28p' "$0"; exit 0 ;;
     *)          if [[ -z "$DOMAIN" ]]; then DOMAIN="$1"; shift; else die "Argument inconnu : $1"; fi ;;
   esac
@@ -210,7 +211,7 @@ systemctl restart orgest
 log "Compilation du frontend (React/Vite)…"
 pushd "$SRC_DIR/frontend" >/dev/null
 npm ci --no-audit --no-fund --loglevel=error
-VITE_WHATSAPP="$WHATSAPP_NUMBER" npm run build >/dev/null
+VITE_WHATSAPP="$WHATSAPP_NUMBER" VITE_PRICES="$PLAN_PRICES" npm run build >/dev/null
 popd >/dev/null
 mkdir -p "$WEB_ROOT"
 rsync -a --delete "$SRC_DIR/frontend/dist/" "$WEB_ROOT/"

@@ -3,7 +3,8 @@ import { useI18n } from '../i18n.jsx';
 import { SiteFooter, SiteHeader } from '../components/Site.jsx';
 import { Icon, P } from '../components/icons.jsx';
 import Louiz from '../components/Louiz.jsx';
-import { waLink } from '../config.js';
+import { PLAN_PRICES, waLink } from '../config.js';
+import { fmtInt } from '../i18n.jsx';
 
 const FEATURES = [
   ['stock', P.stock, '#FFF1C7', '#8A6209'], ['sale', P.sale, '#E6EEF9', '#1E4F8F'], ['exchange', P.exchange, '#E7F4EC', '#1E5E3F'], ['buyback', P.buyback, '#F3E8F7', '#6B2F86'],
@@ -62,11 +63,27 @@ export default function Landing() {
 
       <section className="site-sec" id="pricing">
         <h2>{t('landing.plansTitle')}</h2>
-        <div className="feat-grid four">
-          {[1, 3, 6, 12].map((m) => (<div className="plan2" key={m}><b className="num">{m}</b><span>{t('landing.months')}</span></div>))}
+        <p className="muted" style={{ margin: '-12px 0 24px' }}>{t('plan.sub')}</p>
+        <div className="plans">
+          {Object.entries(PLAN_PRICES).map(([m, price]) => {
+            const months = Number(m);
+            const pop = months === 6;
+            const per = Math.round(price / months);
+            const first = Object.entries(PLAN_PRICES)[0];
+            const save = first && months > 1 ? Math.round((1 - price / (months * first[1])) * 100) : 0;
+            return (
+              <div className={'plan3' + (pop ? ' pop' : '')} key={m}>
+                {pop && <span className="ribbon">{t('plan.popular')}</span>}
+                <span className="pm"><b className="num">{months}</b> {t('landing.months')}</span>
+                <div className="pp"><b className="num">{fmtInt(price)}</b> <span>{t('dh')}</span></div>
+                <span className="muted">{t('plan.perMonth', { n: fmtInt(per) })}{save > 0 ? ` · ${t('plan.save', { n: save })}` : ''}</span>
+                <ul>{['plan.i1', 'plan.i2', 'plan.i3', 'plan.i4'].map((k) => <li key={k}><Icon d={P.check} size={16} sw={2.4} /> {t(k)}</li>)}</ul>
+                <a className={'btn ' + (pop ? 'primary' : '')} href={waLink(`${t('landing.waMessage')} (${months} ${t('landing.months')} — ${fmtInt(price)} ${t('dh')})`)} target="_blank" rel="noopener noreferrer">{t('plan.choose')}</a>
+              </div>
+            );
+          })}
         </div>
         <p className="muted" style={{ marginTop: 16 }}>{t('landing.payInfo')}</p>
-        <a className="btn wa" href={wa} target="_blank" rel="noopener noreferrer">WhatsApp</a>
       </section>
       <SiteFooter />
     </div>

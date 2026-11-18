@@ -9,21 +9,21 @@ const I = {
   receipt: 'M6 3h12v18l-3-2-3 2-3-2-3 2V3zM9 8h6M9 12h6', swap: P.exchange, sheet: 'M5 3h14v18H5zM5 9h14M5 15h14M11 3v18',
 };
 const T = { or: ['#FFF4D6', '#8A6209'], bleu: ['#E6EEF9', '#1E4F8F'], vert: ['#E7F4EC', '#1E5E3F'], violet: ['#F3E8F7', '#6B2F86'], rose: ['#FDECE3', '#9A3412'] };
-const art = (cat, title, ex, min, look, mood, icon) => ({ cat, title, ex, min, tint: T[look][0], ink: T[look][1], mood, icon });
+const art = (cat, title, ex, min, look, mood, img) => ({ cat, title, ex, min, tint: T[look][0], ink: T[look][1], mood, img });
 
 const ALL = [
   art('Cours de l’or', 'Pourquoi saisir le cours de l’or chaque matin ?', 'Trente secondes au réveil de la caisse évitent des erreurs toute la journée. Ce que le prix du jour calcule à votre place.', 4, 'or', 'thinking'),
-  art('Cours de l’or', '18K, 21K, 24K : ce que chaque carat change pour votre prix', 'Titre, or pur, prix au gramme : comment passer d’un carat à l’autre sans calculatrice.', 6, 'bleu', null, I.chart),
-  art('Gestion de boutique', 'Inventaire au gramme : faire le point de stock en une heure', 'Une méthode vitrine par vitrine, et comment l’écart de poids vous signale un problème.', 7, 'vert', null, I.ingot),
+  art('Cours de l’or', '18K, 21K, 24K : ce que chaque carat change pour votre prix', 'Titre, or pur, prix au gramme : comment passer d’un carat à l’autre sans calculatrice.', 6, 'bleu', null, 'carats'),
+  art('Gestion de boutique', 'Inventaire au gramme : faire le point de stock en une heure', 'Une méthode vitrine par vitrine, et comment l’écart de poids vous signale un problème.', 7, 'vert', null, 'inventaire'),
   art('تقسيط et crédit', 'Vendre à tempérament sans risque : 6 règles simples', 'Acompte, durée, pièce d’identité, reçu signé : le minimum avant de laisser partir un bijou.', 6, 'rose', 'worried'),
-  art('تقسيط et crédit', 'Rappeler une échéance sur WhatsApp sans gêner le client', 'Trois modèles de messages polis, le bon moment pour les envoyer et quoi faire après un retard.', 3, 'vert', null, I.chat),
-  art('Atelier', 'Suivre l’or confié à l’artisan : poids remis, rendu, perte', 'Une fiche par commande pour savoir à tout moment combien de grammes sont dehors.', 5, 'violet', null, I.hammer),
-  art('Gestion de boutique', 'Bien lire son rapport mensuel Excel', 'Ventes, achats d’or, marge au gramme : les trois chiffres à regarder en premier.', 5, 'bleu', null, I.sheet),
-  art('Caisse et ventes', 'Un reçu clair qui rassure le client', 'Ce qu’un bon reçu doit montrer : poids, carat, prix du jour, reprise et reste à payer.', 3, 'or', null, I.receipt),
-  art('Caisse et ventes', 'Échange de bijoux : déduire l’ancien du nouveau sans erreur', 'Reprise et vente sur le même reçu : l’ordre des étapes qui évite les doubles comptes.', 5, 'bleu', null, I.swap),
+  art('تقسيط et crédit', 'Rappeler une échéance sur WhatsApp sans gêner le client', 'Trois modèles de messages polis, le bon moment pour les envoyer et quoi faire après un retard.', 3, 'vert', null, 'whatsapp'),
+  art('Atelier', 'Suivre l’or confié à l’artisan : poids remis, rendu, perte', 'Une fiche par commande pour savoir à tout moment combien de grammes sont dehors.', 5, 'violet', null, 'atelier'),
+  art('Gestion de boutique', 'Bien lire son rapport mensuel Excel', 'Ventes, achats d’or, marge au gramme : les trois chiffres à regarder en premier.', 5, 'bleu', null, 'excel'),
+  art('Caisse et ventes', 'Un reçu clair qui rassure le client', 'Ce qu’un bon reçu doit montrer : poids, carat, prix du jour, reprise et reste à payer.', 3, 'or', null, 'recu'),
+  art('Caisse et ventes', 'Échange de bijoux : déduire l’ancien du nouveau sans erreur', 'Reprise et vente sur le même reçu : l’ordre des étapes qui évite les doubles comptes.', 5, 'bleu', null, 'echange'),
   art('Gestion de boutique', 'Préparer la haute saison des mariages', 'Stock, acomptes, commandes atelier : le calendrier à tenir six semaines avant.', 6, 'vert', 'celebrate'),
   art('Nouveautés Orgest', 'Nouveau : l’accueil guidé avec Louiz', 'Une visite d’une minute pour les nouveaux comptes, et des rappels quand le cours du jour manque.', 2, 'or', 'wave'),
-  art('Nouveautés Orgest', 'Bientôt : Orgest entièrement en arabe', 'Interface de droite à gauche, reçus bilingues, et une langue gardée d’un écran à l’autre.', 2, 'violet', null, I.cal),
+  art('Nouveautés Orgest', 'Bientôt : Orgest entièrement en arabe', 'Interface de droite à gauche, reçus bilingues, et une langue gardée d’un écran à l’autre.', 2, 'violet', null, 'arabe'),
 ];
 const CATS = ['Tous', 'Cours de l’or', 'Caisse et ventes', 'Gestion de boutique', 'تقسيط et crédit', 'Atelier', 'Nouveautés Orgest'];
 const SERIES = [
@@ -44,7 +44,7 @@ const FAQ = [
 function Thumb({ a, size = 128 }) {
   return (
     <div className="b-thumb" style={{ background: a.tint, color: a.ink }}>
-      {a.mood ? <Louiz mood={a.mood} size={size} /> : <Icon d={a.icon} size={72} sw={1.4} />}
+      {a.mood ? <Louiz mood={a.mood} size={size} /> : <img src={`/assets/blog/${a.img}.jpg`} alt="" loading="lazy" />}
     </div>
   );
 }
@@ -137,7 +137,7 @@ export default function Blog() {
               <a href="#r1">1. Peser</a><a href="#r2">2. Identifier le carat</a><a href="#r3">3. Déduire la perte</a><a href="#r4">4. Appliquer le prix du jour</a><a href="#r5">Les erreurs qui coûtent cher</a><a href="#r6">Dans Orgest</a>
             </nav>
             <div className="row no-print" style={{ gap: 8 }}>
-              <a className="btn sm" href={waLink('Un guide utile : ' + (typeof window !== 'undefined' ? window.location.origin : '') + '/blog#reprise')} target="_blank" rel="noopener noreferrer" aria-label="Partager sur WhatsApp"><Icon d={ALL[4].icon} size={18} /></a>
+              <a className="btn sm" href={waLink('Un guide utile : ' + (typeof window !== 'undefined' ? window.location.origin : '') + '/blog#reprise')} target="_blank" rel="noopener noreferrer" aria-label="Partager sur WhatsApp"><Icon d="M4 20l1.3-4A8 8 0 1 1 8 18.7L4 20z" size={18} /></a>
               <button type="button" className="btn sm" onClick={copy} aria-label="Copier le lien"><Icon d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1" size={18} /></button>
               <button type="button" className="btn sm" onClick={() => window.print()} aria-label="Imprimer l'article"><Icon d={P.print} size={18} /></button>
             </div>

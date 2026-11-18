@@ -84,6 +84,7 @@ CSRF : cookie `XSRF-TOKEN` (double-submit) + en-tête `X-XSRF-TOKEN` obligatoire
 | `UPLOAD_DIR` | Dossier des photos (hors racine web) |
 | `ORGEST_ADMIN_USERNAME` / `ORGEST_ADMIN_PASSWORD` | Création du premier admin si aucun n'existe (≥ 12 car.) |
 | `VITE_WHATSAPP` | Numéro WhatsApp de la page d'accueil (build du frontend) |
+| `VITE_PRICES` | Tarifs affichés (DH) : `mois:prix,...` — ex. `1:200,3:550,6:1000,12:1800` (option `--prices` de deploy.sh) |
 
 ## Structure
 
