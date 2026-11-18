@@ -56,7 +56,7 @@ UPLOAD_DIR="$DATA_DIR/uploads"
 ENV_DIR="/etc/orgest"
 ENV_FILE="$ENV_DIR/orgest.env"
 BACKUP_DIR="/var/backups/orgest"
-WEB_ROOT="/www/wwwroot/$DOMAIN"
+WEB_ROOT="/var/www/orgest/$DOMAIN"   # hors du dossier du site aaPanel (jamais de rsync --delete sur le dépôt)
 VHOST_DIR="/www/server/panel/vhost/nginx"
 REWRITE_DIR="/www/server/panel/vhost/rewrite"
 NGINX_BIN="/www/server/nginx/sbin/nginx"
@@ -203,10 +203,9 @@ npm ci --no-audit --no-fund --loglevel=error
 VITE_WHATSAPP="$WHATSAPP_NUMBER" npm run build >/dev/null
 popd >/dev/null
 mkdir -p "$WEB_ROOT"
-rsync -a --delete --exclude='.user.ini' --exclude='.htaccess' --exclude='404.html' "$SRC_DIR/frontend/dist/" "$WEB_ROOT/"
-chown -R www:www "$WEB_ROOT" 2>/dev/null || true
+rsync -a --delete "$SRC_DIR/frontend/dist/" "$WEB_ROOT/"
+chown -R root:root "$WEB_ROOT"; chmod 755 /var/www /var/www/orgest
 find "$WEB_ROOT" -type d -exec chmod 755 {} \; ; find "$WEB_ROOT" -type f -exec chmod 644 {} \;
-chattr -i "$WEB_ROOT/.user.ini" 2>/dev/null || true
 
 # ---------- 7. Nginx (aaPanel) ----------
 HSTS=""; [[ "$HTTPS" == true ]] && HSTS='add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;'
@@ -234,12 +233,14 @@ location ^~ /api/ {
 }
 location ~ /\\.(?!well-known) { deny all; }
 location ^~ /assets/ {
+    root $WEB_ROOT;
     try_files \$uri =404;
     expires 30d;
     add_header Cache-Control \"public, immutable\" always;
     $SEC_HEADERS
 }
 location / {
+    root $WEB_ROOT;
     try_files \$uri \$uri/ /index.html;
     add_header Cache-Control \"no-cache\" always;
     $SEC_HEADERS
