@@ -4,6 +4,7 @@ import { Loader } from './components/ui.jsx';
 import { AdminLayout, ShopLayout } from './components/Layouts.jsx';
 import Landing from './pages/Landing.jsx';
 import Login from './pages/Login.jsx';
+import Blog from './pages/Blog.jsx';
 import Dashboard from './pages/shop/Dashboard.jsx';
 import Stock from './pages/shop/Stock.jsx';
 import ItemForm from './pages/shop/ItemForm.jsx';
@@ -34,6 +35,7 @@ export default function App() {
     <Routes>
       <Route path="/" element={<Landing />} />
       <Route path="/login" element={<Login />} />
+      <Route path="/blog" element={<Blog />} />
 
       <Route path="/app" element={<Guard role="SHOP"><ShopLayout /></Guard>}>
         <Route index element={<Dashboard />} />

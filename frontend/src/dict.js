@@ -13,6 +13,21 @@ export const dict = {
     'nav.sales': 'Historique des ventes', 'nav.reports': 'Rapports & Excel', 'nav.account': 'Mon compte',
     'nav.clients': 'Clients', 'nav.newClient': 'Nouveau client',
 
+    'site.features': 'Fonctionnalités', 'site.pricing': 'Tarifs', 'site.blog': 'Blog', 'site.help': 'Aide', 'site.login': 'Se connecter', 'site.try': 'Essayer Orgest',
+    'site.footerText': 'La caisse et la gestion de stock des bijoutiers marocains, en français et en العربية.', 'site.product': 'Produit', 'site.support': 'Aide',
+    'site.contact': 'WhatsApp', 'site.made': '© 2026 Orgest · Fait au Maroc',
+    'landing.eyebrow': 'Pour les bijoutiers marocains', 'landing.louiz': 'Salam ! Je suis Louiz, je vous guide dans Orgest.',
+    'landing.readBlog': 'Lire le blog',
+
+    'login.welcome': 'Bon retour !', 'login.sub': 'Connectez-vous à la caisse de votre boutique.', 'login.user': 'Identifiant', 'login.userPh': 'ex. atlas',
+    'login.show': 'Afficher le mot de passe', 'login.hide': 'Masquer le mot de passe', 'login.new': 'Nouveau sur Orgest ?', 'login.askWa': 'Demander un accès sur WhatsApp',
+    'login.opening': 'Ouverture de la caisse…', 'login.fill': 'Saisissez votre identifiant et votre mot de passe.',
+    'login.hero1': 'La caisse pensée pour les', 'login.hero2': 'bijoutiers marocains', 'login.hero3': '.',
+    'login.heroText': "Cours de l'or du jour, stock au gramme près, ventes, échanges, rachats et تقسيط — dans une seule application, en français ou en arabe.",
+    'login.f1': 'Le cours du jour calcule tout pour vous', 'login.f2': 'Stock au gramme, par carat', 'login.f3': 'Reçus imprimés, rappels تقسيط', 'login.made': '© 2026 Orgest · Fait au Maroc',
+    'lz.login.wave': 'Salam ! Content de vous revoir.', 'lz.login.id': 'Votre identifiant.', 'lz.login.pw': 'Je ferme les yeux, promis !', 'lz.login.peek': 'Je jette un œil… juste un.',
+    'lz.login.err': 'Oups… vérifiez les champs.', 'lz.login.ok': 'Mabrouk, c’est ouvert ! On y va.',
+
     'nav.g.cash': 'Caisse', 'nav.g.inv': 'Inventaire', 'nav.g.follow': 'Suivi', 'nav.g.account': 'Compte', 'nav.myshop': 'Ma boutique',
     'top.search': 'Article, client, n° de reçu…', 'top.newSale': 'Nouvelle vente', 'top.hello': 'Bonjour, {name}', 'top.cashOpen': 'Caisse ouverte',
     'sub.title': 'Abonnement', 'sub.active': 'Actif', 'sub.expiring': 'Bientôt expiré', 'sub.left': '{n} jours restants · jusqu’au {d}',
@@ -170,6 +185,21 @@ export const dict = {
     'nav.buyback': 'شراء الذهب القديم', 'nav.workshop': 'الطلبيات عند الصانع', 'nav.installments': 'التقسيط',
     'nav.sales': 'سجل المبيعات', 'nav.reports': 'التقارير و Excel', 'nav.account': 'حسابي',
     'nav.clients': 'الزبناء', 'nav.newClient': 'زبون جديد',
+
+    'site.features': 'المميزات', 'site.pricing': 'الأثمنة', 'site.blog': 'المدونة', 'site.help': 'المساعدة', 'site.login': 'تسجيل الدخول', 'site.try': 'جرب Orgest',
+    'site.footerText': 'الصندوق وتدبير السلعة للجواهرجية المغاربة، بالعربية والفرنسية.', 'site.product': 'المنتوج', 'site.support': 'المساعدة',
+    'site.contact': 'واتساب', 'site.made': '© 2026 Orgest · صنع في المغرب',
+    'landing.eyebrow': 'للجواهرجية المغاربة', 'landing.louiz': 'سلام! أنا Louiz، غنرافقك فـ Orgest.',
+    'landing.readBlog': 'قرا المدونة',
+
+    'login.welcome': 'مرحبا بيك مرة أخرى!', 'login.sub': 'دخل للصندوق ديال المحل ديالك.', 'login.user': 'المعرّف', 'login.userPh': 'مثلا atlas',
+    'login.show': 'إظهار كلمة السر', 'login.hide': 'إخفاء كلمة السر', 'login.new': 'جديد فـ Orgest؟', 'login.askWa': 'طلب حساب عبر واتساب',
+    'login.opening': 'كنحل الصندوق…', 'login.fill': 'دخل المعرّف وكلمة السر.',
+    'login.hero1': 'الصندوق المصمم من أجل', 'login.hero2': 'الجواهرجية المغاربة', 'login.hero3': '.',
+    'login.heroText': 'ثمن الذهب ديال اليوم، الستوك بالغرام، البيع والاستبدال وشراء الذهب والتقسيط — فتطبيق واحد، بالعربية أو بالفرنسية.',
+    'login.f1': 'ثمن اليوم كيحسب ليك كلشي', 'login.f2': 'الستوك بالغرام وبالعيار', 'login.f3': 'وصولات مطبوعة وتذكير بالتقسيط', 'login.made': '© 2026 Orgest · صنع في المغرب',
+    'lz.login.wave': 'سلام! فرحان نشوفك.', 'lz.login.id': 'دخل المعرّف ديالك.', 'lz.login.pw': 'غنغمض عينيا، وعد!', 'lz.login.peek': 'غنشوف شوية… غير مرة.',
+    'lz.login.err': 'أوبس… تأكد من الخانات.', 'lz.login.ok': 'مبروك، تحل! يالله.',
 
     'nav.g.cash': 'الصندوق', 'nav.g.inv': 'المخزون', 'nav.g.follow': 'المتابعة', 'nav.g.account': 'الحساب', 'nav.myshop': 'محلي',
     'top.search': 'سلعة، زبون، رقم وصل…', 'top.newSale': 'بيع جديد', 'top.hello': 'مرحبا، {name}', 'top.cashOpen': 'الصندوق مفتوح',
