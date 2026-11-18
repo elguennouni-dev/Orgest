@@ -1,13 +1,16 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
 import { download } from '../../api.js';
 import { useApi } from '../../hooks.js';
 import { fmtWeight, Money, useI18n } from '../../i18n.jsx';
+import Louiz from '../../components/Louiz.jsx';
 import { ErrorBox, KARATS, Loading, PageHead } from '../../components/ui.jsx';
 
 export default function Stock() {
   const { t } = useI18n();
-  const [q, setQ] = useState('');
+  const [sp] = useSearchParams();
+  const [q, setQ] = useState(sp.get('q') || '');
+  useEffect(() => { setQ(sp.get('q') || ''); setPage(0); }, [sp]);
   const [karat, setKarat] = useState(0);
   const [status, setStatus] = useState('IN_STOCK');
   const [page, setPage] = useState(0);
@@ -35,7 +38,12 @@ export default function Stock() {
         </select>
       </div>
       {loading && !data ? <Loading /> : error ? <ErrorBox error={error} /> : data.content.length === 0 ? (
-        <div className="card"><p className="muted">{t('stock.empty')}</p></div>
+        <div className="empty-louiz">
+          <Louiz mood="thinking" size={130} />
+          <h2>{t('pos.emptyTitle')}</h2>
+          <p>{t('pos.emptyText')}</p>
+          <Link className="btn primary" to="/app/stock/new">{t('pos.addStock')}</Link>
+        </div>
       ) : (
         <div className="items">
           {data.content.map((i) => (

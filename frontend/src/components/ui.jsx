@@ -1,4 +1,5 @@
 import { useI18n } from '../i18n.jsx';
+import Louiz from './Louiz.jsx';
 
 export function Logo({ variant = 'wordmark', className, style }) {
   const src = variant === 'icon' ? '/assets/logo-icon.png' : variant === 'full' ? '/assets/logo-full.png' : '/assets/logo-wordmark.png';
@@ -31,7 +32,12 @@ export function ErrorBox({ error }) {
   const code = typeof error === 'string' ? error : error.code;
   const key = 'err.' + code;
   const msg = t(key);
-  return <div className="err" role="alert">{msg === key ? t('err.generic') : msg}</div>;
+  return (
+    <div className="err-louiz" role="alert">
+      <Louiz mood="worried" size={52} />
+      <span>{msg === key ? t('err.generic') : msg}</span>
+    </div>
+  );
 }
 
 export function Modal({ title, onClose, children }) {
