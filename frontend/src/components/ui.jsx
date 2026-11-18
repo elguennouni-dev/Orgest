@@ -1,7 +1,7 @@
 import { useI18n } from '../i18n.jsx';
 
 export function Logo({ variant = 'wordmark', className, style }) {
-  const src = variant === 'icon' ? '/logo-icon.png' : variant === 'full' ? '/logo-full.png' : '/logo-wordmark.png';
+  const src = variant === 'icon' ? '/assets/logo-icon.png' : variant === 'full' ? '/assets/logo-full.png' : '/assets/logo-wordmark.png';
   return <img src={src} alt="Orgest" className={className} style={style} />;
 }
 
