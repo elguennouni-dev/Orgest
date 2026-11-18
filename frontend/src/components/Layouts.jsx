@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth.jsx';
 import { fmtDate, useI18n } from '../i18n.jsx';
 import { Logo } from './ui.jsx';
@@ -45,21 +45,13 @@ function SleepyLouiz() {
 function Shell({ groups, children, searchable }) {
   const { t } = useI18n();
   const { me, logout } = useAuth();
-  const nav = useNavigate();
   const [open, setOpen] = useState(false);
-  const [q, setQ] = useState('');
-  const searchRef = useRef(null);
   const loc = useLocation();
   useEffect(() => { setOpen(false); }, [loc.pathname]);
 
   const total = 30;
   const left = Math.max(0, me.daysLeft || 0);
   const initial = (me.ownerName || me.shopName || me.username || '?').trim().charAt(0).toUpperCase();
-
-  const onSearch = (e) => {
-    e.preventDefault();
-    if (q.trim()) nav(`/app/stock?q=${encodeURIComponent(q.trim())}`);
-  };
 
   return (
     <div className="shell">
@@ -93,6 +85,7 @@ function Shell({ groups, children, searchable }) {
             <small>{t('sub.left', { n: left, d: fmtDate(me.subscriptionEnd) })}</small>
           </div>
         )}
+        <LangToggle />
         <div className="userbox">
           <div className="av">{initial}</div>
           <div className="nm">{me.ownerName || me.username}<small>{me.role === 'ADMIN' ? t('role.admin') : t('role.owner')}</small></div>
@@ -101,18 +94,6 @@ function Shell({ groups, children, searchable }) {
       </aside>
       <main className="main" key={loc.pathname}>
         <div className="inner">
-          {searchable && (
-            <div className="top no-print">
-              <form className="search" onSubmit={onSearch} role="search" style={{ flex: '1 1 320px' }}>
-                <Icon d={P.search} size={18} />
-                <input ref={searchRef} id="global-search" type="search" value={q} onChange={(e) => setQ(e.target.value)} placeholder={t('top.search')} aria-label={t('search')} />
-                <kbd className="kbd">/</kbd>
-              </form>
-              <span style={{ flex: 1 }} />
-              <LangToggle />
-              <Link className="btn primary" to="/app/sale"><Icon d={P.plus} size={18} sw={2} /> {t('top.newSale')} <kbd className="kbd">F2</kbd></Link>
-            </div>
-          )}
           {children}
         </div>
       </main>
@@ -133,11 +114,8 @@ function useShortcuts() {
   const nav = useNavigate();
   useEffect(() => {
     const onKey = (e) => {
-      const tag = (e.target.tagName || '').toLowerCase();
-      const typing = tag === 'input' || tag === 'textarea' || tag === 'select';
       const map = { F2: '/app/sale', F3: '/app/exchange', F4: '/app/buyback', F6: '/app/stock/new' };
       if (map[e.key]) { e.preventDefault(); nav(map[e.key]); return; }
-      if (e.key === '/' && !typing) { const el = document.getElementById('global-search'); if (el) { e.preventDefault(); el.focus(); } }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
@@ -165,7 +143,6 @@ const ADMIN_GROUPS = [
 export function AdminLayout() {
   return (
     <Shell groups={ADMIN_GROUPS}>
-      <div className="top no-print" style={{ justifyContent: 'flex-end' }}><LangToggle /></div>
       <Outlet />
     </Shell>
   );
