@@ -20,10 +20,10 @@ public class AdminContentController {
     public AdminContentController(ContentService content) { this.content = content; }
 
     @GetMapping("/plans")
-    public List<PlanDto> plans() { return content.allPlans(); }
+    public List<SubPlanDto> plans() { return content.allPlans(); }
 
     @PutMapping("/plans")
-    public List<PlanDto> savePlans(@Valid @RequestBody PlansRequest r, HttpServletRequest req) {
+    public List<SubPlanDto> savePlans(@Valid @RequestBody PlansRequest r, HttpServletRequest req) {
         var me = CurrentUser.get();
         return content.savePlans(r, me.id(), me.username(), req.getRemoteAddr());
     }

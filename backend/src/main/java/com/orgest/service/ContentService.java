@@ -34,14 +34,14 @@ public class ContentService {
     }
 
     // ---------- Tarifs ----------
-    private static PlanDto dto(Plan p) { return new PlanDto(p.id, p.months, p.price, p.popular, p.active); }
+    private static SubPlanDto dto(Plan p) { return new SubPlanDto(p.id, p.months, p.price, p.popular, p.active); }
 
-    public List<PlanDto> publicPlans() { return plans.findByActiveTrueOrderByMonthsAsc().stream().map(ContentService::dto).toList(); }
+    public List<SubPlanDto> publicPlans() { return plans.findByActiveTrueOrderByMonthsAsc().stream().map(ContentService::dto).toList(); }
 
-    public List<PlanDto> allPlans() { return plans.findAllByOrderByMonthsAsc().stream().map(ContentService::dto).toList(); }
+    public List<SubPlanDto> allPlans() { return plans.findAllByOrderByMonthsAsc().stream().map(ContentService::dto).toList(); }
 
     @Transactional
-    public List<PlanDto> savePlans(PlansRequest r, Long adminId, String admin, String ip) {
+    public List<SubPlanDto> savePlans(PlansRequest r, Long adminId, String admin, String ip) {
         Set<Integer> seen = new HashSet<>();
         int popular = 0;
         for (PlanIn p : r.plans()) {

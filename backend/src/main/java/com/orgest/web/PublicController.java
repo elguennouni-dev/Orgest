@@ -27,7 +27,7 @@ public class PublicController {
     public PublicController(ContentService content) { this.content = content; }
 
     @GetMapping("/plans")
-    public ResponseEntity<List<PlanDto>> plans() {
+    public ResponseEntity<List<SubPlanDto>> plans() {
         return ResponseEntity.ok().header(HttpHeaders.CACHE_CONTROL, CACHE).body(content.publicPlans());
     }
 

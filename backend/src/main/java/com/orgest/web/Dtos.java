@@ -152,7 +152,7 @@ public final class Dtos {
                             BigDecimal averageTicket, List<DayPoint> byDay) {}
 
     // ---------- Contenu public : tarifs + blog ----------
-    public record PlanDto(Long id, int months, BigDecimal price, boolean popular, boolean active) {}
+    public record SubPlanDto(Long id, int months, BigDecimal price, boolean popular, boolean active) {}
 
     public record PlanIn(@NotNull @Min(1) @Max(60) Integer months,
                          @NotNull @DecimalMin("0") @DecimalMax("1000000") BigDecimal price,
