@@ -120,6 +120,16 @@ else
 fi
 
 # ---------- 4. Fichier d'environnement (secrets) ----------
+# Port local du backend : le 8080 est souvent déjà pris (autre service du VPS) -> on choisit un port libre.
+systemctl stop orgest 2>/dev/null || true
+port_free() { ! ss -ltn "sport = :$1" 2>/dev/null | grep -q LISTEN; }
+APP_PORT="$(get_env SERVER_PORT)"
+if [[ -z "$APP_PORT" ]] || ! port_free "$APP_PORT"; then
+  APP_PORT=""
+  for p in $(seq 18080 18199); do port_free "$p" && { APP_PORT="$p"; break; }; done
+  [[ -n "$APP_PORT" ]] || die "Aucun port libre entre 18080 et 18199."
+fi
+log "Port local du backend : $APP_PORT"
 JWT_SECRET="$(get_env JWT_SECRET)"; JWT_SECRET="${JWT_SECRET:-$(rand 96 64)}"
 ADMIN_USERNAME="${ADMIN_USERNAME:-$(get_env ORGEST_ADMIN_USERNAME)}"; ADMIN_USERNAME="${ADMIN_USERNAME:-admin}"
 ADMIN_PASSWORD="$(get_env ORGEST_ADMIN_PASSWORD)"
@@ -137,7 +147,7 @@ umask 077
 cat > "$ENV_FILE" <<EOF
 # Généré par deploy.sh — contient des secrets (chmod 600)
 SERVER_ADDRESS=127.0.0.1
-SERVER_PORT=8080
+SERVER_PORT=$APP_PORT
 DB_URL=$DB_URL
 DB_USER=$DB_USER
 DB_PASSWORD=$DB_PASSWORD
@@ -222,7 +232,7 @@ client_max_body_size 8m;
 server_tokens off;
 
 location ^~ /api/ {
-    proxy_pass http://127.0.0.1:8080;
+    proxy_pass http://127.0.0.1:$APP_PORT;
     proxy_http_version 1.1;
     proxy_set_header Host \$host;
     proxy_set_header X-Real-IP \$remote_addr;
@@ -291,7 +301,7 @@ chmod 644 /etc/cron.d/orgest-backup
 log "Attente du démarrage du backend…"
 ok=0
 for _ in $(seq 1 60); do
-  if [[ "$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:8080/api/auth/csrf)" == "204" ]]; then ok=1; break; fi
+  if [[ "$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:$APP_PORT/api/auth/csrf)" == "204" ]]; then ok=1; break; fi
   sleep 2
 done
 if [[ $ok -ne 1 ]]; then
