@@ -71,9 +71,13 @@ log "Installation des dépendances système…"
 apt-get update -y -qq
 apt-get install -y -qq curl ca-certificates openssl git rsync unzip cron >/dev/null
 
-if ! command -v java >/dev/null || ! java -version 2>&1 | grep -qE '"(2[1-9])\.'; then
+JAVA_HOME_21="$(ls -d /usr/lib/jvm/java-21-openjdk-* 2>/dev/null | head -1 || true)"
+if [[ -z "$JAVA_HOME_21" || ! -x "$JAVA_HOME_21/bin/javac" ]]; then
   apt-get install -y -qq openjdk-21-jdk-headless >/dev/null || die "Impossible d'installer OpenJDK 21."
+  JAVA_HOME_21="$(ls -d /usr/lib/jvm/java-21-openjdk-* | head -1)"
 fi
+# Java 21 explicite (la machine peut avoir Java 17 par défaut) : utilisé pour Maven ET pour le service.
+export JAVA_HOME="$JAVA_HOME_21"; export PATH="$JAVA_HOME/bin:$PATH"
 command -v mvn >/dev/null || apt-get install -y -qq maven >/dev/null
 if ! command -v node >/dev/null || [[ "$(node -v | sed 's/v\([0-9]*\).*/\1/')" -lt 20 ]]; then
   log "Installation de Node.js 22…"
@@ -169,7 +173,7 @@ User=$APP_USER
 Group=$APP_USER
 WorkingDirectory=$APP_HOME
 EnvironmentFile=$ENV_FILE
-ExecStart=/usr/bin/java -Xms256m -Xmx512m -XX:+ExitOnOutOfMemoryError -Djava.security.egd=file:/dev/urandom -jar $APP_HOME/orgest.jar
+ExecStart=$JAVA_HOME/bin/java -Xms256m -Xmx512m -XX:+ExitOnOutOfMemoryError -Djava.security.egd=file:/dev/urandom -jar $APP_HOME/orgest.jar
 Restart=on-failure
 RestartSec=5
 SuccessExitStatus=143
