@@ -47,6 +47,7 @@ cd frontend && npm install && npm run dev
 
 ## Parcours fonctionnel
 
+* **Données de démo** : `sudo python3 tools/seed_demo.py https://votre-domaine` crée le compte `demo` avec articles + photos, ventes, échanges, achats, échéances et commandes atelier.
 * **Admin** : crée le compte d'un commerçant (identifiant + mot de passe généré, à envoyer par WhatsApp), enregistre le paiement
   (Wafacash / virement / Cash Plus), **renouvelle** (+1/3/6/12 mois), **suspend / réactive**, réinitialise le mot de passe,
   suit l'historique des paiements. Un abonnement expiré ou suspendu bloque l'accès aux données (le client voit une page d'expiration).
