@@ -1,6 +1,6 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { useAuth } from './auth.jsx';
-import { useI18n } from './i18n.jsx';
+import { Loader } from './components/ui.jsx';
 import { AdminLayout, ShopLayout } from './components/Layouts.jsx';
 import Landing from './pages/Landing.jsx';
 import Login from './pages/Login.jsx';
@@ -23,8 +23,7 @@ import AdminAccount from './pages/admin/AdminAccount.jsx';
 
 function Guard({ role, children }) {
   const { me, loading } = useAuth();
-  const { t } = useI18n();
-  if (loading) return <p style={{ padding: 24 }}>{t('loading')}</p>;
+  if (loading) return <Loader full />;
   if (!me) return <Navigate to="/login" replace />;
   if (me.role !== role) return <Navigate to={me.role === 'ADMIN' ? '/admin' : '/app'} replace />;
   return children;

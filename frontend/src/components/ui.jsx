@@ -67,9 +67,24 @@ export function Kpi({ label, value, sub }) {
   );
 }
 
-export function Loading() {
+/** Chargement aux couleurs d'Orgest : anneau doré qui tourne autour de l'icône, halo pulsé et reflet. */
+export function Loader({ full = false, size = 88, label }) {
   const { t } = useI18n();
-  return <p className="muted">{t('loading')}</p>;
+  return (
+    <div className={full ? 'splash' : 'loader-inline'} role="status" aria-live="polite">
+      <div className="loader" style={{ '--s': size + 'px' }}>
+        <span className="loader-ring" />
+        <span className="loader-glow" />
+        <img src="/assets/logo-icon.png" alt="" className="loader-logo" />
+        <span className="loader-shine" />
+      </div>
+      {(label !== false) && <p className="loader-label">{label || t('loading')}</p>}
+    </div>
+  );
+}
+
+export function Loading() {
+  return <Loader size={72} />;
 }
 
 export const KARATS = [18, 21, 24];
