@@ -13,6 +13,17 @@ export const dict = {
     'nav.sales': 'Historique des ventes', 'nav.reports': 'Rapports & Excel', 'nav.account': 'Mon compte',
     'nav.clients': 'Clients', 'nav.newClient': 'Nouveau client',
 
+    'nav.plans': 'Tarifs', 'nav.blogAdmin': 'Blog (SEO)', 'nav.g.site': 'Site public',
+    'err.SLUG_TAKEN': 'Cette adresse (slug) est déjà utilisée par un autre article.', 'err.DUPLICATE_PLAN': 'Deux plans ont la même durée.', 'err.ONE_POPULAR_ONLY': 'Un seul plan peut être « le plus choisi ».', 'err.INVALID_IMAGE': 'Image invalide (JPG ou PNG, 5 Mo max).',
+    'plans.title': 'Tarifs affichés sur le site', 'plans.help': 'Ces tarifs apparaissent sur la page d’accueil. Un plan désactivé est masqué.', 'plans.months': 'Durée (mois)', 'plans.price': 'Prix (DH)', 'plans.popular': 'Le plus choisi', 'plans.active': 'Visible',
+    'plans.add': 'Ajouter un plan', 'plans.preview': 'Aperçu', 'plans.saved': 'Tarifs enregistrés ✓',
+    'blogA.title': 'Articles du blog', 'blogA.new': 'Nouvel article', 'blogA.empty': 'Aucun article. Écrivez le premier article SEO.', 'blogA.draft': 'Brouillon', 'blogA.live': 'Publié', 'blogA.view': 'Voir',
+    'blogA.edit': 'Modifier l’article', 'blogA.t': 'Titre (H1)', 'blogA.slug': 'Adresse (slug)', 'blogA.slugHint': 'Lettres minuscules, chiffres et tirets. Ex. reprise-or-ancien', 'blogA.category': 'Rubrique', 'blogA.excerpt': 'Résumé (affiché dans la liste)',
+    'blogA.content': 'Contenu (Markdown)', 'blogA.mdHelp': '## Titre · ### Sous-titre · - liste · 1. liste numérotée · **gras** · *italique* · [lien](https://…) · > encadré', 'blogA.cover': 'Image de couverture', 'blogA.coverAlt': 'Texte alternatif de l’image (SEO)',
+    'blogA.coverSave': 'Enregistrez d’abord l’article pour ajouter une image.', 'blogA.seo': 'Référencement (SEO)', 'blogA.metaTitle': 'Titre SEO (≤ 60 car.)', 'blogA.metaDesc': 'Meta description (120–160 car.)', 'blogA.keywords': 'Mots-clés (séparés par des virgules)',
+    'blogA.minutes': 'Minutes de lecture', 'blogA.publish': 'Publier sur le site', 'blogA.serp': 'Aperçu Google', 'blogA.delete': 'Supprimer', 'blogA.confirmDel': 'Supprimer définitivement cet article ?', 'blogA.words': '{n} mots',
+    'blogA.checks': 'Vérifications SEO', 'blogA.ck.title': 'Titre SEO de 30 à 60 caractères', 'blogA.ck.desc': 'Meta description de 120 à 160 caractères', 'blogA.ck.words': 'Au moins 300 mots', 'blogA.ck.h2': 'Au moins deux intertitres (##)', 'blogA.ck.cover': 'Image avec texte alternatif', 'blogA.ck.kw': 'Mots-clés renseignés',
+
     'plan.sub': 'Sans engagement caché : un prix par durée, toutes les fonctionnalités incluses.', 'plan.popular': 'Le plus choisi', 'plan.perMonth': '{n} DH / mois', 'plan.save': '−{n} %', 'plan.choose': 'Choisir cette durée',
     'plan.i1': 'Toutes les fonctionnalités', 'plan.i2': 'Stock avec photos illimité', 'plan.i3': 'Reçus A5 et ticket 80 mm', 'plan.i4': 'Support WhatsApp',
 
@@ -188,6 +199,17 @@ export const dict = {
     'nav.buyback': 'شراء الذهب القديم', 'nav.workshop': 'الطلبيات عند الصانع', 'nav.installments': 'التقسيط',
     'nav.sales': 'سجل المبيعات', 'nav.reports': 'التقارير و Excel', 'nav.account': 'حسابي',
     'nav.clients': 'الزبناء', 'nav.newClient': 'زبون جديد',
+
+    'nav.plans': 'الأثمنة', 'nav.blogAdmin': 'المدونة (SEO)', 'nav.g.site': 'الموقع العام',
+    'err.SLUG_TAKEN': 'هاد العنوان (slug) مستعمل فمقال آخر.', 'err.DUPLICATE_PLAN': 'عندك خطتين بنفس المدة.', 'err.ONE_POPULAR_ONLY': 'خطة وحدة فقط تقدر تكون "الأكثر اختيارا".', 'err.INVALID_IMAGE': 'صورة غير صالحة (JPG أو PNG، 5 ميغا كحد أقصى).',
+    'plans.title': 'الأثمنة المعروضة فالموقع', 'plans.help': 'هاد الأثمنة كتبان فالصفحة الرئيسية. الخطة المعطلة كتتخبا.', 'plans.months': 'المدة (شهور)', 'plans.price': 'الثمن (درهم)', 'plans.popular': 'الأكثر اختيارا', 'plans.active': 'ظاهرة',
+    'plans.add': 'زيد خطة', 'plans.preview': 'معاينة', 'plans.saved': 'تسجلات الأثمنة ✓',
+    'blogA.title': 'مقالات المدونة', 'blogA.new': 'مقال جديد', 'blogA.empty': 'ما كاين حتى مقال. كتب أول مقال SEO.', 'blogA.draft': 'مسودة', 'blogA.live': 'منشور', 'blogA.view': 'عرض',
+    'blogA.edit': 'تعديل المقال', 'blogA.t': 'العنوان (H1)', 'blogA.slug': 'العنوان فالرابط (slug)', 'blogA.slugHint': 'حروف لاتينية صغيرة وأرقام وشرطات. مثال: reprise-or-ancien', 'blogA.category': 'الصنف', 'blogA.excerpt': 'ملخص (كيبان فاللائحة)',
+    'blogA.content': 'المحتوى (Markdown)', 'blogA.mdHelp': '## عنوان · ### عنوان فرعي · - لائحة · 1. لائحة مرقمة · **عريض** · *مائل* · [رابط](https://…) · > إطار', 'blogA.cover': 'صورة الغلاف', 'blogA.coverAlt': 'النص البديل للصورة (SEO)',
+    'blogA.coverSave': 'سجل المقال أولا باش تزيد الصورة.', 'blogA.seo': 'تحسين محركات البحث (SEO)', 'blogA.metaTitle': 'عنوان SEO (≤ 60 حرف)', 'blogA.metaDesc': 'Meta description (120–160 حرف)', 'blogA.keywords': 'الكلمات المفتاحية (مفصولة بفاصلة)',
+    'blogA.minutes': 'دقائق القراءة', 'blogA.publish': 'نشر فالموقع', 'blogA.serp': 'معاينة Google', 'blogA.delete': 'حذف', 'blogA.confirmDel': 'حذف هاد المقال نهائيا؟', 'blogA.words': '{n} كلمة',
+    'blogA.checks': 'فحوصات SEO', 'blogA.ck.title': 'عنوان SEO من 30 حتى 60 حرف', 'blogA.ck.desc': 'Meta description من 120 حتى 160 حرف', 'blogA.ck.words': '300 كلمة على الأقل', 'blogA.ck.h2': 'عنوانين فرعيين على الأقل (##)', 'blogA.ck.cover': 'صورة مع نص بديل', 'blogA.ck.kw': 'كلمات مفتاحية مكتوبة',
 
     'plan.sub': 'بلا مفاجآت: ثمن لكل مدة، وكل المميزات داخلة.', 'plan.popular': 'الأكثر اختيارا', 'plan.perMonth': '{n} درهم / شهر', 'plan.save': '−{n} %', 'plan.choose': 'اختار هاد المدة',
     'plan.i1': 'كل المميزات', 'plan.i2': 'ستوك بالصور بلا حدود', 'plan.i3': 'وصولات A5 وتيكي 80 مم', 'plan.i4': 'دعم عبر واتساب',

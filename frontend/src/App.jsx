@@ -5,6 +5,10 @@ import { AdminLayout, ShopLayout } from './components/Layouts.jsx';
 import Landing from './pages/Landing.jsx';
 import Login from './pages/Login.jsx';
 import Blog from './pages/Blog.jsx';
+import BlogPost from './pages/BlogPost.jsx';
+import Plans from './pages/admin/Plans.jsx';
+import BlogAdmin from './pages/admin/BlogAdmin.jsx';
+import PostEditor from './pages/admin/PostEditor.jsx';
 import Dashboard from './pages/shop/Dashboard.jsx';
 import Stock from './pages/shop/Stock.jsx';
 import ItemForm from './pages/shop/ItemForm.jsx';
@@ -36,6 +40,7 @@ export default function App() {
       <Route path="/" element={<Landing />} />
       <Route path="/login" element={<Login />} />
       <Route path="/blog" element={<Blog />} />
+      <Route path="/blog/:slug" element={<BlogPost />} />
 
       <Route path="/app" element={<Guard role="SHOP"><ShopLayout /></Guard>}>
         <Route index element={<Dashboard />} />
@@ -58,6 +63,9 @@ export default function App() {
         <Route index element={<Clients />} />
         <Route path="new" element={<NewClient />} />
         <Route path="account" element={<AdminAccount />} />
+        <Route path="plans" element={<Plans />} />
+        <Route path="blog" element={<BlogAdmin />} />
+        <Route path="blog/:id" element={<PostEditor />} />
         <Route path=":id" element={<ClientDetail />} />
       </Route>
 

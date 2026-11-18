@@ -3,7 +3,7 @@
 #  Orgest — déploiement sur VPS Ubuntu avec aaPanel
 #
 #  Usage (en root, depuis la racine du dépôt cloné) :
-#      sudo ./deploy.sh <domaine> [--whatsapp 2126XXXXXXXX] [--prices "1:200,3:550,6:1000,12:1800"]
+#      sudo ./deploy.sh <domaine> [--whatsapp 2126XXXXXXXX]
 #  Exemple :
 #      sudo ./deploy.sh app.orgest.ma --whatsapp 212612345678
 #
@@ -33,11 +33,10 @@ die()  { echo "${c_err}✖ $*${c_off}" >&2; exit 1; }
 trap 'die "Échec à la ligne $LINENO (commande : $BASH_COMMAND)"' ERR
 
 # ---------- Arguments ----------
-DOMAIN=""; WHATSAPP_NUMBER="${WHATSAPP_NUMBER:-}"; PLAN_PRICES="${PLAN_PRICES:-}"
+DOMAIN=""; WHATSAPP_NUMBER="${WHATSAPP_NUMBER:-}"
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --whatsapp) WHATSAPP_NUMBER="${2:-}"; shift 2 ;;
-    --prices) PLAN_PRICES="${2:-}"; shift 2 ;;
     -h|--help)  sed -n '2,28p' "$0"; exit 0 ;;
     *)          if [[ -z "$DOMAIN" ]]; then DOMAIN="$1"; shift; else die "Argument inconnu : $1"; fi ;;
   esac
@@ -211,11 +210,12 @@ systemctl restart orgest
 log "Compilation du frontend (React/Vite)…"
 pushd "$SRC_DIR/frontend" >/dev/null
 npm ci --no-audit --no-fund --loglevel=error
-VITE_WHATSAPP="$WHATSAPP_NUMBER" VITE_PRICES="$PLAN_PRICES" npm run build >/dev/null
+VITE_WHATSAPP="$WHATSAPP_NUMBER" npm run build >/dev/null
 popd >/dev/null
 mkdir -p "$WEB_ROOT"
 rsync -a --delete "$SRC_DIR/frontend/dist/" "$WEB_ROOT/"
 chown -R root:root "$WEB_ROOT"; chmod 755 /var/www /var/www/orgest
+printf 'User-agent: *\nAllow: /\nDisallow: /app\nDisallow: /admin\nDisallow: /api/\nSitemap: https://%s/sitemap.xml\n' "$DOMAIN" > "$WEB_ROOT/robots.txt"
 find "$WEB_ROOT" -type d -exec chmod 755 {} \; ; find "$WEB_ROOT" -type f -exec chmod 644 {} \;
 
 # ---------- 7. Nginx (aaPanel) ----------
@@ -241,6 +241,11 @@ location ^~ /api/ {
     proxy_set_header X-Forwarded-Proto \$scheme;
     proxy_read_timeout 60s;
     proxy_hide_header X-Powered-By;
+}
+location = /sitemap.xml {
+    proxy_pass http://127.0.0.1:$APP_PORT/api/public/sitemap.xml;
+    proxy_set_header Host \$host;
+    proxy_set_header X-Forwarded-Proto \$scheme;
 }
 location ~ /\\.(?!well-known) { deny all; }
 location ^~ /assets/ {

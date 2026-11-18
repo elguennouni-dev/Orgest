@@ -3,7 +3,8 @@ import { useI18n } from '../i18n.jsx';
 import { SiteFooter, SiteHeader } from '../components/Site.jsx';
 import { Icon, P } from '../components/icons.jsx';
 import Louiz from '../components/Louiz.jsx';
-import { PLAN_PRICES, waLink } from '../config.js';
+import { waLink } from '../config.js';
+import { useApi, useSeo } from '../hooks.js';
 import { fmtInt } from '../i18n.jsx';
 
 const FEATURES = [
@@ -14,6 +15,9 @@ const FEATURES = [
 export default function Landing() {
   const { t } = useI18n();
   const wa = waLink(t('landing.waMessage'));
+  const { data: plans } = useApi('/public/plans');
+  const list = plans || [];
+  useSeo({ title: 'Orgest — ' + t('tagline'), description: t('landing.subtitle') });
   return (
     <div className="site">
       <SiteHeader />
@@ -65,14 +69,13 @@ export default function Landing() {
         <h2>{t('landing.plansTitle')}</h2>
         <p className="muted" style={{ margin: '-12px 0 24px' }}>{t('plan.sub')}</p>
         <div className="plans">
-          {Object.entries(PLAN_PRICES).map(([m, price]) => {
-            const months = Number(m);
-            const pop = months === 6;
+          {list.map((pl) => {
+            const months = pl.months, price = Number(pl.price), pop = pl.popular;
             const per = Math.round(price / months);
-            const first = Object.entries(PLAN_PRICES)[0];
-            const save = first && months > 1 ? Math.round((1 - price / (months * first[1])) * 100) : 0;
+            const first = list[0];
+            const save = first && months > first.months ? Math.round((1 - price / months / (Number(first.price) / first.months)) * 100) : 0;
             return (
-              <div className={'plan3' + (pop ? ' pop' : '')} key={m}>
+              <div className={'plan3' + (pop ? ' pop' : '')} key={pl.id}>
                 {pop && <span className="ribbon">{t('plan.popular')}</span>}
                 <span className="pm"><b className="num">{months}</b> {t('landing.months')}</span>
                 <div className="pp"><b className="num">{fmtInt(price)}</b> <span>{t('dh')}</span></div>

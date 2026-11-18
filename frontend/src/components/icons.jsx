@@ -16,6 +16,9 @@ export const P = {
   warn: 'M12 3l10 18H2L12 3zM12 10v5M12 18h.01',
   check: 'M5 12l5 5L20 7',
   out: 'M9 4H5v16h4M16 8l4 4-4 4M20 12H9',
+  tag: 'M3 12V4h8l10 10-8 8L3 12zM7.5 8.5h.01',
+  doc: 'M6 3h9l4 4v14H6zM14 3v5h5M9 13h7M9 17h7',
+  trash: 'M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13',
   menu: 'M4 6h16M4 12h16M4 18h16',
 };
 export function Icon({ d, size = 20, sw = 1.8 }) {

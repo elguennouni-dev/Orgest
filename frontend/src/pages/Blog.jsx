@@ -1,4 +1,6 @@
 import { useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { useApi, useSeo } from '../hooks.js';
 import { SiteFooter, SiteHeader } from '../components/Site.jsx';
 import { Icon, P } from '../components/icons.jsx';
 import Louiz from '../components/Louiz.jsx';
@@ -11,7 +13,7 @@ const I = {
 const T = { or: ['#FFF4D6', '#8A6209'], bleu: ['#E6EEF9', '#1E4F8F'], vert: ['#E7F4EC', '#1E5E3F'], violet: ['#F3E8F7', '#6B2F86'], rose: ['#FDECE3', '#9A3412'] };
 const art = (cat, title, ex, min, look, mood, img) => ({ cat, title, ex, min, tint: T[look][0], ink: T[look][1], mood, img });
 
-const ALL = [
+const STATIC = [
   art('Cours de l’or', 'Pourquoi saisir le cours de l’or chaque matin ?', 'Trente secondes au réveil de la caisse évitent des erreurs toute la journée. Ce que le prix du jour calcule à votre place.', 4, 'or', 'thinking'),
   art('Cours de l’or', '18K, 21K, 24K : ce que chaque carat change pour votre prix', 'Titre, or pur, prix au gramme : comment passer d’un carat à l’autre sans calculatrice.', 6, 'bleu', null, 'carats'),
   art('Gestion de boutique', 'Inventaire au gramme : faire le point de stock en une heure', 'Une méthode vitrine par vitrine, et comment l’écart de poids vous signale un problème.', 7, 'vert', null, 'inventaire'),
@@ -25,7 +27,7 @@ const ALL = [
   art('Nouveautés Orgest', 'Nouveau : l’accueil guidé avec Louiz', 'Une visite d’une minute pour les nouveaux comptes, et des rappels quand le cours du jour manque.', 2, 'or', 'wave'),
   art('Nouveautés Orgest', 'Bientôt : Orgest entièrement en arabe', 'Interface de droite à gauche, reçus bilingues, et une langue gardée d’un écran à l’autre.', 2, 'violet', null, 'arabe'),
 ];
-const CATS = ['Tous', 'Cours de l’or', 'Caisse et ventes', 'Gestion de boutique', 'تقسيط et crédit', 'Atelier', 'Nouveautés Orgest'];
+const BASE_CATS = ['Tous', 'Cours de l’or', 'Caisse et ventes', 'Gestion de boutique', 'تقسيط et crédit', 'Atelier', 'Nouveautés Orgest'];
 const SERIES = [
   ['Ouvrir la caisse le matin', 'Cours du jour, fond de caisse, premier coup d’œil au tableau de bord.', 3],
   ['Mettre son stock dans Orgest', 'Carat, poids, catégorie : saisir vite sans rien oublier.', 6],
@@ -44,16 +46,21 @@ const FAQ = [
 function Thumb({ a, size = 128 }) {
   return (
     <div className="b-thumb" style={{ background: a.tint, color: a.ink }}>
-      {a.mood ? <Louiz mood={a.mood} size={size} /> : <img src={`/assets/blog/${a.img}.jpg`} alt="" loading="lazy" />}
+      {a.cover ? <img src={`/api/public/blog-cover/${a.cover}`} alt={a.coverAlt || ''} loading="lazy" /> : a.mood ? <Louiz mood={a.mood} size={size} /> : <img src={`/assets/blog/${a.img}.jpg`} alt="" loading="lazy" />}
     </div>
   );
 }
 
 export default function Blog() {
+  useSeo({ title: 'Le Journal d’Orgest — conseils pour bijoutiers', description: 'Guides courts et concrets pour les bijoutiers : cours de l’or, reprise d’or ancien, تقسيط, atelier, inventaire.' });
+  const live = useApi('/public/posts');
+  const dbPosts = useMemo(() => (live.data || []).map((p) => ({ cat: p.category || 'Nouveautés Orgest', title: p.title, ex: p.excerpt || '', min: p.readMinutes, tint: '#FFF4D6', ink: '#8A6209', mood: p.cover ? null : 'happy', cover: p.cover, coverAlt: p.coverAlt, slug: p.slug })), [live.data]);
+  const ALL = useMemo(() => [...dbPosts, ...STATIC], [dbPosts]);
+  const CATS = useMemo(() => ['Tous', ...new Set([...BASE_CATS.slice(1), ...dbPosts.map((p) => p.cat)])], [dbPosts]);
   const [cat, setCat] = useState('Tous');
   const [q, setQ] = useState('');
   const [faq, setFaq] = useState(0);
-  const shown = useMemo(() => ALL.filter((a) => (cat === 'Tous' || a.cat === cat) && (!q.trim() || (a.title + ' ' + a.ex).toLowerCase().includes(q.trim().toLowerCase()))), [cat, q]);
+  const shown = useMemo(() => ALL.filter((a) => (cat === 'Tous' || a.cat === cat) && (!q.trim() || (a.title + ' ' + a.ex).toLowerCase().includes(q.trim().toLowerCase()))), [ALL, cat, q]);
   const wa = waLink('Bonjour, je voudrais proposer un sujet pour le blog Orgest.');
   const copy = () => { try { navigator.clipboard.writeText(window.location.origin + '/blog#reprise'); } catch { /* ignore */ } };
 
@@ -87,7 +94,7 @@ export default function Blog() {
             </div>
           </a>
           <div className="bf-side">
-            {[ALL[0], ALL[3]].map((a) => (
+            {[STATIC[0], STATIC[3]].map((a) => (
               <div className="mini" key={a.title}>
                 <div className="b-thumb sm" style={{ background: a.tint }}><Louiz mood={a.mood} size={96} /></div>
                 <div className="txt"><span className="b-tag" style={{ color: a.ink }}>{a.cat}</span><strong>{a.title}</strong><span className="muted">{a.min} min de lecture</span></div>
@@ -107,9 +114,9 @@ export default function Blog() {
           </div>
           <div className="b-grid">
             {shown.map((a) => (
-              <article className="b-card" key={a.title}>
-                <Thumb a={a} />
-                <div className="txt"><span className="b-tag" style={{ color: a.ink }}>{a.cat}</span><strong>{a.title}</strong><p>{a.ex}</p><span className="muted">{a.min} min de lecture · Équipe Orgest</span></div>
+              <article className="b-card" key={a.slug || a.title}>
+                {a.slug ? <Link to={`/blog/${a.slug}`} aria-label={a.title}><Thumb a={a} /></Link> : <Thumb a={a} />}
+                <div className="txt"><span className="b-tag" style={{ color: a.ink }}>{a.cat}</span><strong dir="auto">{a.slug ? <Link to={`/blog/${a.slug}`} style={{ color: 'inherit', textDecoration: 'none' }}>{a.title}</Link> : a.title}</strong><p dir="auto">{a.ex}</p><span className="muted">{a.min} min de lecture · Équipe Orgest</span></div>
               </article>
             ))}
           </div>

@@ -150,4 +150,32 @@ public final class Dtos {
     public record ReportDto(LocalDate from, LocalDate to, long salesCount, BigDecimal salesTotal,
                             long exchangeCount, BigDecimal buybackTotal, BigDecimal buybackWeightG,
                             BigDecimal averageTicket, List<DayPoint> byDay) {}
+
+    // ---------- Contenu public : tarifs + blog ----------
+    public record PlanDto(Long id, int months, BigDecimal price, boolean popular, boolean active) {}
+
+    public record PlanIn(@NotNull @Min(1) @Max(60) Integer months,
+                         @NotNull @DecimalMin("0") @DecimalMax("1000000") BigDecimal price,
+                         boolean popular, boolean active) {}
+
+    public record PlansRequest(@NotEmpty @Size(max = 12) List<@Valid PlanIn> plans) {}
+
+    public record PostIn(@NotBlank @Pattern(regexp = "^[a-z0-9]+(?:-[a-z0-9]+)*$") @Size(min = 3, max = 120) String slug,
+                         @NotBlank @Size(max = 160) String title,
+                         @Size(max = 300) String excerpt,
+                         @NotBlank @Size(max = 60000) String content,
+                         @Size(max = 60) String category,
+                         @Size(max = 160) String coverAlt,
+                         @Size(max = 70) String metaTitle,
+                         @Size(max = 170) String metaDescription,
+                         @Size(max = 200) String keywords,
+                         @NotNull @Min(1) @Max(60) Integer readMinutes,
+                         boolean published) {}
+
+    public record PostSummary(Long id, String slug, String title, String excerpt, String category, String cover,
+                              String coverAlt, int readMinutes, boolean published, Instant publishedAt, Instant updatedAt) {}
+
+    public record PostDto(Long id, String slug, String title, String excerpt, String content, String category, String cover,
+                          String coverAlt, String metaTitle, String metaDescription, String keywords, int readMinutes,
+                          boolean published, Instant publishedAt, Instant updatedAt) {}
 }

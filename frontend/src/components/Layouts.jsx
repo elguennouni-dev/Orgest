@@ -135,7 +135,9 @@ export function ShopLayout() {
 }
 
 const ADMIN_GROUPS = [
-  { items: [['/admin', 'nav.clients', 'dash', true], ['/admin/new', 'nav.newClient', 'plus'], ['/admin/account', 'nav.account', 'user']] },
+  { items: [['/admin', 'nav.clients', 'dash', true], ['/admin/new', 'nav.newClient', 'plus']] },
+  { title: 'nav.g.site', items: [['/admin/plans', 'nav.plans', 'tag'], ['/admin/blog', 'nav.blogAdmin', 'doc']] },
+  { items: [['/admin/account', 'nav.account', 'user']] },
 ];
 
 export function AdminLayout() {
