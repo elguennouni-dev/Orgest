@@ -127,8 +127,6 @@ export function ShopLayout() {
   const loc = useLocation();
   useShortcuts();
   const blocked = !me.subscriptionValid && !loc.pathname.startsWith('/app/account');
-  const pos = loc.pathname === '/app/sale' || loc.pathname === '/app/exchange';
-  if (pos && !blocked) return <Outlet />;
   return (
     <Shell groups={SHOP_GROUPS} searchable>
       {blocked ? <Expired /> : <Outlet />}

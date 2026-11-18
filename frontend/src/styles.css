@@ -368,3 +368,9 @@ td.wrap { white-space: normal; }
 .side .langtog { background: #1F1B14; align-self: stretch; }
 .side .langtog button { flex: 1; color: #A79E8C; }
 .side .langtog button.on { background: var(--gold); color: var(--black); }
+
+/* Vente / échange dans le layout (barre latérale visible) */
+.pos { min-height: 0; background: transparent; }
+.pos-top { border-radius: 18px; padding: 12px 20px; }
+.pos-body { padding: 20px 0 0; }
+.main > .inner:has(.pos) { max-width: none; }

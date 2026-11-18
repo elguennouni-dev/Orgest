@@ -107,8 +107,6 @@ export default function Sale({ mode }) {
   return (
     <div className="pos">
       <header className="pos-top no-print">
-        <Link to="/app" className="back"><Icon d={P.back} size={18} sw={2} /> {t('pos.back')}</Link>
-        <span className="sep" />
         <h1>{isEx ? t('nav.exchange') : t('pos.title')}</h1>
         <div className="seg" role="group" aria-label="Type">
           <Link to="/app/sale" className={!isEx ? 'on' : ''} aria-current={!isEx}>{t('nav.sale')}</Link>
