@@ -3,6 +3,7 @@ package com.orgest.repo;
 import com.orgest.domain.Buyback;
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,6 +13,9 @@ import org.springframework.data.repository.query.Param;
 
 public interface BuybackRepository extends JpaRepository<Buyback, Long> {
     Optional<Buyback> findByIdAndShopId(Long id, Long shopId);
+    @Query("select b from Buyback b where b.shopId = :shop and b.createdAt >= :from and b.createdAt < :to order by b.createdAt desc")
+    List<Buyback> between(@Param("shop") Long shop, @Param("from") Instant from, @Param("to") Instant to);
+
     Page<Buyback> findByShopIdOrderByCreatedAtDesc(Long shopId, Pageable pageable);
 
     @Query("select coalesce(sum(b.total),0) from Buyback b where b.shopId = :shop and b.createdAt >= :from and b.createdAt < :to")

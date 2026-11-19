@@ -33,7 +33,12 @@ export const fmtMoney = (v) => {
   return Number.isInteger(n) ? nf0.format(n) : nf2.format(n);
 };
 export const fmtWeight = (v) => nf3.format(Number(v || 0));
-export const fmtDate = (v) => (v ? new Date(v).toLocaleDateString('fr-FR') : '');
+const asDate = (v) => {
+  if (v instanceof Date) return v;
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(v));
+  return m ? new Date(+m[1], +m[2] - 1, +m[3]) : new Date(v); // date seule = jour local (pas de décalage UTC)
+};
+export const fmtDate = (v) => (v ? asDate(v).toLocaleDateString('fr-FR') : '');
 export const fmtDateTime = (v) => (v ? new Date(v).toLocaleString('fr-FR', { dateStyle: 'short', timeStyle: 'short' }) : '');
 
 export function Money({ v }) {

@@ -1,7 +1,9 @@
 package com.orgest.service;
 
 import com.orgest.common.AppException;
+import com.orgest.common.InstallmentPlanner;
 import com.orgest.common.Money;
+import com.orgest.common.Pricing;
 import com.orgest.common.Text;
 import com.orgest.domain.*;
 import com.orgest.repo.*;
@@ -52,10 +54,10 @@ public class SalesService {
         b.karat = r.karat();
         b.grossWeightG = Money.round3(r.grossWeightG());
         b.deductionPct = Money.round2(r.deductionPct());
-        BigDecimal factor = BigDecimal.ONE.subtract(b.deductionPct.divide(BigDecimal.valueOf(100), 6, java.math.RoundingMode.HALF_UP));
-        b.netWeightG = Money.round3(b.grossWeightG.multiply(factor));
+        b.netWeightG = Pricing.netWeight(b.grossWeightG, b.deductionPct);
         b.pricePerGram = Money.round2(r.pricePerGram());
-        b.total = Money.round2(b.netWeightG.multiply(b.pricePerGram));
+        if (b.pricePerGram.signum() <= 0) throw AppException.bad("INVALID_PRICE");
+        b.total = Pricing.tradeIn(b.netWeightG, b.pricePerGram);
         return buybacks.save(b);
     }
 
@@ -121,8 +123,9 @@ public class SalesService {
                 line.weightG = Money.round3(l.weightG());
             }
             line.pricePerGram = Money.round2(l.pricePerGram());
+            if (line.pricePerGram.signum() <= 0) throw AppException.bad("INVALID_PRICE");
             line.makingPerGram = Money.round2(l.makingPerGram());
-            line.lineTotal = Money.round2(line.weightG.multiply(line.pricePerGram.add(line.makingPerGram)));
+            line.lineTotal = Pricing.lineTotal(line.weightG, line.pricePerGram, line.makingPerGram);
             subtotal = subtotal.add(line.lineTotal);
             s.lines.add(line);
         }
@@ -139,26 +142,19 @@ public class SalesService {
         BigDecimal paidNow;
         List<Installment> plan = new ArrayList<>();
         if (r.paymentMode() == Enums.PaymentMode.INSTALLMENT) {
-            int months = r.months() == null ? 0 : r.months();
             BigDecimal down = Money.round2(Money.nz(r.downPayment()));
-            if (months < 1 || s.balance.signum() <= 0 || down.compareTo(s.balance) >= 0) {
-                throw AppException.bad("INVALID_INSTALLMENT");
-            }
+            InstallmentPlanner.validate(s.customerName, s.balance, down, r.months());
+            int months = r.months();
             s.paymentMode = Enums.PaymentMode.INSTALLMENT;
             s.months = months;
             s.downPayment = down;
             paidNow = down;
-            BigDecimal remainder = s.balance.subtract(down);
-            BigDecimal each = remainder.divide(BigDecimal.valueOf(months), 2, java.math.RoundingMode.DOWN);
-            BigDecimal allocated = BigDecimal.ZERO;
-            LocalDate base = Money.today();
-            for (int i = 1; i <= months; i++) {
+            for (InstallmentPlanner.Term t : InstallmentPlanner.schedule(s.balance, down, months, Money.today())) {
                 Installment in = new Installment();
                 in.shopId = shopId;
-                in.seq = i;
-                in.dueDate = base.plusMonths(i);
-                in.amount = (i == months) ? remainder.subtract(allocated) : each;
-                allocated = allocated.add(in.amount);
+                in.seq = t.seq();
+                in.dueDate = t.dueDate();
+                in.amount = t.amount();
                 plan.add(in);
             }
         } else {
@@ -237,6 +233,7 @@ public class SalesService {
             LocalDate next = list.stream().filter(i -> !i.paid).map(i -> i.dueDate).min(Comparator.naturalOrder()).orElse(null);
             long overdue = list.stream().filter(i -> !i.paid && i.dueDate.isBefore(today)).count();
             out.add(new PlanDto(s.id, s.number, s.customerName, s.customerPhone, remaining, paid, next, overdue,
+                    s.balance, s.downPayment,
                     list.stream().map(SalesService::toDto).toList()));
         }
         out.sort(Comparator.comparing(PlanDto::nextDue, Comparator.nullsLast(Comparator.naturalOrder())));

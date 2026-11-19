@@ -61,6 +61,9 @@ public class WorkshopService {
     }
 
     private void apply(WorkshopOrder w, WorkshopRequest r) {
+        if (Money.round2(r.depositAmount()).compareTo(Money.round2(r.agreedPrice())) > 0) {
+            throw AppException.bad("DEPOSIT_ABOVE_PRICE");
+        }
         w.customerName = Text.blankToNull(r.customerName());
         w.customerPhone = Text.blankToNull(r.customerPhone());
         w.description = r.description().trim();
@@ -80,6 +83,10 @@ public class WorkshopService {
         WorkshopOrder w = repo.findByIdAndShopId(id, shopId).orElseThrow(AppException::notFound);
         boolean closed = w.status == Enums.WorkshopStatus.DELIVERED || w.status == Enums.WorkshopStatus.CANCELLED;
         if (closed || r.status() == Enums.WorkshopStatus.SENT) throw AppException.conflict("INVALID_TRANSITION");
+        // Livraison seulement après réception de l'or fini (sinon perte/poids jamais enregistrés).
+        if (r.status() == Enums.WorkshopStatus.DELIVERED && w.status != Enums.WorkshopStatus.READY) {
+            throw AppException.conflict("INVALID_TRANSITION");
+        }
         if (r.status() == Enums.WorkshopStatus.READY) {
             if (r.receivedWeightG() == null || r.receivedWeightG().signum() <= 0) throw AppException.bad("WEIGHT_REQUIRED");
             w.receivedWeightG = Money.round3(r.receivedWeightG());

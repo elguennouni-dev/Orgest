@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { api } from '../../api.js';
 import { useApi, waPhone } from '../../hooks.js';
-import { fmtDate, Money, useI18n } from '../../i18n.jsx';
+import { fmtDate, fmtMoney, Money, useI18n } from '../../i18n.jsx';
 import { ErrorBox, Loading, PageHead } from '../../components/ui.jsx';
 
 export default function Installments() {
@@ -34,9 +34,19 @@ export default function Installments() {
                 <div className="row">
                   <div><div className="hint">{t('inst.remaining')}</div><b><Money v={p.remaining} /></b></div>
                   <button className="btn sm" onClick={() => setOpen(open === p.saleId ? null : p.saleId)}>{t('inst.details')}</button>
-                  {wa && next && <a className="btn sm wa" target="_blank" rel="noopener noreferrer" href={`https://wa.me/${wa}?text=${encodeURIComponent(t('inst.waReminder', { a: Math.round(next.amount), d: fmtDate(next.dueDate) }))}`}>WhatsApp</a>}
+                  {wa && next && <a className="btn sm wa" target="_blank" rel="noopener noreferrer" href={`https://wa.me/${wa}?text=${encodeURIComponent(t('inst.waReminder', { a: fmtMoney(next.amount), d: fmtDate(next.dueDate) }))}`}>WhatsApp</a>}
                 </div>
               </div>
+              {Number(p.balance) > 0 && (() => {
+                const got = Number(p.downPayment) + Number(p.paid);
+                const pct = Math.max(0, Math.min(100, Math.round((got / Number(p.balance)) * 100)));
+                return (
+                  <div style={{ marginTop: 10 }}>
+                    <div className="shimbar" role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={pct} style={{ height: 8, background: 'var(--border)' }}><i style={{ width: pct + '%', animation: 'none' }} /></div>
+                    <div className="hint">{t('inst.progress', { a: fmtMoney(got), b: fmtMoney(p.balance), p: pct })}</div>
+                  </div>
+                );
+              })()}
               {open === p.saleId && (
                 <div className="tablewrap" style={{ marginTop: 10 }}>
                   <table><tbody>

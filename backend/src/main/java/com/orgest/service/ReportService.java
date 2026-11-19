@@ -120,11 +120,11 @@ public class ReportService {
     @Transactional(readOnly = true)
     public byte[] exportBuybacks(Long shopId, LocalDate from, LocalDate to) {
         checkRange(from, to);
-        List<Buyback> list = buybacks.findByShopIdOrderByCreatedAtDesc(shopId, PageRequest.of(0, 5000)).getContent();
         Instant a = Money.startOf(from), b = Money.startOf(to.plusDays(1));
+        List<Buyback> list = buybacks.between(shopId, a, b);
         return workbook("Achats or",
                 List.of("N°", "Date", "Client", "Carat", "Poids brut (g)", "Déduction %", "Poids net (g)", "Prix/g", "Total"),
-                list.stream().filter(x -> !x.createdAt.isBefore(a) && x.createdAt.isBefore(b))
+                list.stream()
                         .map(x -> new Object[]{x.number, x.createdAt.atZone(Z).toLocalDate().toString(), x.customerName,
                                 x.karat, x.grossWeightG, x.deductionPct, x.netWeightG, x.pricePerGram, x.total}).toList());
     }

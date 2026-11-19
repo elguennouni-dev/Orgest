@@ -101,3 +101,13 @@ deploy.sh   Déploiement Ubuntu + aaPanel
 **Déploiement automatique (GitHub Actions)** : sur le VPS `sudo ./tools/setup-ci-deploy.sh orgest.tech 212680376294`, puis copier les 4 valeurs affichées dans GitHub > Settings > Secrets and variables > Actions (`VPS_HOST`, `VPS_USER`, `VPS_KNOWN_HOSTS`, `VPS_SSH_KEY`). Chaque push sur `main` compile/teste puis déploie. La clé SSH ne peut exécuter que `orgest-deploy`.
 
 **Docker (alternative)** : `cp .env.docker.example .env && nano .env && docker compose up -d --build` ; le site écoute sur `127.0.0.1:8088` (à mettre derrière le proxy HTTPS d'aaPanel). Ne pas lancer en même temps que le déploiement systemd sur le même domaine.
+
+## Tests
+
+```bash
+cd frontend && npm test                 # Vitest : calculs (ventes, reprise, échéancier) + cohérence FR/AR et codes d'erreur
+cd backend && mvn verify                # JUnit/Mockito : SalesService, InstallmentPlanner, Pricing, Workshop, Shop, Report
+```
+
+Les mêmes cas chiffrés sont testés côté Java et côté JavaScript (`frontend/src/lib/money.js` reproduit les règles du backend)
+pour que l'écran affiche exactement ce qui sera enregistré. Le workflow GitHub Actions lance les deux suites avant tout déploiement.

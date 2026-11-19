@@ -4,6 +4,7 @@ import { api } from '../../api.js';
 import { useApi } from '../../hooks.js';
 import { fmtDateTime, fmtMoney, fmtWeight, Money, useI18n } from '../../i18n.jsx';
 import { ErrorBox, Field, KARATS, PageHead } from '../../components/ui.jsx';
+import { netWeight, tradeInValue } from '../../lib/money.js';
 
 export default function BuyBack() {
   const { t } = useI18n();
@@ -17,11 +18,13 @@ export default function BuyBack() {
   const buy = (k) => Number(prices.data?.find((p) => p.karat === Number(k))?.buyPerGram || 0);
   const price = Number(f.price || buy(f.karat));
   const calc = useMemo(() => {
-    const net = Math.round(Number(f.gross || 0) * (1 - Number(f.ded || 0) / 100) * 1000) / 1000;
-    return { net, total: Math.round(net * price * 100) / 100 };
+    return { net: netWeight(f.gross, f.ded), total: tradeInValue(f.gross, f.ded, price) };
   }, [f.gross, f.ded, price]);
 
+  const valid = Number(f.gross) > 0 && Number(f.ded || 0) >= 0 && Number(f.ded || 0) <= 99 && price > 0 && calc.net > 0;
+
   const submit = async (e) => {
+    if (!valid) { e.preventDefault(); return; }
     e.preventDefault(); setBusy(true); setError(null);
     try {
       const b = await api('/shop/buybacks', { method: 'POST', body: { customerName: f.name || null, customerPhone: f.phone || null, customerCin: f.cin || null, description: f.description || null, karat: Number(f.karat), grossWeightG: Number(f.gross), deductionPct: Number(f.ded || 0), pricePerGram: price } });
@@ -49,7 +52,7 @@ export default function BuyBack() {
             <div className="row spread" style={{ fontSize: 20 }}><b>{t('receipt.amountPaid')}</b><b><Money v={calc.total} /></b></div>
           </div>
           <ErrorBox error={error} />
-          <button className="btn primary" disabled={busy || !(Number(f.gross) > 0)}>{busy ? t('loading') : t('buyback.confirm')}</button>
+          <button className="btn primary" disabled={busy || !valid}>{busy ? t('loading') : t('buyback.confirm')}</button>
         </form>
         <div className="card">
           <h2>{t('buyback.recent')}</h2>

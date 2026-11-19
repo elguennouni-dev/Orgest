@@ -8,8 +8,8 @@ import { ErrorBox, Loading } from '../../components/ui.jsx';
 import { Icon, P } from '../../components/icons.jsx';
 import Louiz from '../../components/Louiz.jsx';
 import Tour from '../../components/Tour.jsx';
+import { round2 as r2 } from '../../lib/money.js';
 
-const r2 = (n) => Math.round((Number(n) + Number.EPSILON) * 100) / 100;
 const isToday = (iso) => !!iso && new Date(iso).toDateString() === new Date().toDateString();
 
 function PricesCard({ prices, entered, editing, setEditing, onSaved }) {

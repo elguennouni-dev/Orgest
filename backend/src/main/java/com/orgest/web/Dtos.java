@@ -118,6 +118,7 @@ public final class Dtos {
 
     public record PlanDto(Long saleId, String saleNumber, String customerName, String customerPhone,
                           BigDecimal remaining, BigDecimal paid, LocalDate nextDue, long overdueCount,
+                          BigDecimal balance, BigDecimal downPayment,
                           List<InstallmentDto> installments) {}
 
     // ---------- Atelier / commandes chez le fabricant ----------

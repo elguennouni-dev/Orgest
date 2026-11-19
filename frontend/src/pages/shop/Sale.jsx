@@ -2,12 +2,12 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { api } from '../../api.js';
 import { useApi } from '../../hooks.js';
-import { fmtMoney, fmtWeight, Money, useI18n } from '../../i18n.jsx';
+import { fmtDate, fmtMoney, fmtWeight, Money, useI18n } from '../../i18n.jsx';
 import { ErrorBox, Field, KARATS, Loading, Modal } from '../../components/ui.jsx';
 import { Icon, P } from '../../components/icons.jsx';
 import Louiz from '../../components/Louiz.jsx';
+import { lineTotal, round2, saleSummary } from '../../lib/money.js';
 
-const r2 = (n) => Math.round((n + Number.EPSILON) * 100) / 100;
 let uid = 0;
 
 export default function Sale({ mode }) {
@@ -38,22 +38,18 @@ export default function Sale({ mode }) {
   };
   const upd = (key, k, v) => setLines(lines.map((l) => (l.key === key ? { ...l, [k]: v } : l)));
 
-  const calc = useMemo(() => {
-    const subtotal = r2(lines.reduce((s, l) => s + l.weightG * (Number(l.price || 0) + Number(l.making || 0)), 0));
-    let net = 0, tradeIn = 0;
-    if (withOld) {
-      net = Math.round(Number(old.gross || 0) * (1 - Number(old.ded || 0) / 100) * 1000) / 1000;
-      tradeIn = r2(net * Number(old.price || buyOf(old.karat)));
-    }
-    const balance = r2(subtotal - tradeIn);
-    const down = pay.mode === 'INSTALLMENT' ? Number(pay.down || 0) : 0;
-    const monthly = pay.mode === 'INSTALLMENT' && pay.months > 0 ? r2((balance - down) / pay.months) : 0;
-    return { subtotal, net, tradeIn, balance, down, monthly };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [lines, withOld, old, pay, prices.data]);
+  const oldPrice = old.price !== '' ? Number(old.price) : buyOf(old.karat);
+  const calc = useMemo(() => saleSummary({
+    lines, withOld, old, buyPrice: buyOf(old.karat), mode: pay.mode, months: pay.months, down: pay.down, customerName: cust.name,
+  }),
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  [lines, withOld, old, pay, cust.name, prices.data]);
 
-  const needCustomer = pay.mode === 'INSTALLMENT' && !cust.name.trim();
-  const canSubmit = lines.length > 0 && (!withOld || Number(old.gross) > 0) && !needCustomer && !busy;
+  const linesOk = lines.every((l) => Number(l.price) > 0 && Number(l.weightG) > 0 && Number(l.making || 0) >= 0);
+  const oldOk = !withOld || (Number(old.gross) > 0 && Number(old.ded || 0) >= 0 && Number(old.ded || 0) <= 99 && oldPrice > 0 && calc.net > 0);
+  const instErr = pay.mode === 'INSTALLMENT' ? calc.instError : null;
+  const canSubmit = lines.length > 0 && linesOk && oldOk && !instErr && !busy;
+  const blocker = lines.length === 0 ? t('pos.needOne') : !linesOk ? t('pos.fixPrice') : !oldOk ? t('pos.fixOld') : null;
 
   const submit = async () => {
     if (!canSubmit) return;
@@ -66,7 +62,7 @@ export default function Sale({ mode }) {
         lines: lines.map((l) => (l.itemId
           ? { itemId: l.itemId, pricePerGram: Number(l.price || 0), makingPerGram: Number(l.making || 0) }
           : { description: l.label, karat: l.karat, weightG: l.weightG, pricePerGram: Number(l.price || 0), makingPerGram: Number(l.making || 0) })),
-        oldGold: withOld ? { karat: Number(old.karat), grossWeightG: Number(old.gross), deductionPct: Number(old.ded || 0), pricePerGram: Number(old.price || buyOf(old.karat)), description: old.description || null, customerName: cust.name || null, customerPhone: cust.phone || null } : null,
+        oldGold: withOld ? { karat: Number(old.karat), grossWeightG: Number(old.gross), deductionPct: Number(old.ded || 0), pricePerGram: oldPrice, description: old.description || null, customerName: cust.name || null, customerPhone: cust.phone || null } : null,
         paymentMode: pay.mode,
         downPayment: pay.mode === 'INSTALLMENT' ? Number(pay.down || 0) : null,
         months: pay.mode === 'INSTALLMENT' ? Number(pay.months) : null,
@@ -84,8 +80,9 @@ export default function Sale({ mode }) {
       if (e.key !== 'Enter' || e.isComposing) return;
       const el = e.target;
       const tag = (el.tagName || '').toLowerCase();
-      if (tag === 'textarea' || tag === 'select' || tag === 'button' || tag === 'a') return;
-      if (tag === 'input' && el.type !== 'number') return;
+      if (tag === 'select' || tag === 'button' || tag === 'a') return;
+      // Dans un champ : seulement Ctrl/Cmd+Entrée (évite de valider une vente en tapant un montant).
+      if ((tag === 'input' || tag === 'textarea') && !(e.ctrlKey || e.metaKey)) return;
       if (document.querySelector('.modal')) return;
       e.preventDefault();
       submitRef.current();
@@ -182,7 +179,7 @@ export default function Sale({ mode }) {
               {!(Number(l.price) > 0) && <span className="hint" style={{ color: 'var(--warn)' }}>{t('pos.noPrice')}</span>}
               <div className="row spread" style={{ gap: 6 }}>
                 <button type="button" className="btn sm danger" onClick={() => setLines(lines.filter((x) => x.key !== l.key))}>{t('remove')}</button>
-                <b><Money v={r2(l.weightG * (Number(l.price || 0) + Number(l.making || 0)))} /></b>
+                <b><Money v={lineTotal(l.weightG, l.price, l.making)} /></b>
               </div>
             </div>
           ))}
@@ -195,7 +192,7 @@ export default function Sale({ mode }) {
             <div className="grid g2">
               <Field label={t('karat')}><select value={old.karat} onChange={(e) => setOld({ ...old, karat: Number(e.target.value), price: '' })}>{KARATS.map((k) => <option key={k} value={k}>{k}K</option>)}</select></Field>
               <Field label={t('buyback.gross')}><input className="input" type="number" min="0" step="0.001" inputMode="decimal" value={old.gross} onChange={(e) => setOld({ ...old, gross: e.target.value })} dir="ltr" /></Field>
-              <Field label={t('buyback.deduction')}><input className="input" type="number" min="0" max="99" step="0.1" value={old.ded} onChange={(e) => setOld({ ...old, ded: e.target.value })} dir="ltr" /></Field>
+              <Field label={t('buyback.deduction')}><input className="input" type="number" min="0" max="99" step="0.1" inputMode="decimal" value={old.ded} onChange={(e) => setOld({ ...old, ded: e.target.value })} dir="ltr" /></Field>
               <Field label={t('buyback.priceG')}><input className="input" type="number" min="0" step="0.01" placeholder={String(buyOf(old.karat))} value={old.price} onChange={(e) => setOld({ ...old, price: e.target.value })} dir="ltr" /></Field>
               <div className="hint" style={{ gridColumn: '1 / -1' }}>{t('buyback.net')}: <b className="num">{fmtWeight(calc.net)} g</b> → <Money v={calc.tradeIn} /></div>
             </div>
@@ -221,9 +218,18 @@ export default function Sale({ mode }) {
             </div>
             {pay.mode === 'INSTALLMENT' && (
               <div className="grid g2">
-                <Field label={t('sale.down')}><input className="input" type="number" min="0" step="0.01" value={pay.down} onChange={(e) => setPay({ ...pay, down: e.target.value })} dir="ltr" /></Field>
+                <Field label={t('sale.down')}><input className="input" type="number" min="0" step="0.01" inputMode="decimal" value={pay.down} onChange={(e) => setPay({ ...pay, down: e.target.value })} dir="ltr" /></Field>
                 <Field label={t('sale.months')}><select value={pay.months} onChange={(e) => setPay({ ...pay, months: Number(e.target.value) })}>{[2, 3, 4, 6, 9, 12, 18, 24].map((m) => <option key={m} value={m}>{m}</option>)}</select></Field>
-                <div className="hint" style={{ gridColumn: '1 / -1' }}>{t('sale.monthly')}: <b><Money v={calc.monthly} /></b> · {t('sale.lockedHint')}</div>
+                <div className="hint" style={{ gridColumn: '1 / -1' }} aria-live="polite">
+                  {instErr ? <span style={{ color: 'var(--bad)' }}>{t('err.' + instErr)}</span> : (
+                    <>
+                      {t('sale.remainder')}: <b><Money v={calc.remainder} /></b><br />
+                      {t('sale.monthly')}: <b><Money v={calc.monthly} /></b> × {calc.schedule.length}
+                      {calc.lastAmount !== calc.monthly && <> · {t('sale.last')}: <b><Money v={calc.lastAmount} /></b></>}<br />
+                      {t('sale.firstDue')}: <b className="num">{fmtDate(calc.schedule[0]?.dueDate)}</b> · {t('sale.lockedHint')}
+                    </>
+                  )}
+                </div>
               </div>
             )}
           </div>
@@ -231,11 +237,12 @@ export default function Sale({ mode }) {
           <div className="totals">
             <div className="r"><span>{t('pos.subtotal')}</span><span className="num"><Money v={calc.subtotal} /></span></div>
             {withOld && <div className="r"><span>{t('receipt.tradeIn')}</span><span className="num">− <Money v={calc.tradeIn} /></span></div>}
+            {pay.mode === 'INSTALLMENT' && !instErr && <div className="r"><span>{t('receipt.paidNow')}</span><span className="num"><Money v={calc.down} /></span></div>}
             <div className="big"><b>{calc.balance < 0 ? t('pos.refund') : t('pos.rest')}</b><b className="num"><Money v={Math.abs(calc.balance)} /></b></div>
           </div>
           <ErrorBox error={error} />
           <button type="button" className="validate" disabled={!canSubmit} onClick={submit}>{busy ? t('loading') : t('pos.validate')}</button>
-          {lines.length === 0 && <span className="hint" style={{ textAlign: 'center' }}>{t('pos.needOne')}</span>}
+          {blocker && <span className="hint" style={{ textAlign: 'center' }}>{blocker}</span>}
         </aside>
       </div>
 

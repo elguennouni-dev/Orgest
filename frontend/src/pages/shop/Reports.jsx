@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { download } from '../../api.js';
 import { useApi } from '../../hooks.js';
-import { fmtDate, fmtInt, fmtWeight, Money, useI18n } from '../../i18n.jsx';
+import { fmtDate, fmtInt, fmtMoney, fmtWeight, Money, useI18n } from '../../i18n.jsx';
 import { ErrorBox, Kpi, Loading, PageHead } from '../../components/ui.jsx';
 
 const iso = (d) => d.toISOString().slice(0, 10);
@@ -39,7 +39,7 @@ export default function Reports() {
             <h2>{t('reports.byDay')}</h2>
             <div style={{ display: 'flex', alignItems: 'flex-end', gap: 3, height: 160, overflowX: 'auto' }} dir="ltr">
               {data.byDay.map((d) => (
-                <div key={d.date} title={`${fmtDate(d.date)} — ${Math.round(d.total)}`} style={{ flex: '1 0 8px', minWidth: 8, height: `${Math.max(2, (Number(d.total) / max) * 100)}%`, background: Number(d.total) > 0 ? 'var(--gold)' : 'var(--border)', borderRadius: '3px 3px 0 0' }} />
+                <div key={d.date} title={`${fmtDate(d.date)} — ${fmtMoney(d.total)}`} style={{ flex: '1 0 8px', minWidth: 8, height: `${Math.max(2, (Number(d.total) / max) * 100)}%`, background: Number(d.total) > 0 ? 'var(--gold)' : 'var(--border)', borderRadius: '3px 3px 0 0' }} />
               ))}
             </div>
           </div>
