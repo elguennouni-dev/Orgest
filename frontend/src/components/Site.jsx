@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { useI18n } from '../i18n.jsx';
 import { Logo } from './ui.jsx';
@@ -9,7 +9,26 @@ export function SiteHeader() {
   const { t } = useI18n();
   const [open, setOpen] = useState(false);
   const loc = useLocation();
+  const [scrolled, setScrolled] = useState(false);
+  const barRef = useRef(null);
   useEffect(() => { setOpen(false); }, [loc.pathname, loc.hash]);
+  useEffect(() => {
+    let raf = 0;
+    const onScroll = () => {
+      if (raf) return;
+      raf = requestAnimationFrame(() => {
+        raf = 0;
+        const y = window.scrollY || 0;
+        setScrolled((v) => (v ? y > 12 : y > 48));
+        const max = document.documentElement.scrollHeight - window.innerHeight;
+        if (barRef.current) barRef.current.style.transform = 'scaleX(' + (max > 0 ? Math.min(1, y / max) : 0) + ')';
+      });
+    };
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    return () => { window.removeEventListener('scroll', onScroll); window.removeEventListener('resize', onScroll); if (raf) cancelAnimationFrame(raf); };
+  }, []);
   useEffect(() => {
     if (!open) return undefined;
     const onKey = (e) => { if (e.key === 'Escape') setOpen(false); };
@@ -18,7 +37,7 @@ export function SiteHeader() {
   }, [open]);
   const wa = waLink(t('landing.waMessage'));
   return (
-    <header className="site-head">
+    <header className={'site-head' + (scrolled ? ' scrolled' : '') + (open ? ' menu-open' : '')}>
       <div className="in">
         <Link to="/" aria-label="Orgest" className="brand-l"><Logo size={36} /></Link>
         <nav id="site-nav" aria-label="Site" className={open ? 'open' : ''} onClick={(e) => { if (e.target.closest('a')) setOpen(false); }}>
@@ -36,6 +55,7 @@ export function SiteHeader() {
           <span /><span /><span />
         </button>
       </div>
+      <i className="scroll-bar" ref={barRef} aria-hidden="true" />
     </header>
   );
 }

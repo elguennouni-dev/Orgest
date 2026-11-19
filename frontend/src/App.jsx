@@ -2,6 +2,7 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 import { useAuth } from './auth.jsx';
 import { Loader } from './components/ui.jsx';
 import { AdminLayout, ShopLayout } from './components/Layouts.jsx';
+import { MotionRoot, Page } from './components/Motion.jsx';
 import Landing from './pages/Landing.jsx';
 import Login from './pages/Login.jsx';
 import Blog from './pages/Blog.jsx';
@@ -36,11 +37,13 @@ function Guard({ role, children }) {
 
 export default function App() {
   return (
+    <>
+    <MotionRoot />
     <Routes>
-      <Route path="/" element={<Landing />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/blog" element={<Blog />} />
-      <Route path="/blog/:slug" element={<BlogPost />} />
+      <Route path="/" element={<Page><Landing /></Page>} />
+      <Route path="/login" element={<Page><Login /></Page>} />
+      <Route path="/blog" element={<Page><Blog /></Page>} />
+      <Route path="/blog/:slug" element={<Page><BlogPost /></Page>} />
 
       <Route path="/app" element={<Guard role="SHOP"><ShopLayout /></Guard>}>
         <Route index element={<Dashboard />} />
@@ -71,5 +74,6 @@ export default function App() {
 
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
+    </>
   );
 }
