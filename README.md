@@ -112,6 +112,19 @@ sudo ./deploy.sh app.your-domain.ma --whatsapp 212612345678
 
 **Demo data:** `sudo python3 tools/seed_demo.py https://your-domain` creates a `demo` shop with items + photos, sales, exchanges, buy-backs, installments and workshop orders.
 
+### SEO & discoverability
+
+The public pages (`/`, `/blog`, `/blog/<slug>`) are **rendered by the backend** into the built `index.html`: title, meta description, canonical, Open Graph, JSON-LD (Organization, WebSite, SoftwareApplication, FAQPage, Article, BreadcrumbList) and crawlable content — no JavaScript needed. Everything else is generated from the database, so nothing goes stale:
+
+| URL | Purpose |
+| --- | --- |
+| `/sitemap.xml` | every published article, with `lastmod` — updates itself when you publish |
+| `/robots.txt` | blocks `/app`, `/admin`, `/login`, `/api/`; allows search and AI crawlers |
+| `/llms.txt`, `/llms-full.txt` | summary + full text of the site for AI assistants |
+| `/feed.xml` | RSS feed of the blog |
+
+Private areas also send `X-Robots-Tag: noindex`. Unknown slugs return a real **404**. Publish from **Admin → Blog**; the editor shows a Google preview and an SEO checklist.
+
 ### Testing
 
 ```bash
@@ -223,6 +236,10 @@ Commandes utiles : `journalctl -u orgest -f` · `systemctl restart orgest` · `/
 **Docker (alternative)** : `cp .env.docker.example .env && nano .env && docker compose up -d --build` ; le site écoute sur `127.0.0.1:8088` (à mettre derrière le proxy HTTPS d'aaPanel). Ne pas lancer en même temps que le déploiement systemd sur le même domaine.
 
 **Données de démo :** `sudo python3 tools/seed_demo.py https://votre-domaine` crée la boutique `demo` (articles + photos, ventes, échanges, achats, échéances, atelier).
+
+### SEO et référencement
+
+Les pages publiques (`/`, `/blog`, `/blog/<slug>`) sont **rendues par le backend** dans le `index.html` compilé : title, meta description, canonical, Open Graph, JSON-LD (Organization, WebSite, SoftwareApplication, FAQPage, Article, BreadcrumbList) et contenu lisible sans JavaScript. Le reste est généré depuis la base, donc toujours à jour : `/sitemap.xml` (se met à jour à chaque publication), `/robots.txt` (bloque `/app`, `/admin`, `/login`, `/api/`), `/llms.txt` et `/llms-full.txt` (pour les assistants IA) et `/feed.xml` (RSS). Les espaces privés envoient `X-Robots-Tag: noindex` et un slug inconnu renvoie un vrai **404**. Publiez depuis **Admin → Blog** : l'éditeur affiche l'aperçu Google et une checklist SEO.
 
 ### Tests
 

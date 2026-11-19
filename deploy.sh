@@ -143,6 +143,7 @@ HTTPS=false
 [[ -f "$VHOST_DIR/$DOMAIN.conf" ]] && grep -qE 'listen[[:space:]]+443' "$VHOST_DIR/$DOMAIN.conf" && HTTPS=true
 [[ "$HTTPS" == true ]] || warn "SSL non détecté pour $DOMAIN : activez Let's Encrypt dans aaPanel puis relancez ce script (cookies « Secure » requis en production)."
 
+SCHEME_FOR_ENV=http; [[ "$HTTPS" == true ]] && SCHEME_FOR_ENV=https
 umask 077
 cat > "$ENV_FILE" <<EOF
 # Généré par deploy.sh — contient des secrets (chmod 600)
@@ -157,6 +158,9 @@ COOKIE_SECURE=$HTTPS
 UPLOAD_DIR=$UPLOAD_DIR
 ORGEST_ADMIN_USERNAME=$ADMIN_USERNAME
 ORGEST_ADMIN_PASSWORD=$ADMIN_PASSWORD
+SITE_URL=$SCHEME_FOR_ENV://$DOMAIN
+INDEX_FILE=$WEB_ROOT/index.html
+ORGEST_WHATSAPP=${WHATSAPP_NUMBER:-212680376294}
 EOF
 chown root:"$APP_USER" "$ENV_FILE"; chmod 640 "$ENV_FILE"
 umask 022
@@ -215,7 +219,8 @@ popd >/dev/null
 mkdir -p "$WEB_ROOT"
 rsync -a --delete "$SRC_DIR/frontend/dist/" "$WEB_ROOT/"
 chown -R root:root "$WEB_ROOT"; chmod 755 /var/www /var/www/orgest
-printf 'User-agent: *\nAllow: /\nDisallow: /app\nDisallow: /admin\nDisallow: /api/\nSitemap: https://%s/sitemap.xml\n' "$DOMAIN" > "$WEB_ROOT/robots.txt"
+# robots.txt, llms.txt, sitemap.xml et feed.xml sont générés dynamiquement par le backend (rien à écrire ici)
+rm -f "$WEB_ROOT/robots.txt"
 find "$WEB_ROOT" -type d -exec chmod 755 {} \; ; find "$WEB_ROOT" -type f -exec chmod 644 {} \;
 
 # ---------- 7. Nginx (aaPanel) ----------
@@ -242,10 +247,43 @@ location ^~ /api/ {
     proxy_read_timeout 60s;
     proxy_hide_header X-Powered-By;
 }
-location = /sitemap.xml {
-    proxy_pass http://127.0.0.1:$APP_PORT/api/public/sitemap.xml;
-    proxy_set_header Host \$host;
-    proxy_set_header X-Forwarded-Proto \$scheme;
+location = /robots.txt     { proxy_pass http://127.0.0.1:$APP_PORT/api/public/robots.txt;    proxy_set_header Host \$host; proxy_set_header X-Forwarded-Proto \$scheme; }
+location = /llms.txt       { proxy_pass http://127.0.0.1:$APP_PORT/api/public/llms.txt;      proxy_set_header Host \$host; proxy_set_header X-Forwarded-Proto \$scheme; }
+location = /llms-full.txt  { proxy_pass http://127.0.0.1:$APP_PORT/api/public/llms-full.txt; proxy_set_header Host \$host; proxy_set_header X-Forwarded-Proto \$scheme; }
+location = /sitemap.xml    { proxy_pass http://127.0.0.1:$APP_PORT/api/public/sitemap.xml;   proxy_set_header Host \$host; proxy_set_header X-Forwarded-Proto \$scheme; }
+location = /feed.xml       { proxy_pass http://127.0.0.1:$APP_PORT/api/public/feed.xml;      proxy_set_header Host \$host; proxy_set_header X-Forwarded-Proto \$scheme; }
+# Pages publiques rendues par le backend (meta, JSON-LD, contenu) ; repli sur le HTML statique si le backend est indisponible
+location = / {
+    proxy_pass http://127.0.0.1:$APP_PORT/api/public/seo/home;
+    proxy_set_header Host \$host; proxy_set_header X-Forwarded-Proto \$scheme;
+    error_page 500 502 503 504 = @spa;
+    $SEC_HEADERS
+}
+location = /blog {
+    proxy_pass http://127.0.0.1:$APP_PORT/api/public/seo/blog;
+    proxy_set_header Host \$host; proxy_set_header X-Forwarded-Proto \$scheme;
+    error_page 500 502 503 504 = @spa;
+    $SEC_HEADERS
+}
+location ~ ^/blog/([a-z0-9-]+)/?\$ {
+    rewrite ^/blog/([a-z0-9-]+)/?\$ /api/public/seo/blog/\$1 break;
+    proxy_pass http://127.0.0.1:$APP_PORT;
+    proxy_set_header Host \$host; proxy_set_header X-Forwarded-Proto \$scheme;
+    error_page 500 502 503 504 = @spa;
+    $SEC_HEADERS
+}
+location @spa {
+    root $WEB_ROOT;
+    rewrite ^ /index.html break;
+    $SEC_HEADERS
+}
+# Espaces privés : jamais indexés
+location ~ ^/(app|admin|login)(/|\$) {
+    root $WEB_ROOT;
+    try_files /index.html =404;
+    add_header X-Robots-Tag \"noindex, nofollow\" always;
+    add_header Cache-Control \"no-cache\" always;
+    $SEC_HEADERS
 }
 location ~ /\\.(?!well-known) { deny all; }
 location ^~ /assets/ {

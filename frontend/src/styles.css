@@ -754,3 +754,15 @@ tbody tr:nth-child(5) { animation-delay: .12s; } tbody tr:nth-child(n+6) { anima
 .tline .qty { display: flex; align-items: center; gap: 10px; }
 .tline .qty .btn.sm { min-height: 36px; min-width: 40px; padding: 0 10px; font-size: 18px; }
 .tline .qty b { min-width: 26px; text-align: center; font-size: 16px; }
+
+/* ---------- FAQ + conversion (SEO) ---------- */
+.faq-list { display: flex; flex-direction: column; gap: 10px; max-width: 820px; }
+.faq-it { background: #fff; border: 1px solid var(--border); border-radius: 16px; }
+.faq-it summary { cursor: pointer; list-style: none; padding: 16px 18px; min-height: 56px; display: flex; align-items: center; justify-content: space-between; gap: 12px; font-weight: 500; }
+.faq-it summary::-webkit-details-marker { display: none; }
+.faq-it summary::after { content: '+'; font-size: 22px; color: var(--gold-700); }
+.faq-it[open] summary::after { content: '−'; }
+.faq-it p { margin: 0; padding: 0 18px 18px; color: #5C5141; line-height: 1.65; }
+.post-cta { margin-top: 28px; padding: 22px; border-radius: 18px; background: #FFF4D6; border: 1px solid #F0DC9B; display: flex; flex-direction: column; gap: 10px; }
+.post-cta h2 { margin: 0; font-size: 22px; } .post-cta p { margin: 0; color: #5C5141; }
+.related { margin-top: 24px; } .related h2 { font-size: 20px; } .related ul { padding-inline-start: 20px; display: flex; flex-direction: column; gap: 6px; }

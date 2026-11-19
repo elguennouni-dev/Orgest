@@ -3,6 +3,7 @@ import { useI18n } from '../i18n.jsx';
 import { SiteFooter, SiteHeader } from '../components/Site.jsx';
 import { Icon, P } from '../components/icons.jsx';
 import Louiz from '../components/Louiz.jsx';
+import Faq from '../components/Faq.jsx';
 import { waLink } from '../config.js';
 import { useApi, useSeo } from '../hooks.js';
 import { fmtInt } from '../i18n.jsx';
@@ -88,6 +89,7 @@ export default function Landing() {
         </div>
         <p className="muted" style={{ marginTop: 16 }}>{t('landing.payInfo')}</p>
       </section>
+      <Faq title="Questions fréquentes · أسئلة شائعة" />
       <SiteFooter />
     </div>
   );

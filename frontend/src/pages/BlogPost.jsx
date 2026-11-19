@@ -1,4 +1,5 @@
 import { Link, useParams } from 'react-router-dom';
+import { useMemo } from 'react';
 import { useApi, useSeo } from '../hooks.js';
 import { fmtDate } from '../i18n.jsx';
 import { SiteFooter, SiteHeader } from '../components/Site.jsx';
@@ -9,7 +10,8 @@ import { waLink } from '../config.js';
 export default function BlogPost() {
   const { slug } = useParams();
   const { data: p, error, loading } = useApi(`/public/posts/${encodeURIComponent(slug)}`);
-  const origin = typeof window !== 'undefined' ? window.location.origin : '';
+  const { data: all } = useApi('/public/posts');
+  const related = useMemo(() => (all || []).filter((x) => x.slug !== slug).sort((a, b) => (b.category === p?.category) - (a.category === p?.category)).slice(0, 3), [all, slug, p?.category]);
   const img = p?.cover ? `/api/public/blog-cover/${p.cover}` : null;
   useSeo(p ? {
     title: p.metaTitle || p.title,
@@ -17,12 +19,6 @@ export default function BlogPost() {
     keywords: p.keywords || undefined,
     image: img,
     type: 'article',
-    jsonLd: {
-      '@context': 'https://schema.org', '@type': 'Article', headline: p.title, description: p.metaDescription || p.excerpt || undefined,
-      image: img ? origin + img : undefined, datePublished: p.publishedAt, dateModified: p.updatedAt,
-      author: { '@type': 'Organization', name: 'Équipe Orgest' }, publisher: { '@type': 'Organization', name: 'Orgest' },
-      mainEntityOfPage: `${origin}/blog/${p.slug}`,
-    },
   } : { title: 'Blog — Orgest' });
 
   return (
@@ -41,6 +37,20 @@ export default function BlogPost() {
                 <div className="by"><Louiz mood="happy" size={44} /><span><strong>Équipe Orgest</strong><br /><span className="muted">{fmtDate(p.publishedAt || p.updatedAt)}</span></span></div>
                 {img && <img className="cover" src={img} alt={p.coverAlt || p.title} />}
                 <div dir="auto" className="stack" style={{ gap: 14 }}><Markdown source={p.content} /></div>
+                <div className="post-cta">
+                  <h2>Gérez votre bijouterie sans calculatrice</h2>
+                  <p>Stock au gramme, prix du jour, reprise d’or, ventes à tempérament et reçus : Orgest fait les calculs pour vous.</p>
+                  <div className="row" style={{ gap: 10 }}>
+                    <a className="btn primary" href={waLink(`Bonjour, j’ai lu « ${p.title} » et je voudrais une démonstration d’Orgest.`)} target="_blank" rel="noopener noreferrer">Demander une démo sur WhatsApp</a>
+                    <a className="btn" href="/#pricing">Voir les tarifs</a>
+                  </div>
+                </div>
+                {related.length > 0 && (
+                  <nav className="related" aria-label="Articles à lire aussi">
+                    <h2>À lire aussi</h2>
+                    <ul>{related.map((r) => <li key={r.slug}><Link to={`/blog/${r.slug}`}>{r.title}</Link></li>)}</ul>
+                  </nav>
+                )}
                 <div className="tip"><Louiz mood="wave" size={80} /><p>Une question ? <a href={waLink(`Bonjour, une question sur « ${p.title} »`)} target="_blank" rel="noopener noreferrer">Écrivez-nous sur WhatsApp</a>.</p></div>
               </div>
             </article>
