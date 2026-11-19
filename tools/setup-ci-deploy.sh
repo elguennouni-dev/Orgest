@@ -42,6 +42,6 @@ echo; echo "=========== GITHUB > Settings > Secrets and variables > Actions > on
 echo "VPS_HOST        = $HOSTV"
 echo "VPS_USER        = root"
 echo; echo "VPS_KNOWN_HOSTS = (la ligne suivante)"; ssh-keyscan -t ed25519 localhost 2>/dev/null | sed "s/^localhost/$HOSTV/"
-echo; echo "VPS_SSH_KEY     = (clé privée : tout le bloc, BEGIN/END compris)"; cat "$KEY"
+echo; echo "VPS_SSH_KEY     = (UNE seule ligne, copiez-la entièrement, sans espace ni retour à la ligne)"; base64 -w0 "$KEY"; echo
 echo "============================================================================================================"
 echo "⚠ Ne collez jamais cette clé dans un chat, un ticket ou une « Variable » GitHub : seulement dans un Secret."
