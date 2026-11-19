@@ -160,8 +160,8 @@ class SalesServiceTests {
 
     @Test
     void installmentRejectsBadMonths() {
-        stock(stockItem(1, 18, "10.000"));
         for (Integer m : new Integer[]{null, 0, 37}) {
+            stock(stockItem(1, 18, "10.000")); // article neuf à chaque tour (createSale le marque vendu en mémoire)
             AppException e = assertThrows(AppException.class, () -> svc.createSale(SHOP, req(Enums.SaleType.SALE, "F",
                     List.of(item(1, "640", "0")), null, Enums.PaymentMode.INSTALLMENT, "0", m)));
             assertEquals("INVALID_MONTHS", e.code());
