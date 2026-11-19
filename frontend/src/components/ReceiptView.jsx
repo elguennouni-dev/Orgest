@@ -73,7 +73,7 @@ export function SaleReceipt({ sale }) {
             <tr key={i}>
               <td className="desc">{l.description}</td>
               <td className="k" data-label={t('karat')}>{l.karat}K</td>
-              <td className="num w" data-label={t('weightG')}>{fmtWeight(l.weightG)} g</td>
+              <td className="num w" data-label={t('weightG')}>{l.quantity > 1 ? `${l.quantity} × ` : ''}{fmtWeight(l.weightG)} g</td>
               <td className="num p" data-label={t('receipt.pricePerG')}>{fmtMoney(l.pricePerGram)}</td>
               <td className="num m" data-label={t('receipt.making')}>{fmtMoney(l.makingPerGram)}</td>
               <td className="num tt">{fmtMoney(l.lineTotal)}</td>

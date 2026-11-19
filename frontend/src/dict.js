@@ -108,7 +108,7 @@ export const dict = {
     'dash.sellPrice': 'Prix de vente', 'dash.buyPrice': "Prix d'achat", 'dash.pricesHint': "Mettez à jour ces prix chaque matin : ils pré-remplissent les ventes et les achats.",
     'dash.recent': 'Dernières ventes', 'dash.noSales': 'Aucune vente pour le moment.', 'dash.workshopOpen': 'Commandes atelier en cours : {n}',
 
-    'stock.add': 'Ajouter un article', 'stock.edit': "Modifier l'article", 'stock.empty': 'Aucun article.', 'stock.inStock': 'En stock',
+    'stock.qty': 'Quantité', 'stock.qtyShort': 'Qté', 'stock.qtyHint': 'Nombre de pièces identiques. Les ventes la diminuent ; à 0 l’article reste affiché comme épuisé.', 'stock.unitWeight': 'Poids par pièce (g)', 'stock.soldOut': 'Épuisé', 'stock.all': 'Tout', 'stock.restock': 'Réapprovisionner', 'stock.totalWeight': 'Poids total', 'stock.available': '{n} en stock', 'err.INSUFFICIENT_STOCK': 'Quantité demandée supérieure au stock disponible.', 'err.ITEM_HAS_HISTORY': 'Cet article a déjà été vendu : il ne peut pas être supprimé (mettez sa quantité à 0).', 'err.INVALID_STATUS': 'Statut invalide.', 'stock.add': 'Ajouter un article', 'stock.edit': "Modifier l'article", 'stock.empty': 'Aucun article.', 'stock.inStock': 'En stock',
     'stock.sold': 'Vendus', 'stock.making': 'Façon', 'stock.makingPerGram': 'Façon (DH/g)', 'stock.name': 'Désignation', 'stock.category': 'Catégorie',
     'stock.photo': 'Photo (carrée)', 'stock.confirmDelete': 'Supprimer cet article ?',
     'cat.ring': 'Bague', 'cat.bracelet': 'Bracelet / Dbilej', 'cat.necklace': 'Collier', 'cat.earrings': "Boucles d'oreilles", 'cat.pendant': 'Pendentif',
@@ -296,7 +296,7 @@ export const dict = {
     'dash.sellPrice': 'ثمن البيع', 'dash.buyPrice': 'ثمن الشراء', 'dash.pricesHint': 'حدّث هاد الأثمنة كل صباح: كيتعمرو بوحدهم فالبيع والشراء.',
     'dash.recent': 'آخر المبيعات', 'dash.noSales': 'ما كاين حتى بيع دابا.', 'dash.workshopOpen': 'طلبيات الصانع الجارية: {n}',
 
-    'stock.add': 'إضافة قطعة', 'stock.edit': 'تعديل القطعة', 'stock.empty': 'ما كاين حتى قطعة.', 'stock.inStock': 'فالستوك',
+    'stock.qty': 'الكمية', 'stock.qtyShort': 'الكمية', 'stock.qtyHint': 'عدد القطع المتشابهة. كل بيع كينقصها، وملي توصل 0 القطعة كتبقى باينة بعلامة «سالات».', 'stock.unitWeight': 'وزن القطعة (غ)', 'stock.soldOut': 'سالات', 'stock.all': 'الكل', 'stock.restock': 'زيد فالستوك', 'stock.totalWeight': 'الوزن الإجمالي', 'stock.available': '{n} فالستوك', 'err.INSUFFICIENT_STOCK': 'الكمية المطلوبة كثر من لي كاين فالستوك.', 'err.ITEM_HAS_HISTORY': 'هاد القطعة تباعت من قبل: ما يمكنش تتمسح (دير الكمية 0).', 'err.INVALID_STATUS': 'حالة غير صالحة.', 'stock.add': 'إضافة قطعة', 'stock.edit': 'تعديل القطعة', 'stock.empty': 'ما كاين حتى قطعة.', 'stock.inStock': 'فالستوك',
     'stock.sold': 'مباعة', 'stock.making': 'المصنعية', 'stock.makingPerGram': 'المصنعية (درهم/غ)', 'stock.name': 'الاسم', 'stock.category': 'الصنف',
     'stock.photo': 'الصورة (مربعة)', 'stock.confirmDelete': 'واش بغيتي تحذف هاد القطعة؟',
     'cat.ring': 'خاتم', 'cat.bracelet': 'دبلج / سوار', 'cat.necklace': 'عقد', 'cat.earrings': 'خروص', 'cat.pendant': 'دلاية',

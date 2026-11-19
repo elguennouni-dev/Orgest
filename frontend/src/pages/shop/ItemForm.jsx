@@ -9,7 +9,7 @@ export default function ItemForm() {
   const { t } = useI18n();
   const { id } = useParams();
   const nav = useNavigate();
-  const [f, setF] = useState({ name: '', category: 'ring', karat: 18, weightG: '', makingPerGram: '65', note: '' });
+  const [f, setF] = useState({ name: '', category: 'ring', karat: 18, weightG: '', quantity: '1', makingPerGram: '65', note: '' });
   const [photo, setPhoto] = useState(null);
   const [existing, setExisting] = useState(null);
   const [error, setError] = useState(null);
@@ -19,7 +19,7 @@ export default function ItemForm() {
   useEffect(() => {
     if (!id) return;
     api(`/shop/items/${id}`).then((i) => {
-      setF({ name: i.name, category: i.category, karat: i.karat, weightG: i.weightG, makingPerGram: i.makingPerGram, note: i.note || '' });
+      setF({ name: i.name, category: i.category, karat: i.karat, weightG: i.weightG, quantity: String(i.quantity ?? 1), makingPerGram: i.makingPerGram, note: i.note || '' });
       if (i.hasPhoto) setExisting(`/api/shop/items/${i.id}/photo`);
     }).catch(setError);
   }, [id]);
@@ -28,7 +28,7 @@ export default function ItemForm() {
     e.preventDefault();
     setBusy(true); setError(null);
     try {
-      const body = { name: f.name, category: f.category, karat: Number(f.karat), weightG: Number(f.weightG), makingPerGram: Number(f.makingPerGram || 0), note: f.note || null };
+      const body = { name: f.name, category: f.category, karat: Number(f.karat), weightG: Number(f.weightG), quantity: Math.max(0, Math.trunc(Number(f.quantity || 0))), makingPerGram: Number(f.makingPerGram || 0), note: f.note || null };
       const item = id ? await api(`/shop/items/${id}`, { method: 'PUT', body }) : await api('/shop/items', { method: 'POST', body });
       if (photo) {
         const form = new FormData();
@@ -58,7 +58,8 @@ export default function ItemForm() {
             <Field label={t('karat')}>
               <select value={f.karat} onChange={set('karat')}>{KARATS.map((k) => <option key={k} value={k}>{k}K</option>)}</select>
             </Field>
-            <Field label={t('weightG')}><input className="input" type="number" step="0.001" min="0.001" value={f.weightG} onChange={set('weightG')} required dir="ltr" /></Field>
+            <Field label={t('stock.qty')} hint={t('stock.qtyHint')}><input className="input" type="number" step="1" min="0" max="100000" inputMode="numeric" value={f.quantity} onChange={set('quantity')} required dir="ltr" /></Field>
+            <Field label={t('stock.unitWeight')}><input className="input" type="number" step="0.001" min="0.001" value={f.weightG} onChange={set('weightG')} required dir="ltr" /></Field>
             <Field label={t('stock.makingPerGram')}><input className="input" type="number" step="0.01" min="0" value={f.makingPerGram} onChange={set('makingPerGram')} required dir="ltr" /></Field>
           </div>
           <Field label={t('note')}><textarea value={f.note} onChange={set('note')} maxLength={500} /></Field>

@@ -49,16 +49,16 @@ public class ReportService {
         Map<Integer, BigDecimal> sell = new HashMap<>();
         prices.forEach(p -> sell.put(p.karat(), p.sellPerGram()));
         BigDecimal value = BigDecimal.ZERO;
-        for (Item i : items.inStock(shopId, Enums.ItemStatus.IN_STOCK)) {
-            value = value.add(i.weightG.multiply(sell.getOrDefault(i.karat, BigDecimal.ZERO)));
+        for (Item i : items.inStock(shopId)) {
+            value = value.add(i.weightG.multiply(BigDecimal.valueOf(i.quantity)).multiply(sell.getOrDefault(i.karat, BigDecimal.ZERO)));
         }
         List<SaleSummary> recent = sales.findByShopIdOrderByCreatedAtDesc(shopId, PageRequest.of(0, 5))
                 .getContent().stream().map(SalesService::summary).toList();
         return new DashboardDto(
                 sales.totalBetween(shopId, t0, t1), sales.countBetween(shopId, t0, t1),
                 sales.totalBetween(shopId, m0, m1), buybacks.totalBetween(shopId, m0, m1),
-                items.countByShopIdAndStatus(shopId, Enums.ItemStatus.IN_STOCK),
-                items.stockWeight(shopId, Enums.ItemStatus.IN_STOCK), Money.round2(value),
+                items.stockPieces(shopId),
+                items.stockWeight(shopId), Money.round2(value),
                 installments.countByShopIdAndPaidFalseAndDueDateBefore(shopId, today),
                 installments.outstanding(shopId),
                 workshop.countByShopIdAndStatusIn(shopId, List.of(Enums.WorkshopStatus.SENT, Enums.WorkshopStatus.READY)),
@@ -112,8 +112,8 @@ public class ReportService {
     @Transactional(readOnly = true)
     public byte[] exportItems(Long shopId) {
         return workbook("Stock",
-                List.of("Réf", "Désignation", "Catégorie", "Carat", "Poids (g)", "Façon/g", "Statut", "Date"),
-                items.allForExport(shopId).stream().map(i -> new Object[]{i.ref, i.name, i.category, i.karat, i.weightG,
+                List.of("Réf", "Désignation", "Catégorie", "Carat", "Poids unitaire (g)", "Quantité", "Façon/g", "Statut", "Date"),
+                items.allForExport(shopId).stream().map(i -> new Object[]{i.ref, i.name, i.category, i.karat, i.weightG, i.quantity,
                         i.makingPerGram, i.status.name(), i.createdAt.atZone(Z).toLocalDate().toString()}).toList());
     }
 

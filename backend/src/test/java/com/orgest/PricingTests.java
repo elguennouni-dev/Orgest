@@ -35,4 +35,11 @@ class PricingTests {
         assertEquals(d("5040.00"), Pricing.tradeIn(d("9.000"), d("560")));
         assertEquals(d("1000.00"), Pricing.tradeIn(d("2.000"), d("500.004")));
     }
+
+    @Test
+    void lineTotalMultipliesByQuantity() {
+        assertEquals(d("11100.00"), Pricing.lineTotal(d("7.5"), d("640"), d("100"), 2));
+        assertEquals(Pricing.lineTotal(d("7.5"), d("640"), d("100")), Pricing.lineTotal(d("7.5"), d("640"), d("100"), 1));
+        assertEquals(d("100.09"), Pricing.lineTotal(d("3.333"), d("10.01"), d("0"), 3));
+    }
 }

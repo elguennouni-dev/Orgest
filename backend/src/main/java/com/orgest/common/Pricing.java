@@ -9,7 +9,13 @@ public final class Pricing {
 
     /** poids × (prix/g + façon/g), arrondi à 2 décimales (HALF_UP). */
     public static BigDecimal lineTotal(BigDecimal weightG, BigDecimal pricePerGram, BigDecimal makingPerGram) {
-        return Money.round2(Money.round3(weightG).multiply(Money.round2(pricePerGram).add(Money.round2(makingPerGram))));
+        return lineTotal(weightG, pricePerGram, makingPerGram, 1);
+    }
+
+    /** quantité × poids unitaire × (prix/g + façon/g), arrondi à 2 décimales (HALF_UP). */
+    public static BigDecimal lineTotal(BigDecimal weightG, BigDecimal pricePerGram, BigDecimal makingPerGram, int quantity) {
+        return Money.round2(Money.round3(weightG).multiply(BigDecimal.valueOf(quantity))
+                .multiply(Money.round2(pricePerGram).add(Money.round2(makingPerGram))));
     }
 
     /** brut(3 déc.) × (1 − déduction(2 déc.)/100), arrondi à 3 décimales. */

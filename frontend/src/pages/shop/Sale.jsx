@@ -34,7 +34,7 @@ export default function Sale({ mode }) {
 
   const toggle = (it) => {
     if (lines.some((l) => l.itemId === it.id)) setLines(lines.filter((l) => l.itemId !== it.id));
-    else setLines([...lines, { key: 'i' + it.id, itemId: it.id, label: `${it.name} (${it.ref})`, karat: it.karat, weightG: Number(it.weightG), price: sellOf(it.karat), making: Number(it.makingPerGram) }]);
+    else setLines([...lines, { key: 'i' + it.id, itemId: it.id, label: `${it.name} (${it.ref})`, karat: it.karat, weightG: Number(it.weightG), qty: 1, max: it.quantity ?? 1, price: sellOf(it.karat), making: Number(it.makingPerGram) }]);
   };
   const upd = (key, k, v) => setLines(lines.map((l) => (l.key === key ? { ...l, [k]: v } : l)));
 
@@ -45,7 +45,7 @@ export default function Sale({ mode }) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   [lines, withOld, old, pay, cust.name, prices.data]);
 
-  const linesOk = lines.every((l) => Number(l.price) > 0 && Number(l.weightG) > 0 && Number(l.making || 0) >= 0);
+  const linesOk = lines.every((l) => Number(l.price) > 0 && Number(l.weightG) > 0 && Number(l.making || 0) >= 0 && l.qty >= 1 && l.qty <= l.max);
   const oldOk = !withOld || (Number(old.gross) > 0 && Number(old.ded || 0) >= 0 && Number(old.ded || 0) <= 99 && oldPrice > 0 && calc.net > 0);
   const instErr = pay.mode === 'INSTALLMENT' ? calc.instError : null;
   const canSubmit = lines.length > 0 && linesOk && oldOk && !instErr && !busy;
@@ -60,8 +60,8 @@ export default function Sale({ mode }) {
         customerName: cust.name || null,
         customerPhone: cust.phone || null,
         lines: lines.map((l) => (l.itemId
-          ? { itemId: l.itemId, pricePerGram: Number(l.price || 0), makingPerGram: Number(l.making || 0) }
-          : { description: l.label, karat: l.karat, weightG: l.weightG, pricePerGram: Number(l.price || 0), makingPerGram: Number(l.making || 0) })),
+          ? { itemId: l.itemId, quantity: l.qty, pricePerGram: Number(l.price || 0), makingPerGram: Number(l.making || 0) }
+          : { description: l.label, karat: l.karat, weightG: l.weightG, quantity: l.qty, pricePerGram: Number(l.price || 0), makingPerGram: Number(l.making || 0) })),
         oldGold: withOld ? { karat: Number(old.karat), grossWeightG: Number(old.gross), deductionPct: Number(old.ded || 0), pricePerGram: oldPrice, description: old.description || null, customerName: cust.name || null, customerPhone: cust.phone || null } : null,
         paymentMode: pay.mode,
         downPayment: pay.mode === 'INSTALLMENT' ? Number(pay.down || 0) : null,
@@ -94,7 +94,7 @@ export default function Sale({ mode }) {
   const addFree = () => {
     const w = Number(free.weight);
     if (!free.desc.trim() || !(w > 0)) return;
-    setLines([...lines, { key: 'f' + (++uid), itemId: null, label: free.desc.trim(), karat: Number(free.karat), weightG: w, price: sellOf(Number(free.karat)), making: Number(free.making || 0) }]);
+    setLines([...lines, { key: 'f' + (++uid), itemId: null, label: free.desc.trim(), karat: Number(free.karat), weightG: w, qty: Math.max(1, Math.trunc(Number(free.qty || 1))), max: 999, price: sellOf(Number(free.karat)), making: Number(free.making || 0) }]);
     setFree(null);
   };
 
@@ -147,7 +147,7 @@ export default function Sale({ mode }) {
               <p>{t('pos.emptyText')}</p>
               <div className="row" style={{ justifyContent: 'center' }}>
                 <Link className="btn primary" to="/app/stock/new">{t('pos.addStock')}</Link>
-                <button type="button" className="btn" onClick={() => setFree({ desc: '', karat: 18, weight: '', making: '' })}>{t('pos.offStock')}</button>
+                <button type="button" className="btn" onClick={() => setFree({ desc: '', karat: 18, weight: '', making: '', qty: 1 })}>{t('pos.offStock')}</button>
               </div>
             </div>
           ) : (
@@ -157,11 +157,12 @@ export default function Sale({ mode }) {
                   <button key={it.id} type="button" className={'pcard' + (lines.some((l) => l.itemId === it.id) ? ' sel' : '')} onClick={() => toggle(it)} aria-pressed={lines.some((l) => l.itemId === it.id)}>
                     <div className="ph">{it.hasPhoto ? <img loading="lazy" src={`/api/shop/items/${it.id}/photo`} alt="" /> : <span>◈</span>}<span className="k">{it.karat}K</span></div>
                     <div className="bd"><b>{it.name}</b><span className="muted num">{fmtWeight(it.weightG)} g · {it.ref}</span></div>
+                    {(it.quantity ?? 1) > 1 && <span className="qbadge num">×{it.quantity}</span>}
                   </button>
                 ))}
               </div>
               {list.length === 0 && <p className="muted" style={{ textAlign: 'center' }}>{t('stock.empty')}</p>}
-              <div><button type="button" className="btn" onClick={() => setFree({ desc: '', karat: 18, weight: '', making: '' })}>{t('pos.offStock')}</button></div>
+              <div><button type="button" className="btn" onClick={() => setFree({ desc: '', karat: 18, weight: '', making: '', qty: 1 })}>{t('pos.offStock')}</button></div>
             </>
           )}
         </section>
@@ -171,7 +172,13 @@ export default function Sale({ mode }) {
 
           {lines.length === 0 ? <div className="dash">{t('pos.touch')}</div> : lines.map((l) => (
             <div key={l.key} className="tline">
-              <div className="t"><b>{l.label}</b><span className="num muted">{l.karat}K · {fmtWeight(l.weightG)} g</span></div>
+              <div className="t"><b>{l.label}</b><span className="num muted">{l.karat}K · {l.qty > 1 ? `${l.qty} × ` : ''}{fmtWeight(l.weightG)} g</span></div>
+              <div className="qty" role="group" aria-label={t('stock.qty')}>
+                <button type="button" className="btn sm" aria-label="−" disabled={l.qty <= 1} onClick={() => upd(l.key, 'qty', l.qty - 1)}>−</button>
+                <b className="num">{l.qty}</b>
+                <button type="button" className="btn sm" aria-label="+" disabled={l.qty >= l.max} onClick={() => upd(l.key, 'qty', l.qty + 1)}>+</button>
+                <span className="hint">{l.itemId ? t('stock.available', { n: l.max }) : ''}</span>
+              </div>
               <div className="f">
                 <label className="field"><span className="hint">{t('receipt.pricePerG')}</span><input className="input" type="number" min="0" step="0.01" inputMode="decimal" dir="ltr" value={l.price} onChange={(e) => upd(l.key, 'price', e.target.value)} /></label>
                 <label className="field"><span className="hint">{t('receipt.making')}</span><input className="input" type="number" min="0" step="0.01" inputMode="decimal" dir="ltr" value={l.making} onChange={(e) => upd(l.key, 'making', e.target.value)} /></label>
@@ -179,7 +186,7 @@ export default function Sale({ mode }) {
               {!(Number(l.price) > 0) && <span className="hint" style={{ color: 'var(--warn)' }}>{t('pos.noPrice')}</span>}
               <div className="row spread" style={{ gap: 6 }}>
                 <button type="button" className="btn sm danger" onClick={() => setLines(lines.filter((x) => x.key !== l.key))}>{t('remove')}</button>
-                <b><Money v={lineTotal(l.weightG, l.price, l.making)} /></b>
+                <b><Money v={lineTotal(l.weightG, l.price, l.making, l.qty)} /></b>
               </div>
             </div>
           ))}
@@ -261,6 +268,7 @@ export default function Sale({ mode }) {
             <div className="grid g2">
               <Field label={t('karat')}><select value={free.karat} onChange={(e) => setFree({ ...free, karat: Number(e.target.value) })}>{KARATS.map((k) => <option key={k} value={k}>{k}K</option>)}</select></Field>
               <Field label={t('weightG')}><input className="input" type="number" min="0" step="0.001" inputMode="decimal" dir="ltr" value={free.weight} onChange={(e) => setFree({ ...free, weight: e.target.value })} /></Field>
+              <Field label={t('stock.qty')}><input className="input" type="number" min="1" max="999" step="1" inputMode="numeric" dir="ltr" value={free.qty} onChange={(e) => setFree({ ...free, qty: e.target.value })} /></Field>
               <Field label={t('receipt.making')}><input className="input" type="number" min="0" step="0.01" inputMode="decimal" dir="ltr" value={free.making} onChange={(e) => setFree({ ...free, making: e.target.value })} /></Field>
             </div>
             <button type="button" className="btn primary" disabled={!free.desc.trim() || !(Number(free.weight) > 0)} onClick={addFree}>{t('pos.addLine')}</button>

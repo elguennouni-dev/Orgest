@@ -70,7 +70,7 @@ class ShopServiceTests {
 
     @Test
     void createItemNormalisesFields() {
-        ItemDto i = svc.createItem(SHOP, new ItemRequest("  Bracelet  ", " bracelet ", 21, d("12.3456"), d("65.555"), "  "));
+        ItemDto i = svc.createItem(SHOP, new ItemRequest("  Bracelet  ", " bracelet ", 21, d("12.3456"), d("65.555"), "  ", 4));
         assertEquals("A-00001", i.ref());
         assertEquals("Bracelet", i.name());
         assertEquals(d("12.346"), i.weightG());
@@ -80,13 +80,45 @@ class ShopServiceTests {
     }
 
     @Test
-    void soldItemCannotBeEditedOrDeleted() {
+    void createItemKeepsTheQuantityAndDefaultsToOne() {
+        assertEquals(4, svc.createItem(SHOP, new ItemRequest("A", "ring", 18, d("1"), d("0"), null, 4)).quantity());
+        assertEquals(1, svc.createItem(SHOP, new ItemRequest("A", "ring", 18, d("1"), d("0"), null, null)).quantity());
+    }
+
+    @Test
+    void soldOutItemStaysVisibleAndCanBeRestocked() {
         Item it = new Item();
-        it.id = 1L; it.shopId = SHOP; it.status = Enums.ItemStatus.SOLD; it.karat = 18; it.weightG = d("1");
+        it.id = 1L; it.shopId = SHOP; it.status = Enums.ItemStatus.SOLD; it.quantity = 0; it.karat = 18; it.weightG = d("1");
+        it.name = "n"; it.category = "c";
         when(items.findByIdAndShopId(1L, SHOP)).thenReturn(Optional.of(it));
-        assertEquals("ITEM_NOT_IN_STOCK", assertThrows(AppException.class, () -> svc.deleteItem(SHOP, 1L)).code());
-        assertEquals("ITEM_NOT_IN_STOCK", assertThrows(AppException.class,
-                () -> svc.updateItem(SHOP, 1L, new ItemRequest("x", "y", 18, d("1"), d("0"), null))).code());
+        ItemDto back = svc.updateItem(SHOP, 1L, new ItemRequest("n", "c", 18, d("1"), d("0"), null, 5));
+        assertEquals(5, back.quantity());
+        assertEquals("IN_STOCK", back.status());
+        ItemDto out = svc.updateItem(SHOP, 1L, new ItemRequest("n", "c", 18, d("1"), d("0"), null, 0));
+        assertEquals(0, out.quantity());
+        assertEquals("SOLD", out.status());
+        // sans quantité dans la requête, la quantité actuelle est conservée
+        assertEquals(0, svc.updateItem(SHOP, 1L, new ItemRequest("n2", "c", 18, d("1"), d("0"), null, null)).quantity());
+    }
+
+    @Test
+    void itemWithSalesHistoryIsNeverDeleted() {
+        Item it = new Item();
+        it.id = 1L; it.shopId = SHOP; it.quantity = 0; it.status = Enums.ItemStatus.SOLD; it.karat = 18; it.weightG = d("1");
+        when(items.findByIdAndShopId(1L, SHOP)).thenReturn(Optional.of(it));
+        when(items.saleLineCount(1L)).thenReturn(2L);
+        assertEquals("ITEM_HAS_HISTORY", assertThrows(AppException.class, () -> svc.deleteItem(SHOP, 1L)).code());
+        verify(items, never()).delete(any(Item.class));
+    }
+
+    @Test
+    void neverSoldItemCanBeDeletedByMistake() {
+        Item it = new Item();
+        it.id = 2L; it.shopId = SHOP; it.quantity = 3; it.karat = 18; it.weightG = d("1");
+        when(items.findByIdAndShopId(2L, SHOP)).thenReturn(Optional.of(it));
+        when(items.saleLineCount(2L)).thenReturn(0L);
+        svc.deleteItem(SHOP, 2L);
+        verify(items).delete(it);
     }
 
     @Test

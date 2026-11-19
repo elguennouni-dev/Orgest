@@ -32,6 +32,15 @@ describe('lignes et sous-total', () => {
   });
 });
 
+describe('quantité', () => {
+  it('quantité × poids × (prix + façon)', () => {
+    expect(lineTotal(7.5, 640, 100, 2)).toBe(11100);
+    expect(lineTotal(3.333, 10.01, 0, 3)).toBe(100.09);
+    expect(lineTotal(2, 100, 0, 0)).toBe(200); // quantité invalide → 1
+    expect(subtotalOf([{ weightG: 5, price: 640, making: 60, qty: 3 }, { weightG: 2, price: 100, making: 0 }])).toBe(10700);
+  });
+});
+
 describe('or repris', () => {
   it('poids net', () => {
     expect(netWeight(10, 10)).toBe(9);

@@ -12,6 +12,7 @@ public class SaleLine {
     @Column(nullable = false) public String description;
     @Column(nullable = false) public int karat;
     @Column(name = "weight_g", nullable = false) public BigDecimal weightG;
+    @Column(nullable = false) public int quantity = 1;
     @Column(name = "price_per_gram", nullable = false) public BigDecimal pricePerGram;
     @Column(name = "making_per_gram", nullable = false) public BigDecimal makingPerGram;
     @Column(name = "line_total", nullable = false) public BigDecimal lineTotal;

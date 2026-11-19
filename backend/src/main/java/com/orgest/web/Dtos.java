@@ -69,10 +69,12 @@ public final class Dtos {
                               @NotNull Integer karat,
                               @NotNull @DecimalMin("0.001") @DecimalMax("10000") BigDecimal weightG,
                               @NotNull @DecimalMin("0") @DecimalMax("100000") BigDecimal makingPerGram,
-                              @Size(max = 500) String note) {}
+                              @Size(max = 500) String note,
+                              @Min(0) @Max(100000) Integer quantity) {}
 
     public record ItemDto(Long id, String ref, String name, String category, int karat, BigDecimal weightG,
-                          BigDecimal makingPerGram, String status, boolean hasPhoto, String note, Instant createdAt) {}
+                          BigDecimal makingPerGram, String status, boolean hasPhoto, String note, Instant createdAt,
+                          int quantity) {}
 
     public record PageDto<T>(List<T> content, long total, int page, int size) {}
 
@@ -92,7 +94,8 @@ public final class Dtos {
     public record LineIn(Long itemId, @Size(max = 160) String description, Integer karat,
                          @DecimalMin("0.001") @DecimalMax("10000") BigDecimal weightG,
                          @NotNull @DecimalMin("0") @DecimalMax("100000") BigDecimal pricePerGram,
-                         @NotNull @DecimalMin("0") @DecimalMax("100000") BigDecimal makingPerGram) {}
+                         @NotNull @DecimalMin("0") @DecimalMax("100000") BigDecimal makingPerGram,
+                         @Min(1) @Max(100000) Integer quantity) {}
 
     public record SaleRequest(Enums.SaleType type, @Size(max = 120) String customerName,
                               @Size(max = 30) String customerPhone,
@@ -103,7 +106,7 @@ public final class Dtos {
                               @Min(0) @Max(36) Integer months) {}
 
     public record LineDto(String description, int karat, BigDecimal weightG, BigDecimal pricePerGram,
-                          BigDecimal makingPerGram, BigDecimal lineTotal) {}
+                          BigDecimal makingPerGram, BigDecimal lineTotal, int quantity) {}
 
     public record InstallmentDto(Long id, int seq, LocalDate dueDate, BigDecimal amount, boolean paid, Instant paidAt,
                                  boolean overdue) {}

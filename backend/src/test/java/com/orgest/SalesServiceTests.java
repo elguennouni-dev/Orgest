@@ -60,7 +60,11 @@ class SalesServiceTests {
     }
 
     private static LineIn item(long id, String price, String making) {
-        return new LineIn(id, null, null, null, d(price), d(making));
+        return new LineIn(id, null, null, null, d(price), d(making), null);
+    }
+
+    private static LineIn itemQty(long id, String price, String making, int qty) {
+        return new LineIn(id, null, null, null, d(price), d(making), qty);
     }
 
     private static BuybackRequest oldGold(int karat, String gross, String ded, String price) {
@@ -172,10 +176,49 @@ class SalesServiceTests {
     void soldItemCannotBeSoldAgain() {
         Item it = stockItem(1, 18, "10.000");
         it.status = Enums.ItemStatus.SOLD;
+        it.quantity = 0;
         stock(it);
         AppException e = assertThrows(AppException.class, () -> svc.createSale(SHOP,
                 req(Enums.SaleType.SALE, null, List.of(item(1, "640", "0")), null, Enums.PaymentMode.CASH, null, null)));
         assertEquals("ITEM_NOT_IN_STOCK", e.code());
+    }
+
+    @Test
+    void sellingPartOfTheQuantityKeepsTheItemInStock() {
+        Item it = stockItem(1, 18, "5.000");
+        it.quantity = 10;
+        stock(it);
+        SaleDto s = svc.createSale(SHOP, req(Enums.SaleType.SALE, null, List.of(itemQty(1, "640", "60", 3)), null,
+                Enums.PaymentMode.CASH, null, null));
+        assertEquals(7, it.quantity);
+        assertEquals(Enums.ItemStatus.IN_STOCK, it.status);
+        assertEquals(3, s.lines().get(0).quantity());
+        assertEquals(d("10500.00"), s.subtotal()); // 3 × 5 g × (640 + 60)
+        verify(items, never()).delete(any(Item.class));
+    }
+
+    @Test
+    void sellingTheLastPiecesMarksSoldOutButNeverDeletes() {
+        Item it = stockItem(1, 18, "5.000");
+        it.quantity = 2;
+        stock(it);
+        svc.createSale(SHOP, req(Enums.SaleType.SALE, null, List.of(itemQty(1, "640", "0", 2)), null,
+                Enums.PaymentMode.CASH, null, null));
+        assertEquals(0, it.quantity);
+        assertEquals(Enums.ItemStatus.SOLD, it.status);
+        verify(items, never()).delete(any(Item.class));
+        verify(items, never()).deleteById(any());
+    }
+
+    @Test
+    void cannotSellMoreThanAvailable() {
+        Item it = stockItem(1, 18, "5.000");
+        it.quantity = 2;
+        stock(it);
+        AppException e = assertThrows(AppException.class, () -> svc.createSale(SHOP, req(Enums.SaleType.SALE, null,
+                List.of(itemQty(1, "640", "0", 3)), null, Enums.PaymentMode.CASH, null, null)));
+        assertEquals("INSUFFICIENT_STOCK", e.code());
+        assertEquals(2, it.quantity);
     }
 
     @Test
@@ -203,10 +246,10 @@ class SalesServiceTests {
     @Test
     void freeLineNeedsDescriptionKaratAndWeight() {
         AppException e = assertThrows(AppException.class, () -> svc.createSale(SHOP, req(Enums.SaleType.SALE, null,
-                List.of(new LineIn(null, " ", 18, d("2"), d("640"), d("0"))), null, Enums.PaymentMode.CASH, null, null)));
+                List.of(new LineIn(null, " ", 18, d("2"), d("640"), d("0"), null)), null, Enums.PaymentMode.CASH, null, null)));
         assertEquals("INVALID_LINE", e.code());
         SaleDto ok = svc.createSale(SHOP, req(Enums.SaleType.SALE, null,
-                List.of(new LineIn(null, "Alliance sur mesure", 18, d("2"), d("640"), d("50"))), null, Enums.PaymentMode.CASH, null, null));
+                List.of(new LineIn(null, "Alliance sur mesure", 18, d("2"), d("640"), d("50"), null)), null, Enums.PaymentMode.CASH, null, null));
         assertEquals(d("1380.00"), ok.subtotal());
     }
 

@@ -105,14 +105,19 @@ public class SalesService {
         for (LineIn l : r.lines()) {
             SaleLine line = new SaleLine();
             line.sale = s;
+            int qty = l.quantity() == null ? 1 : l.quantity();
+            line.quantity = qty;
             if (l.itemId() != null) {
                 Item it = stock.get(l.itemId());
-                if (it.status != Enums.ItemStatus.IN_STOCK) throw AppException.conflict("ITEM_NOT_IN_STOCK");
+                if (it.quantity <= 0) throw AppException.conflict("ITEM_NOT_IN_STOCK");
+                if (qty > it.quantity) throw AppException.conflict("INSUFFICIENT_STOCK");
                 line.itemId = it.id;
                 line.description = it.name + " (" + it.ref + ")";
                 line.karat = it.karat;
                 line.weightG = it.weightG;
-                it.status = Enums.ItemStatus.SOLD;
+                // Le stock diminue ; à 0 l'article reste en base (épuisé), il n'est jamais supprimé.
+                it.quantity -= qty;
+                it.status = it.quantity > 0 ? Enums.ItemStatus.IN_STOCK : Enums.ItemStatus.SOLD;
             } else {
                 if (Text.blankToNull(l.description()) == null || l.karat() == null || l.weightG() == null) {
                     throw AppException.bad("INVALID_LINE");
@@ -125,7 +130,7 @@ public class SalesService {
             line.pricePerGram = Money.round2(l.pricePerGram());
             if (line.pricePerGram.signum() <= 0) throw AppException.bad("INVALID_PRICE");
             line.makingPerGram = Money.round2(l.makingPerGram());
-            line.lineTotal = Pricing.lineTotal(line.weightG, line.pricePerGram, line.makingPerGram);
+            line.lineTotal = Pricing.lineTotal(line.weightG, line.pricePerGram, line.makingPerGram, qty);
             subtotal = subtotal.add(line.lineTotal);
             s.lines.add(line);
         }
@@ -188,7 +193,7 @@ public class SalesService {
 
     private SaleDto detailOf(Sale s, List<Installment> plan, Buyback b) {
         List<LineDto> lines = s.lines.stream()
-                .map(l -> new LineDto(l.description, l.karat, l.weightG, l.pricePerGram, l.makingPerGram, l.lineTotal))
+                .map(l -> new LineDto(l.description, l.karat, l.weightG, l.pricePerGram, l.makingPerGram, l.lineTotal, l.quantity))
                 .toList();
         return new SaleDto(s.id, s.number, s.type.name(), s.customerName, s.customerPhone, s.subtotal,
                 s.tradeInAmount, s.balance, s.paymentMode.name(), s.downPayment, s.months, s.createdAt, lines,

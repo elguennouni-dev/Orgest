@@ -22,18 +22,26 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
     long countByShopIdAndStatus(Long shopId, Enums.ItemStatus status);
 
     @Query("""
-        select i from Item i where i.shopId = :shop and i.status = :status
+        select i from Item i where i.shopId = :shop and i.status in :statuses
         and (:q = '' or lower(i.name) like lower(concat('%', :q, '%')) or lower(i.ref) like lower(concat('%', :q, '%')))
         and (:karat = 0 or i.karat = :karat)
         order by i.createdAt desc""")
-    Page<Item> search(@Param("shop") Long shop, @Param("status") Enums.ItemStatus status,
+    Page<Item> search(@Param("shop") Long shop, @Param("statuses") Collection<Enums.ItemStatus> statuses,
                       @Param("q") String q, @Param("karat") int karat, Pageable pageable);
 
-    @Query("select coalesce(sum(i.weightG),0) from Item i where i.shopId = :shop and i.status = :st")
-    BigDecimal stockWeight(@Param("shop") Long shop, @Param("st") Enums.ItemStatus st);
+    /** Poids total en stock = Σ poids unitaire × quantité. */
+    @Query("select coalesce(sum(i.weightG * i.quantity),0) from Item i where i.shopId = :shop and i.quantity > 0")
+    BigDecimal stockWeight(@Param("shop") Long shop);
 
-    @Query("select i from Item i where i.shopId = :shop and i.status = :st")
-    List<Item> inStock(@Param("shop") Long shop, @Param("st") Enums.ItemStatus st);
+    /** Nombre de pièces en stock (Σ quantités). */
+    @Query("select coalesce(sum(i.quantity),0) from Item i where i.shopId = :shop")
+    long stockPieces(@Param("shop") Long shop);
+
+    @Query("select count(l) from SaleLine l where l.itemId = :id")
+    long saleLineCount(@Param("id") Long id);
+
+    @Query("select i from Item i where i.shopId = :shop and i.quantity > 0")
+    List<Item> inStock(@Param("shop") Long shop);
 
     @Query("select i from Item i where i.shopId = :shop order by i.createdAt desc")
     List<Item> allForExport(@Param("shop") Long shop);

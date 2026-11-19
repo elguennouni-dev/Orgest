@@ -34,7 +34,8 @@ export default function Stock() {
         </select>
         <select style={{ width: 150 }} value={status} onChange={(e) => { setStatus(e.target.value); setPage(0); }}>
           <option value="IN_STOCK">{t('stock.inStock')}</option>
-          <option value="SOLD">{t('stock.sold')}</option>
+          <option value="SOLD">{t('stock.soldOut')}</option>
+          <option value="ALL">{t('stock.all')}</option>
         </select>
       </div>
       {loading && !data ? <Loading /> : error ? <ErrorBox error={error} /> : data.content.length === 0 ? (
@@ -47,13 +48,16 @@ export default function Stock() {
       ) : (
         <div className="items">
           {data.content.map((i) => (
-            <div className="item" key={i.id}>
-              <div className="ph">{i.hasPhoto ? <img loading="lazy" src={`/api/shop/items/${i.id}/photo`} alt={i.name} /> : <span>◈</span>}</div>
+            <div className={'item' + (i.quantity === 0 ? ' out' : '')} key={i.id}>
+              <div className="ph">{i.hasPhoto ? <img loading="lazy" src={`/api/shop/items/${i.id}/photo`} alt={i.name} /> : <span>◈</span>}
+                <span className={'qtag num' + (i.quantity === 0 ? ' zero' : '')}>{i.quantity === 0 ? t('stock.soldOut') : `${t('stock.qtyShort')} ${i.quantity}`}</span>
+              </div>
               <div className="body">
                 <b>{i.name}</b>
                 <span className="muted">{i.ref} · {i.karat}K · <span className="num">{fmtWeight(i.weightG)} g</span></span>
                 <span className="hint">{t('stock.making')}: <Money v={i.makingPerGram} />/g</span>
-                {i.status === 'IN_STOCK' && <Link className="btn sm" to={`/app/stock/${i.id}/edit`}>{t('edit')}</Link>}
+                <span className="hint num">{t('stock.totalWeight')}: {fmtWeight(Number(i.weightG) * i.quantity)} g</span>
+                <Link className="btn sm" to={`/app/stock/${i.id}/edit`}>{i.quantity === 0 ? t('stock.restock') : t('edit')}</Link>
               </div>
             </div>
           ))}

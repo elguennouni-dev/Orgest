@@ -20,13 +20,14 @@ export const round3 = (v) => round(v, 3);
 export const cents = (v) => Math.round(round2(v) * 100);
 export const fromCents = (c) => c / 100;
 
-/** Total d'une ligne : poids × (prix/g + façon/g), arrondi comme le backend. */
-export function lineTotal(weightG, pricePerGram, makingPerGram) {
-  return round2(round3(weightG) * (round2(pricePerGram) + round2(makingPerGram)));
+/** Total d'une ligne : quantité × poids unitaire × (prix/g + façon/g), arrondi comme le backend. */
+export function lineTotal(weightG, pricePerGram, makingPerGram, qty = 1) {
+  const q = Math.max(1, Math.trunc(num(qty)) || 1);
+  return round2(round3(weightG) * q * (round2(pricePerGram) + round2(makingPerGram)));
 }
 
 export function subtotalOf(lines) {
-  return round2(lines.reduce((s, l) => s + lineTotal(l.weightG, l.price, l.making), 0));
+  return round2(lines.reduce((s, l) => s + lineTotal(l.weightG, l.price, l.making, l.qty), 0));
 }
 
 /** Poids net après déduction (%) : brut(3 déc.) × (1 − déduction(2 déc.)/100), arrondi à 3 déc. */

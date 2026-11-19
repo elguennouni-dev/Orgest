@@ -1,5 +1,6 @@
 package com.orgest.web;
 
+import com.orgest.common.AppException;
 import com.orgest.common.Money;
 import com.orgest.domain.AppUser;
 import com.orgest.domain.Enums;
@@ -96,12 +97,17 @@ public class ShopController {
 
     // ----- Stock -----
     @GetMapping("/items")
-    public PageDto<ItemDto> items(@RequestParam(defaultValue = "IN_STOCK") Enums.ItemStatus status,
+    public PageDto<ItemDto> items(@RequestParam(defaultValue = "IN_STOCK") String status,
                                   @RequestParam(defaultValue = "") String q,
                                   @RequestParam(defaultValue = "0") int karat,
                                   @RequestParam(defaultValue = "0") int page,
                                   @RequestParam(defaultValue = "24") int size) {
-        return shop.listItems(me(), status, q, karat, page, size);
+        Enums.ItemStatus st = "ALL".equalsIgnoreCase(status) ? null : parseStatus(status);
+        return shop.listItems(me(), st, q, karat, page, size);
+    }
+
+    private static Enums.ItemStatus parseStatus(String s) {
+        try { return Enums.ItemStatus.valueOf(s.toUpperCase()); } catch (IllegalArgumentException e) { throw AppException.bad("INVALID_STATUS"); }
     }
 
     @GetMapping("/items/{id}")

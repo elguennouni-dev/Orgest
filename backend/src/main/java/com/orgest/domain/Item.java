@@ -14,6 +14,8 @@ public class Item {
     @Column(nullable = false) public String category;
     @Column(nullable = false) public int karat;
     @Column(name = "weight_g", nullable = false) public BigDecimal weightG;
+    /** Nombre de pièces en stock (poids = par pièce). À 0 l'article reste en base, marqué épuisé. */
+    @Column(nullable = false) public int quantity = 1;
     @Column(name = "making_per_gram", nullable = false) public BigDecimal makingPerGram = BigDecimal.ZERO;
     @Enumerated(EnumType.STRING) @Column(nullable = false) public Enums.ItemStatus status = Enums.ItemStatus.IN_STOCK;
     @Column(name = "photo_file") public String photoFile;

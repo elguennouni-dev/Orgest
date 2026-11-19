@@ -743,3 +743,14 @@ tbody tr:nth-child(5) { animation-delay: .12s; } tbody tr:nth-child(n+6) { anima
   .schart .xaxis { font-size: 9.5px; }
 }
 @media (max-width: 700px) { .grid.g4 { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; } .schart .grid.g3 { grid-template-columns: 1fr; } }
+
+/* ===== Quantités en stock ===== */
+.item .ph { position: relative; }
+.item .qtag { position: absolute; inset-block-end: 6px; inset-inline-start: 6px; background: rgba(20, 18, 14, .85); color: var(--gold-300); font-size: 12px; font-weight: 600; padding: 3px 9px; border-radius: 999px; }
+.item .qtag.zero { background: var(--bad); color: #fff; }
+.item.out .ph img, .item.out .ph > span:first-child { filter: grayscale(1); opacity: .55; }
+.pcard { position: relative; }
+.pcard .qbadge { position: absolute; inset-block-start: 8px; inset-inline-end: 8px; background: var(--black); color: var(--gold-300); font-size: 12px; font-weight: 600; padding: 2px 8px; border-radius: 999px; }
+.tline .qty { display: flex; align-items: center; gap: 10px; }
+.tline .qty .btn.sm { min-height: 36px; min-width: 40px; padding: 0 10px; font-size: 18px; }
+.tline .qty b { min-width: 26px; text-align: center; font-size: 16px; }

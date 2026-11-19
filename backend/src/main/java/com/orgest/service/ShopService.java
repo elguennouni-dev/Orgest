@@ -11,6 +11,7 @@ import com.orgest.web.Dtos.*;
 import java.math.BigDecimal;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import org.springframework.data.domain.PageRequest;
@@ -81,14 +82,15 @@ public class ShopService {
     // ---------- Stock ----------
     static ItemDto toDto(Item i) {
         return new ItemDto(i.id, i.ref, i.name, i.category, i.karat, i.weightG, i.makingPerGram, i.status.name(),
-                i.photoFile != null, i.note, i.createdAt);
+                i.photoFile != null, i.note, i.createdAt, i.quantity);
     }
 
     @Transactional(readOnly = true)
     public PageDto<ItemDto> listItems(Long shopId, Enums.ItemStatus status, String q, int karat, int page, int size) {
         int sz = Math.min(Math.max(size, 1), 100);
         String query = q == null ? "" : Text.clean(q, 60);
-        Page<Item> p = items.search(shopId, status, query, karat, PageRequest.of(Math.max(page, 0), sz));
+        Collection<Enums.ItemStatus> statuses = status == null ? List.of(Enums.ItemStatus.values()) : List.of(status);
+        Page<Item> p = items.search(shopId, statuses, query, karat, PageRequest.of(Math.max(page, 0), sz));
         return new PageDto<>(p.getContent().stream().map(ShopService::toDto).toList(), p.getTotalElements(),
                 p.getNumber(), p.getSize());
     }
@@ -104,7 +106,7 @@ public class ShopService {
         Item i = new Item();
         i.shopId = shopId;
         i.ref = counters.next(shopId, "ITEM", "A-");
-        apply(i, r);
+        apply(i, r, 1);
         return toDto(items.save(i));
     }
 
@@ -112,24 +114,27 @@ public class ShopService {
     public ItemDto updateItem(Long shopId, Long id, ItemRequest r) {
         checkKarat(r.karat());
         Item i = items.findByIdAndShopId(id, shopId).orElseThrow(AppException::notFound);
-        if (i.status != Enums.ItemStatus.IN_STOCK) throw AppException.conflict("ITEM_NOT_IN_STOCK");
-        apply(i, r);
+        // Un article épuisé reste modifiable : on peut le réapprovisionner en remettant une quantité.
+        apply(i, r, i.quantity);
         return toDto(items.save(i));
     }
 
-    private void apply(Item i, ItemRequest r) {
+    private void apply(Item i, ItemRequest r, int defaultQuantity) {
         i.name = r.name().trim();
         i.category = r.category().trim();
         i.karat = r.karat();
         i.weightG = Money.round3(r.weightG());
         i.makingPerGram = Money.round2(r.makingPerGram());
         i.note = Text.blankToNull(r.note());
+        i.quantity = r.quantity() == null ? defaultQuantity : r.quantity();
+        i.status = i.quantity > 0 ? Enums.ItemStatus.IN_STOCK : Enums.ItemStatus.SOLD;
     }
 
     @Transactional
     public void deleteItem(Long shopId, Long id) {
         Item i = items.findByIdAndShopId(id, shopId).orElseThrow(AppException::notFound);
-        if (i.status != Enums.ItemStatus.IN_STOCK) throw AppException.conflict("ITEM_NOT_IN_STOCK");
+        // Jamais de suppression d'un article déjà vendu : l'historique (reçus, rapports) doit rester intact.
+        if (items.saleLineCount(i.id) > 0) throw AppException.conflict("ITEM_HAS_HISTORY");
         photos.delete(shopId, i.photoFile);
         items.delete(i);
     }
