@@ -702,3 +702,44 @@ tbody tr:nth-child(5) { animation-delay: .12s; } tbody tr:nth-child(n+6) { anima
 @media (max-width: 700px) { .cartbar:active { transform: scale(.98); } }
 @media print { .rv { opacity: 1 !important; transform: none !important; } * { animation: none !important; } }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .rv { opacity: 1; transform: none; } }
+
+/* ===== Reçu : ticket 80 mm lisible (lignes empilées au lieu de 6 colonnes) ===== */
+.receipt { overflow: hidden; }
+.receipt .tot b, .receipt .tot .num { white-space: nowrap; }
+.receipt .tot > span:first-child { min-width: 0; overflow-wrap: anywhere; }
+.receipt.t80 table.lines { display: block; width: 100%; }
+.receipt.t80 table.lines thead { display: none; }
+.receipt.t80 table.lines tbody { display: block; }
+.receipt.t80 table.lines tr { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 8px; padding: 5px 0; border-bottom: 1px dotted #999; }
+.receipt.t80 table.lines td { display: block; border: 0; padding: 0; width: auto; font-size: 11px; }
+.receipt.t80 table.lines td.desc { flex: 1 1 100%; font-size: 12.5px; font-weight: 700; overflow-wrap: anywhere; }
+.receipt.t80 table.lines td[data-label]::before { content: attr(data-label) ' '; color: #555; font-size: 10px; }
+.receipt.t80 table.lines td.k::before, .receipt.t80 table.lines td.w::before { content: ''; }
+.receipt.t80 table.lines td.tt { margin-inline-start: auto; font-weight: 700; font-size: 12.5px; }
+.receipt.t80 table.lines td.num { display: block; }
+
+/* ===== Graphique des ventes ===== */
+.schart .readout { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; padding: 10px 14px; background: var(--gold-50); border: 1px solid var(--gold-300); border-radius: 12px; margin-bottom: 14px; min-height: 48px; }
+.schart .readout b { font-size: 20px; }
+.schart .plot { display: grid; grid-template-columns: 46px minmax(0, 1fr); grid-template-rows: 200px auto; column-gap: 8px; }
+.schart .yaxis { display: flex; flex-direction: column; justify-content: space-between; align-items: flex-end; font-size: 11px; color: var(--muted); transform: translateY(-7px); height: calc(100% + 14px); }
+.schart .area { position: relative; border-inline-start: 1px solid var(--border); border-bottom: 1px solid #CFC7B2; }
+.schart .grid-lines i { position: absolute; inset-inline: 0; height: 0; border-top: 1px dashed var(--border); pointer-events: none; }
+.schart .bars { position: absolute; inset: 0; display: flex; align-items: flex-end; gap: max(2px, .4%); padding-inline: 2px; }
+.schart .bar { position: relative; flex: 1 1 0; min-width: 3px; padding: 0; border: 0; border-radius: 6px 6px 0 0; background: linear-gradient(180deg, #F5C443, #E0A21C); cursor: pointer; transition: filter .2s, transform .2s var(--ease), background-color .2s; }
+.schart .bar.zero { background: transparent; }
+.schart .bar:hover, .schart .bar:focus-visible { filter: brightness(1.06); outline: none; }
+.schart .bar.on { background: linear-gradient(180deg, #14120E, #3A2F0F); box-shadow: 0 0 0 2px var(--gold); }
+.schart .bar em { position: absolute; bottom: 100%; inset-inline: -10px; text-align: center; font-style: normal; font-size: 10px; color: var(--ink); padding-bottom: 2px; pointer-events: none; white-space: nowrap; }
+.schart .xaxis { grid-column: 2; display: flex; gap: max(2px, .4%); padding: 6px 2px 0; font-size: 10.5px; color: var(--muted); }
+.schart .xaxis span { flex: 1 1 0; min-width: 3px; text-align: center; white-space: nowrap; overflow: visible; }
+.schart .mini-stat { display: flex; flex-direction: column; gap: 2px; padding: 10px 14px; background: var(--bg); border-radius: 12px; border: 1px solid var(--border); }
+.schart .mini-stat b { font-size: 17px; }
+.schart .detail { margin-top: 12px; }
+.schart .detail summary { cursor: pointer; font-weight: 500; color: var(--gold-700); padding: 8px 0; }
+@media (max-width: 700px) {
+  .schart .plot { grid-template-rows: 170px auto; grid-template-columns: 38px minmax(0, 1fr); column-gap: 6px; }
+  .schart .readout b { font-size: 18px; }
+  .schart .xaxis { font-size: 9.5px; }
+}
+@media (max-width: 700px) { .grid.g4 { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; } .schart .grid.g3 { grid-template-columns: 1fr; } }

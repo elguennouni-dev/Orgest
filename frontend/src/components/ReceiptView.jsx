@@ -66,16 +66,17 @@ export function SaleReceipt({ sale }) {
         <div>{t('customer')}: <b>{sale.customerName || ''}</b> {sale.customerPhone && <span className="num">({sale.customerPhone})</span>}</div>
       )}
       <hr />
-      <table>
+      <table className="lines">
         <thead><tr><th>{t('receipt.item')}</th><th>{t('karat')}</th><th>{t('weightG')}</th><th>{t('receipt.pricePerG')}</th><th>{t('receipt.making')}</th><th>{t('total')}</th></tr></thead>
         <tbody>
           {sale.lines.map((l, i) => (
             <tr key={i}>
-              <td>{l.description}</td><td>{l.karat}K</td>
-              <td className="num">{fmtWeight(l.weightG)}</td>
-              <td className="num">{fmtMoney(l.pricePerGram)}</td>
-              <td className="num">{fmtMoney(l.makingPerGram)}</td>
-              <td className="num">{fmtMoney(l.lineTotal)}</td>
+              <td className="desc">{l.description}</td>
+              <td className="k" data-label={t('karat')}>{l.karat}K</td>
+              <td className="num w" data-label={t('weightG')}>{fmtWeight(l.weightG)} g</td>
+              <td className="num p" data-label={t('receipt.pricePerG')}>{fmtMoney(l.pricePerGram)}</td>
+              <td className="num m" data-label={t('receipt.making')}>{fmtMoney(l.makingPerGram)}</td>
+              <td className="num tt">{fmtMoney(l.lineTotal)}</td>
             </tr>
           ))}
         </tbody>
@@ -104,7 +105,9 @@ export function SaleReceipt({ sale }) {
           <p>{t('receipt.lockedPrice')}</p>
         </>
       ) : (
-        <div className="tot"><span>{t('receipt.paidCash')}</span><b className="num">{fmtMoney(paid)} {t('dh')}</b></div>
+        Number(sale.balance) < 0
+          ? <div className="tot"><span>{t('receipt.refunded')}</span><b className="num">{fmtMoney(Math.abs(sale.balance))} {t('dh')}</b></div>
+          : <div className="tot"><span>{t('receipt.paidCash')}</span><b className="num">{fmtMoney(paid)} {t('dh')}</b></div>
       )}
       <Footer signatures />
     </>

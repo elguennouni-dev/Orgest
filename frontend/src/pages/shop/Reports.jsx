@@ -1,20 +1,21 @@
 import { useState } from 'react';
 import { download } from '../../api.js';
 import { useApi } from '../../hooks.js';
-import { fmtDate, fmtInt, fmtMoney, fmtWeight, Money, useI18n } from '../../i18n.jsx';
+import { fmtInt, fmtWeight, Money, useI18n } from '../../i18n.jsx';
 import { ErrorBox, Kpi, Loading, PageHead } from '../../components/ui.jsx';
+import SalesChart from '../../components/SalesChart.jsx';
 
-const iso = (d) => d.toISOString().slice(0, 10);
+const pad = (n) => String(n).padStart(2, '0');
+const iso = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`; // date locale (pas UTC)
 
 export default function Reports() {
   const { t } = useI18n();
   const today = new Date();
-  const [from, setFrom] = useState(iso(new Date(today.getFullYear(), today.getMonth(), 2)).slice(0, 8) + '01');
+  const [from, setFrom] = useState(iso(new Date(today.getFullYear(), today.getMonth(), 1)));
   const [to, setTo] = useState(iso(today));
   const { data, error, loading } = useApi(`/shop/reports?from=${from}&to=${to}`);
   const [dlErr, setDlErr] = useState(null);
   const dl = async (path, name) => { setDlErr(null); try { await download(path, name); } catch (e) { setDlErr(e); } };
-  const max = data ? Math.max(1, ...data.byDay.map((d) => Number(d.total))) : 1;
   return (
     <>
       <PageHead title={t('nav.reports')} />
@@ -37,11 +38,7 @@ export default function Reports() {
           </div>
           <div className="card">
             <h2>{t('reports.byDay')}</h2>
-            <div style={{ display: 'flex', alignItems: 'flex-end', gap: 3, height: 160, overflowX: 'auto' }} dir="ltr">
-              {data.byDay.map((d) => (
-                <div key={d.date} title={`${fmtDate(d.date)} — ${fmtMoney(d.total)}`} style={{ flex: '1 0 8px', minWidth: 8, height: `${Math.max(2, (Number(d.total) / max) * 100)}%`, background: Number(d.total) > 0 ? 'var(--gold)' : 'var(--border)', borderRadius: '3px 3px 0 0' }} />
-              ))}
-            </div>
+            <SalesChart byDay={data.byDay} />
           </div>
         </div>
       )}
