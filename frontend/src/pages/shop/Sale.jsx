@@ -101,6 +101,16 @@ export default function Sale({ mode }) {
     setFree(null);
   };
 
+  const ticketRef = useRef(null);
+  const [ticketSeen, setTicketSeen] = useState(false);
+  useEffect(() => {
+    const el = ticketRef.current;
+    if (!el || typeof IntersectionObserver === 'undefined') return undefined;
+    const io = new IntersectionObserver(([e]) => setTicketSeen(e.isIntersecting), { threshold: 0.15 });
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
   const list = items.data?.content || [];
   const emptyStock = !items.loading && list.length === 0 && !q && !karat;
 
@@ -159,7 +169,7 @@ export default function Sale({ mode }) {
           )}
         </section>
 
-        <aside className="ticket" aria-label={t('pos.ticket')}>
+        <aside className="ticket" aria-label={t('pos.ticket')} ref={ticketRef}>
           <div className="hd"><h2>{t('pos.ticket')}</h2><span className="muted" style={{ fontSize: 13 }}>{t('pos.articles', { n: lines.length })}</span></div>
 
           {lines.length === 0 ? <div className="dash">{t('pos.touch')}</div> : lines.map((l) => (
@@ -228,6 +238,14 @@ export default function Sale({ mode }) {
           {lines.length === 0 && <span className="hint" style={{ textAlign: 'center' }}>{t('pos.needOne')}</span>}
         </aside>
       </div>
+
+      {lines.length > 0 && !ticketSeen && (
+        <button type="button" className="cartbar no-print" onClick={() => ticketRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })}>
+          <span>{t('pos.ticket')} · {t('pos.articles', { n: lines.length })}</span>
+          <b><Money v={calc.balance} /></b>
+          <i aria-hidden="true">↓</i>
+        </button>
+      )}
 
       {free && (
         <Modal title={t('pos.offTitle')} onClose={() => setFree(null)}>

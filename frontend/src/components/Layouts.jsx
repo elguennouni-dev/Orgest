@@ -42,11 +42,40 @@ function SleepyLouiz() {
   );
 }
 
+/** Mobile : chaque tableau devient une liste de cartes (étiquette = en-tête de colonne). */
+function useResponsiveTables(ref, dep) {
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return undefined;
+    const run = () => {
+      el.querySelectorAll('table').forEach((tb) => {
+        if (tb.closest('.receipt') || tb.classList.contains('keep')) return;
+        tb.classList.add('rt');
+        const heads = [...tb.querySelectorAll('thead th')].map((th) => th.textContent.trim());
+        if (!heads.length) return;
+        tb.querySelectorAll('tbody tr').forEach((tr) => {
+          [...tr.children].forEach((td, i) => {
+            if (heads[i] && td.dataset.label !== heads[i]) td.dataset.label = heads[i];
+            const multi = td.childNodes.length > 1 ? '1' : '0';
+            if (td.dataset.multi !== multi) td.dataset.multi = multi;
+          });
+        });
+      });
+    };
+    run();
+    const mo = new MutationObserver(run);
+    mo.observe(el, { childList: true, subtree: true });
+    return () => mo.disconnect();
+  }, [ref, dep]);
+}
+
 function Shell({ groups, children, searchable }) {
   const { t } = useI18n();
   const { me, logout } = useAuth();
   const [open, setOpen] = useState(false);
   const loc = useLocation();
+  const mainRef = useRef(null);
+  useResponsiveTables(mainRef, loc.pathname);
   useEffect(() => { setOpen(false); }, [loc.pathname]);
 
   const total = 30;
@@ -92,7 +121,7 @@ function Shell({ groups, children, searchable }) {
           <button type="button" onClick={logout} aria-label={t('logout')} title={t('logout')}><Icon d={P.out} /></button>
         </div>
       </aside>
-      <main className="main" key={loc.pathname}>
+      <main className="main" key={loc.pathname} ref={mainRef}>
         <div className="inner">
           {children}
         </div>

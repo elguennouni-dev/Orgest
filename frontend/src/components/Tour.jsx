@@ -27,7 +27,7 @@ export default function Tour({ onClose }) {
           {i === 3 && <div className="steps">{[1, 2, 3].map((n) => <div key={n}><b>{n}</b>{t(`tour.g${n}`)}</div>)}</div>}
           <div className="dots" role="group">
             {MOODS.map((_, n) => <button key={n} type="button" aria-label={String(n + 1)} className={n === i ? 'on' : n < i ? 'past' : ''} onClick={() => setI(n)} />)}
-            <span className="muted" style={{ marginInlineStart: 8, fontSize: 13 }}>{i + 1} / {MOODS.length}</span>
+            <span className="muted" dir="ltr" style={{ marginInlineStart: 8, fontSize: 13 }}>{i + 1} / {MOODS.length}</span>
           </div>
           <div className="acts">
             {!last ? <button type="button" className="btn" onClick={onClose}>{t('tour.skip')}</button> : <button type="button" className="btn" onClick={onClose}>{t('tour.toDash')}</button>}
