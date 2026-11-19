@@ -1,21 +1,198 @@
-<p align="center"><img src="frontend/public/logo-full.png" alt="Orgest" width="360"></p>
+<p align="center"><img src="frontend/public/logo-full.png" alt="Orgest" width="320"></p>
 
-# Orgest — Système de Gestion des Commerçants d'Or
+<h3 align="center">The all-in-one cash-desk &amp; stock platform for Moroccan jewellers<br>
+La plateforme de caisse et de stock des bijoutiers marocains</h3>
 
-SaaS web (arabe RTL + français) pour les bijouteries marocaines : stock avec photos carrées, vente, **échange**,
-**achat d'or ancien**, **commandes chez le fabricant**, **vente à tempérament (تقسيط)**, reçus imprimables (A5 / ticket 80 mm),
-export Excel, et un **panneau administrateur** pour gérer les abonnements (1 / 3 / 6 / 12 mois ; paiement hors plateforme :
-Wafacash, virement bancaire, Cash Plus).
+<p align="center">
+  <a href="https://orgest.tech"><b>🌐 orgest.tech</b></a> ·
+  <a href="#-english">🇬🇧 English</a> ·
+  <a href="#-français">🇫🇷 Français</a> ·
+  <a href="#-screenshots--captures-décran">📸 Screenshots</a>
+</p>
+
+<p align="center">
+  <a href="https://github.com/elguennouni-dev/Orgest/actions/workflows/deploy.yml"><img alt="CI / Deploy" src="https://github.com/elguennouni-dev/Orgest/actions/workflows/deploy.yml/badge.svg"></a>
+  <img alt="Java 21" src="https://img.shields.io/badge/Java-21-orange?logo=openjdk&logoColor=white">
+  <img alt="Spring Boot 4" src="https://img.shields.io/badge/Spring%20Boot-4.1-6DB33F?logo=springboot&logoColor=white">
+  <img alt="React 19" src="https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black">
+  <img alt="PostgreSQL" src="https://img.shields.io/badge/PostgreSQL-Flyway-336791?logo=postgresql&logoColor=white">
+  <img alt="Languages" src="https://img.shields.io/badge/UI-FR%20%7C%20AR%20(RTL)-F2B630">
+  <img alt="OWASP" src="https://img.shields.io/badge/Security-OWASP%20Top%2010-14120E">
+</p>
+
+<p align="center"><img src="docs/screenshots/dashboard.png" alt="Orgest dashboard / Tableau de bord" width="900"></p>
+
+---
+
+## 📸 Screenshots · Captures d'écran
+
+> Demo data and illustrated product photos. · Données de démonstration et photos de produits illustrées.
+
+<table>
+  <tr>
+    <td width="50%"><img src="docs/screenshots/landing.png" alt="Landing page"><br><b>Public site</b> — FR / AR, SEO blog, live pricing plans<br><sub>Site public — FR / AR, blog SEO, tarifs dynamiques</sub></td>
+    <td width="50%"><img src="docs/screenshots/stock.png" alt="Stock"><br><b>Stock with photos &amp; quantities</b> — sold-out items stay visible, never deleted<br><sub>Stock avec photos et quantités — les articles épuisés restent affichés</sub></td>
+  </tr>
+  <tr>
+    <td width="50%"><img src="docs/screenshots/exchange.png" alt="Exchange with installments"><br><b>Exchange + installments (تقسيط)</b> — trade-in value, down payment, exact schedule<br><sub>Échange + vente à tempérament — reprise, avance, échéancier exact</sub></td>
+    <td width="50%"><img src="docs/screenshots/installments.png" alt="Installments"><br><b>Installments tracking</b> — due dates, late flags, WhatsApp reminders<br><sub>Suivi des échéances — retards et rappel WhatsApp</sub></td>
+  </tr>
+  <tr>
+    <td width="50%"><img src="docs/screenshots/reports.png" alt="Reports"><br><b>Readable sales chart</b> — axes, tap-to-read, best day, Excel export<br><sub>Graphique lisible — axes, valeur au toucher, meilleur jour, export Excel</sub></td>
+    <td width="50%"><img src="docs/screenshots/receipt.png" alt="Receipt"><br><b>Printable receipts</b> — A5 or 80 mm thermal ticket<br><sub>Reçus imprimables — A5 ou ticket thermique 80 mm</sub></td>
+  </tr>
+  <tr>
+    <td width="50%"><img src="docs/screenshots/workshop.png" alt="Workshop orders"><br><b>Workshop orders</b> — gold given to the artisan, weight received, loss<br><sub>Commandes atelier — or remis, poids reçu, perte</sub></td>
+    <td width="50%"><img src="docs/screenshots/admin.png" alt="Admin panel"><br><b>Admin panel</b> — shop accounts, subscriptions, plans, blog<br><sub>Panneau administrateur — comptes, abonnements, tarifs, blog</sub></td>
+  </tr>
+  <tr>
+    <td width="50%"><img src="docs/screenshots/dashboard_ar.png" alt="Arabic RTL"><br><b>Arabic, right-to-left</b> — full RTL interface<br><sub>Arabe, de droite à gauche — interface RTL complète</sub></td>
+    <td width="50%"><img src="docs/screenshots/pricing.png" alt="Pricing plans"><br><b>Subscription plans</b> — 1 / 3 / 6 / 12 months, editable by the admin<br><sub>Abonnements — 1 / 3 / 6 / 12 mois, modifiables par l'admin</sub></td>
+  </tr>
+</table>
+
+<p align="center"><img src="docs/screenshots/mobile.png" alt="Mobile views" width="900"><br><b>Built for phones</b> — burger menu, table→cards, sticky ticket bar · <sub>Pensé pour le téléphone</sub></p>
+
+---
+
+## 🇬🇧 English
+
+### What is Orgest?
+
+Orgest is a multi-tenant web SaaS that runs the daily work of a Moroccan jewellery shop: **stock with photos**, **sales**, **gold exchange**, **old-gold buy-back**, **workshop orders**, **installment sales (تقسيط)**, printable receipts, reports and Excel exports — in **French and Arabic (RTL)**, on desktop and phone. A built-in **admin panel** manages shop accounts and subscriptions (payment happens off-platform: Wafacash, bank transfer, Cash Plus).
+
+### Features
+
+| | |
+|---|---|
+| 📦 **Stock** | Square photos, karat (18/21/24), unit weight, making charge per gram and **quantity per item**. Selling decreases the quantity; at 0 the item stays in the catalogue as *sold out* (with its photo) and can be restocked. Items that were ever sold can never be deleted. |
+| 🛒 **Sale & exchange** | Daily gold price × weight + making charge; quantity stepper per line; exchange = trade-in of old gold (deduction %, buy price) with amount to pay **or to refund**. |
+| 🪙 **Gold buy-back** | Gross/net weight, deduction, price per gram, printable receipt. |
+| 📅 **Installments (تقسيط)** | Price frozen in dirhams, down payment, 1–36 monthly terms **split to the cent** (the sum is always exact), late tracking, WhatsApp reminders. |
+| 🔨 **Workshop** | Orders to artisans: gold given, weight received, loss, deposit, due date, status flow. |
+| 🧾 **Receipts** | A5 and 80 mm thermal layouts, shop header (ICE, address), signatures, installment schedule. |
+| 📊 **Reports** | Readable sales chart (day / week / month grouping), best day, averages, Excel exports with formula-injection protection. |
+| 🛡️ **Admin** | Create shop accounts with generated passwords, renew 1/3/6/12 months, suspend, payment history, **editable pricing plans**, **SEO blog editor**. Expired accounts lose data access. |
+| 🌍 **UI** | FR / AR with RTL, responsive phone layout, guided tour by the mascot *Louiz*, smooth motion (respects *reduced motion*). |
+| 🔐 **Security** | JWT in HttpOnly cookie + CSRF, BCrypt, lockout &amp; rate limiting, per-shop data isolation, audit log — see the OWASP table below. |
+
+### Tech stack
+
+| Layer | Technology |
+|---|---|
+| Backend | Spring Boot 4.1 (Java 21), Spring Security, JPA/Hibernate, Flyway |
+| Database | PostgreSQL |
+| API | REST JSON (`/api/**`) |
+| Frontend | React 19 + Vite, react-router, custom i18n (FR/AR), no UI framework |
+| Deployment | Ubuntu + aaPanel (Nginx) + systemd via `deploy.sh`, or Docker Compose |
+| CI/CD | GitHub Actions: `mvn verify` + `npm test` + build → SSH forced-command deploy |
+| Tests | JUnit 5 + Mockito (backend) · Vitest (calculations, i18n parity, error codes) |
+
+### Quick start (development)
+
+```bash
+# backend (local PostgreSQL required)
+cd backend && export $(grep -v '^#' ../.env.example | xargs) && mvn spring-boot:run
+
+# frontend (proxies /api → :8080)
+cd frontend && npm install && npm run dev
+```
+
+Docker: `cp .env.docker.example .env && nano .env && docker compose up -d --build` (site on `127.0.0.1:8088`, put it behind your HTTPS proxy).
+
+### Deployment (Ubuntu VPS + aaPanel)
+
+```bash
+git clone https://github.com/elguennouni-dev/Orgest.git && cd Orgest
+sudo ./deploy.sh app.your-domain.ma --whatsapp 212612345678
+```
+
+`deploy.sh` installs Java 21 / Maven / Node 22 / PostgreSQL if missing, creates a dedicated DB user with a random password, builds backend + frontend, installs a hardened non-root `orgest` systemd service, writes the Nginx rewrite rules for the aaPanel site (API proxy, SPA, security headers) and schedules a daily backup (14 days). The admin login is printed **once**.
+**Automatic deploys:** `sudo ./tools/setup-ci-deploy.sh your-domain 2126…` prints 4 values to store as GitHub *Secrets* (`VPS_HOST`, `VPS_USER`, `VPS_KNOWN_HOSTS`, `VPS_SSH_KEY`); every push to `main` is tested, built and deployed. The SSH key can only run `orgest-deploy`.
+
+**Demo data:** `sudo python3 tools/seed_demo.py https://your-domain` creates a `demo` shop with items + photos, sales, exchanges, buy-backs, installments and workshop orders.
+
+### Testing
+
+```bash
+cd frontend && npm test      # Vitest: money rules, installment schedule, chart helpers, FR/AR parity, backend error codes
+cd backend  && mvn verify    # JUnit/Mockito: sales, stock quantities, installments, workshop, prices, reports
+```
+
+The same worked examples are asserted in Java **and** JavaScript, so the screen always shows exactly what the server will record.
+
+### Security (OWASP Top 10 – 2021)
+
+| # | Risk | Measures in Orgest |
+|---|---|---|
+| A01 | Broken access control | `ADMIN`/`SHOP` roles per URL, **per-shop isolation** on every query (shop id comes from the session, never from the client), deny-by-default, photos via authenticated endpoint, pessimistic lock against double selling |
+| A02 | Cryptographic failures | BCrypt (cost 12), HS256 JWT with ≥ 32-char secret from the environment, `HttpOnly; Secure; SameSite=Strict` cookie, HSTS |
+| A03 | Injection | Parameterised JPA/JPQL only, Bean Validation on every DTO, Excel formula-injection guard, React escaping |
+| A04 | Insecure design | Dedicated DTOs, amounts **recomputed server-side**, atomic numbering, validated and re-encoded image uploads, pagination/range limits |
+| A05 | Misconfiguration | CSP / X-Frame-Options / Referrer-Policy headers, no stack traces, actuator off, backend bound to `127.0.0.1`, hardened systemd unit |
+| A06 | Vulnerable components | Spring Boot BOM, `mvn -Psecurity verify` (dependency-check), `npm audit` |
+| A07 | Authentication failures | Lockout after 5 failures (15 min), per-IP limiter, constant-time compare, password policy, session invalidation (`tokenVersion`), 12 h JWT |
+| A08 | Integrity | Signed JWT, no untrusted deserialisation, `npm ci`, versioned Flyway migrations |
+| A09 | Logging | Database audit trail (logins, lockouts, admin actions, password changes) with log-injection cleaning |
+| A10 | SSRF | No outbound call is triggered by user input |
+
+CSRF: double-submit `XSRF-TOKEN` cookie + `X-XSRF-TOKEN` header on every non-GET request, on top of `SameSite=Strict`.
+
+### Project structure
+
+```
+backend/    Spring Boot (API, security, JPA, Flyway migrations, tests)
+frontend/   React + Vite (landing, blog, login, shop app, admin) + Vitest tests
+docs/       Screenshots
+tools/      CI-deploy setup, demo seed
+deploy.sh   Ubuntu + aaPanel deployment
+```
+
+---
+
+## 🇫🇷 Français
+
+### Qu'est-ce qu'Orgest ?
+
+Orgest est un SaaS web multi-boutiques qui gère le quotidien d'une bijouterie marocaine : **stock avec photos**, **ventes**, **échange**, **achat d'or ancien**, **commandes chez le fabricant**, **vente à tempérament (تقسيط)**, reçus imprimables, rapports et exports Excel — en **français et en arabe (RTL)**, sur ordinateur comme sur téléphone. Un **panneau administrateur** gère les comptes et abonnements (paiement hors plateforme : Wafacash, virement bancaire, Cash Plus).
+
+### Fonctionnalités
+
+| | |
+|---|---|
+| 📦 **Stock** | Photos carrées, carat (18/21/24), poids unitaire, façon au gramme et **quantité par article**. Chaque vente diminue la quantité ; à 0 l'article reste au catalogue comme *épuisé* (avec sa photo) et peut être réapprovisionné. Un article déjà vendu ne peut jamais être supprimé. |
+| 🛒 **Vente & échange** | Prix de l'or du jour × poids + façon ; quantité par ligne ; échange = reprise de l'ancien (déduction %, prix d'achat) avec montant à payer **ou à rendre**. |
+| 🪙 **Achat d'or** | Poids brut/net, déduction, prix au gramme, reçu imprimable. |
+| 📅 **Tempérament (تقسيط)** | Prix figé en dirhams, avance, 1 à 36 mensualités **réparties au centime près** (somme toujours exacte), suivi des retards, rappel WhatsApp. |
+| 🔨 **Atelier** | Commandes aux artisans : or remis, poids reçu, perte, acompte, livraison, statuts. |
+| 🧾 **Reçus** | Formats A5 et ticket thermique 80 mm, en-tête boutique (ICE, adresse), signatures, échéancier. |
+| 📊 **Rapports** | Graphique lisible (regroupement jour / semaine / mois), meilleur jour, moyennes, exports Excel protégés contre l'injection de formules. |
+| 🛡️ **Admin** | Création des comptes (mot de passe généré), renouvellement 1/3/6/12 mois, suspension, historique des paiements, **tarifs modifiables**, **éditeur de blog SEO**. Un compte expiré n'accède plus aux données. |
+| 🌍 **Interface** | FR / AR avec RTL, mise en page mobile, visite guidée par la mascotte *Louiz*, animations douces (respecte *réduire les animations*). |
+| 🔐 **Sécurité** | JWT en cookie HttpOnly + CSRF, BCrypt, verrouillage et limitation, isolation des données par boutique, journal d'audit — voir le tableau OWASP ci-dessous. |
+
+### Technologies
 
 | Couche | Technologie |
 |---|---|
 | Backend | Spring Boot 4.1 (Java 21), Spring Security, JPA/Hibernate, Flyway |
 | Base de données | PostgreSQL |
 | API | REST JSON (`/api/**`) |
-| Frontend | React 19 + Vite, i18n AR/FR, responsive (PC + navigateur mobile) |
-| Déploiement | Ubuntu + aaPanel (Nginx), service systemd, `deploy.sh` |
+| Frontend | React 19 + Vite, i18n AR/FR maison, sans framework UI |
+| Déploiement | Ubuntu + aaPanel (Nginx) + systemd via `deploy.sh`, ou Docker Compose |
+| CI/CD | GitHub Actions : `mvn verify` + `npm test` + build → déploiement SSH à commande forcée |
+| Tests | JUnit 5 + Mockito (backend) · Vitest (calculs, parité i18n, codes d'erreur) |
 
-## Déploiement (VPS Ubuntu + aaPanel)
+### Développement local
+
+```bash
+# backend (PostgreSQL local requis)
+cd backend && export $(grep -v '^#' ../.env.example | xargs) && mvn spring-boot:run
+# frontend (proxy /api → :8080)
+cd frontend && npm install && npm run dev
+```
+
+### Déploiement (VPS Ubuntu + aaPanel)
 
 1. Dans aaPanel : **Website → Add site** pour votre domaine (site statique), puis **SSL → Let's Encrypt** (+ *Force HTTPS*).
 2. Sur le VPS :
@@ -36,28 +213,27 @@ Base PostgreSQL créée par aaPanel ? `DB_MODE=external DB_URL=jdbc:postgresql:/
 
 Commandes utiles : `journalctl -u orgest -f` · `systemctl restart orgest` · `/usr/local/sbin/orgest-backup`.
 
-## Développement local
+### Domaine, déploiement automatique et Docker
+
+**Nouveau domaine (ex. `orgest.tech`)** : DNS → enregistrement A vers l'IP du VPS · aaPanel > Website > Add site (statique) > SSL Let's Encrypt + Force HTTPS · puis
+`cd /opt/orgest-src && git pull && sudo ./deploy.sh orgest.tech --whatsapp 212680376294`.
+
+**Déploiement automatique (GitHub Actions)** : sur le VPS `sudo ./tools/setup-ci-deploy.sh orgest.tech 212680376294`, puis copier les 4 valeurs affichées dans GitHub > Settings > Secrets and variables > Actions (`VPS_HOST`, `VPS_USER`, `VPS_KNOWN_HOSTS`, `VPS_SSH_KEY`). Chaque push sur `main` compile/teste puis déploie. La clé SSH ne peut exécuter que `orgest-deploy`.
+
+**Docker (alternative)** : `cp .env.docker.example .env && nano .env && docker compose up -d --build` ; le site écoute sur `127.0.0.1:8088` (à mettre derrière le proxy HTTPS d'aaPanel). Ne pas lancer en même temps que le déploiement systemd sur le même domaine.
+
+**Données de démo :** `sudo python3 tools/seed_demo.py https://votre-domaine` crée la boutique `demo` (articles + photos, ventes, échanges, achats, échéances, atelier).
+
+### Tests
 
 ```bash
-# backend (PostgreSQL local requis)
-cd backend && export $(grep -v '^#' ../.env.example | xargs) && mvn spring-boot:run
-# frontend (proxy /api → :8080)
-cd frontend && npm install && npm run dev
+cd frontend && npm test      # Vitest : règles monétaires, échéancier, graphique, parité FR/AR, codes d'erreur
+cd backend  && mvn verify    # JUnit/Mockito : ventes, quantités de stock, tempérament, atelier, prix, rapports
 ```
 
-## Parcours fonctionnel
+Les mêmes cas chiffrés sont testés en Java **et** en JavaScript : l'écran affiche exactement ce que le serveur enregistrera.
 
-* **Données de démo** : `sudo python3 tools/seed_demo.py https://votre-domaine` crée le compte `demo` avec articles + photos, ventes, échanges, achats, échéances et commandes atelier.
-* **Admin** : crée le compte d'un commerçant (identifiant + mot de passe généré, à envoyer par WhatsApp), enregistre le paiement
-  (Wafacash / virement / Cash Plus), **renouvelle** (+1/3/6/12 mois), **suspend / réactive**, réinitialise le mot de passe,
-  suit l'historique des paiements. Un abonnement expiré ou suspendu bloque l'accès aux données (le client voit une page d'expiration).
-* **Commerçant** (un seul utilisateur par boutique) : prix de l'or du jour → stock (photo carrée) → vente / échange / achat d'or →
-  reçu imprimable → échéances → atelier → rapports et exports Excel.
-* **Échange** : modélisé comme deux opérations liées sur un reçu (reprise de l'ancien au prix d'achat avec déduction éventuelle,
-  puis vente du nouveau) ; la différence à payer — ou à rendre — est calculée.
-* **Tempérament** : le prix est figé en dirhams ; avance + mensualités ; suivi des retards et rappel WhatsApp.
-
-## Sécurité — OWASP Top 10 (2021)
+### Sécurité — OWASP Top 10 (2021)
 
 | # | Risque | Mesures dans Orgest |
 |---|---|---|
@@ -74,7 +250,7 @@ cd frontend && npm install && npm run dev
 
 CSRF : cookie `XSRF-TOKEN` (double-submit) + en-tête `X-XSRF-TOKEN` obligatoire sur toute requête non-GET, en plus de `SameSite=Strict`.
 
-## Configuration
+### Configuration
 
 | Variable | Rôle |
 |---|---|
@@ -85,29 +261,16 @@ CSRF : cookie `XSRF-TOKEN` (double-submit) + en-tête `X-XSRF-TOKEN` obligatoire
 | `ORGEST_ADMIN_USERNAME` / `ORGEST_ADMIN_PASSWORD` | Création du premier admin si aucun n'existe (≥ 12 car.) |
 | `VITE_WHATSAPP` | Numéro WhatsApp de la page d'accueil (build du frontend) |
 
-## Structure
+### Structure
 
 ```
-backend/    Spring Boot (api, sécurité, JPA, migrations Flyway)
-frontend/   React + Vite (landing, login, app commerçant, admin)
+backend/    Spring Boot (API, sécurité, JPA, migrations Flyway, tests)
+frontend/   React + Vite (accueil, blog, connexion, app commerçant, admin) + tests Vitest
+docs/       Captures d'écran
+tools/      Installation du déploiement CI, données de démo
 deploy.sh   Déploiement Ubuntu + aaPanel
 ```
 
-## Domaine, déploiement automatique et Docker
+---
 
-**Nouveau domaine (ex. `orgest.tech`)** : DNS → enregistrement A vers l'IP du VPS · aaPanel > Website > Add site (statique) > SSL Let's Encrypt + Force HTTPS · puis
-`cd /opt/orgest-src && git pull && sudo ./deploy.sh orgest.tech --whatsapp 212680376294`.
-
-**Déploiement automatique (GitHub Actions)** : sur le VPS `sudo ./tools/setup-ci-deploy.sh orgest.tech 212680376294`, puis copier les 4 valeurs affichées dans GitHub > Settings > Secrets and variables > Actions (`VPS_HOST`, `VPS_USER`, `VPS_KNOWN_HOSTS`, `VPS_SSH_KEY`). Chaque push sur `main` compile/teste puis déploie. La clé SSH ne peut exécuter que `orgest-deploy`.
-
-**Docker (alternative)** : `cp .env.docker.example .env && nano .env && docker compose up -d --build` ; le site écoute sur `127.0.0.1:8088` (à mettre derrière le proxy HTTPS d'aaPanel). Ne pas lancer en même temps que le déploiement systemd sur le même domaine.
-
-## Tests
-
-```bash
-cd frontend && npm test                 # Vitest : calculs (ventes, reprise, échéancier) + cohérence FR/AR et codes d'erreur
-cd backend && mvn verify                # JUnit/Mockito : SalesService, InstallmentPlanner, Pricing, Workshop, Shop, Report
-```
-
-Les mêmes cas chiffrés sont testés côté Java et côté JavaScript (`frontend/src/lib/money.js` reproduit les règles du backend)
-pour que l'écran affiche exactement ce qui sera enregistré. Le workflow GitHub Actions lance les deux suites avant tout déploiement.
+<p align="center"><sub>Made in Morocco 🇲🇦 for jewellers · Conçu au Maroc pour les bijoutiers — <a href="https://orgest.tech">orgest.tech</a></sub></p>
