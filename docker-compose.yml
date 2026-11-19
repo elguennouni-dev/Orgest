@@ -1,0 +1,45 @@
+# Alternative Docker au déploiement systemd (deploy.sh). N'utilisez PAS les deux en même temps
+# pour le même domaine. Usage : cp .env.docker.example .env && nano .env && docker compose up -d --build
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: orgest
+      POSTGRES_USER: orgest
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD requis}
+    volumes: [dbdata:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U orgest -d orgest"]
+      interval: 5s
+      retries: 10
+
+  backend:
+    build: ./backend
+    restart: unless-stopped
+    depends_on:
+      db: { condition: service_healthy }
+    environment:
+      DB_URL: jdbc:postgresql://db:5432/orgest
+      DB_USER: orgest
+      DB_PASSWORD: ${DB_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET requis (>= 32 caractères)}
+      COOKIE_SECURE: "true"
+      ORGEST_ADMIN_USERNAME: ${ADMIN_USERNAME:-admin}
+      ORGEST_ADMIN_PASSWORD: ${ADMIN_PASSWORD:?ADMIN_PASSWORD requis}
+    volumes: [uploads:/data/uploads]
+    expose: ["8080"]
+
+  web:
+    build:
+      context: ./frontend
+      args:
+        VITE_WHATSAPP: ${WHATSAPP:-212680376294}
+    restart: unless-stopped
+    depends_on: [backend]
+    # Seul port exposé, uniquement en local : le Nginx d'aaPanel (HTTPS) fait le proxy vers 127.0.0.1:8088
+    ports: ["127.0.0.1:${WEB_PORT:-8088}:80"]
+
+volumes:
+  dbdata:
+  uploads:
