@@ -36,6 +36,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class SeoService {
     public static final String BRAND = "Orgest";
+    public static final String INSTAGRAM = "https://www.instagram.com/orgest.ma/";
     public static final String HOME_TITLE = "Orgest — Logiciel de gestion pour bijouteries au Maroc";
     public static final String HOME_DESC = "Orgest gère le stock au gramme, les ventes, l’échange d’or ancien, les ventes à tempérament et l’atelier de votre bijouterie. Essai gratuit, en français et en arabe.";
     public static final String BLOG_TITLE = "Blog Orgest — Conseils pour bijoutiers : or, stock, à tempérament";
@@ -138,6 +139,7 @@ public class SeoService {
         Map<String, Object> org = new LinkedHashMap<>();
         org.put("@type", "Organization"); org.put("@id", base + "/#organization"); org.put("name", BRAND); org.put("url", base + "/");
         org.put("logo", base + "/assets/icon-512.png");
+        org.put("sameAs", List.of(INSTAGRAM));
         org.put("contactPoint", List.of(Map.of("@type", "ContactPoint", "contactType", "customer support", "telephone", "+" + whatsapp, "availableLanguage", List.of("fr", "ar"))));
         Map<String, Object> site = new LinkedHashMap<>();
         site.put("@type", "WebSite"); site.put("@id", base + "/#website"); site.put("url", base + "/"); site.put("name", BRAND);
@@ -301,6 +303,7 @@ public class SeoService {
           .append("Orgest est un logiciel SaaS marocain pour bijouteries : stock au gramme, ventes et reçus, échange d’or ancien, ventes à tempérament (paiement échelonné), atelier, rapports Excel. Interface en français et en arabe.\n\n## Pages\n\n")
           .append("- [Accueil](").append(base).append("/): présentation, fonctionnalités, tarifs, questions fréquentes\n")
           .append("- [Blog](").append(base).append("/blog): guides pratiques pour bijoutiers\n")
+          .append("- [Instagram](").append(INSTAGRAM).append("): conseils et nouveautés en images\n")
           .append("- [Flux RSS](").append(base).append("/feed.xml): nouveaux articles\n")
           .append("- [Texte complet des articles](").append(base).append("/llms-full.txt)\n\n## Articles\n\n");
         for (PostSummary p : content.publicPosts()) {
@@ -308,7 +311,7 @@ public class SeoService {
             if (!blank(p.excerpt())) s.append(": ").append(p.excerpt().replace('\n', ' '));
             s.append('\n');
         }
-        s.append("\n## Contact\n\n- WhatsApp : +").append(whatsapp).append('\n');
+        s.append("\n## Contact\n\n- WhatsApp : +").append(whatsapp).append("\n- Instagram : ").append(INSTAGRAM).append('\n');
         return s.toString();
     }
 

@@ -1,0 +1,287 @@
+ORGEST — BRANDING PACK FOR SOCIAL MEDIA CONTENT
+================================================
+Version 1.0 · Source of truth: the product itself (frontend/src/styles.css, components/Louiz.jsx, components/icons.jsx, dict.js).
+Purpose: give an AI/skill (or a designer) everything needed to produce on-brand posts, stories, reels, covers and ads.
+
+--------------------------------------------------------------------
+1. BRAND IN ONE PARAGRAPH
+--------------------------------------------------------------------
+Orgest is a SaaS for Moroccan jewelry shops and gold traders. It manages gold stock by the gram (with photos and
+quantities), sales, gold exchange / old-gold buy-back, installment sales ("à tempérament / تقسيط") with exact schedules,
+workshop gold tracking, printable receipts and Excel reports. Bilingual French / Arabic (RTL supported).
+Instagram: https://www.instagram.com/orgest.ma/ (@orgest.ma)
+Live site: https://orgest.tech · Contact: WhatsApp +212 680 376 294 (https://wa.me/212680376294)
+
+Official tagline FR: « Système de Gestion des Commerçants d'Or »
+Official tagline AR: « نظام تدبير تجار الذهب »
+Hero line FR: « Gérez votre bijouterie simplement. »
+Hero line AR: « دبّر محل الذهب ديالك بسهولة. »
+
+--------------------------------------------------------------------
+2. PERSONALITY & POSITIONING
+--------------------------------------------------------------------
+- Core idea: "Less calculator, more sales." Orgest does the gram-exact math so the jeweler can focus on the customer.
+- Feels: precise, trustworthy, warm, practical, local. A reliable counter-side assistant, not cold enterprise software.
+- Is NOT: flashy luxury-for-luxury's-sake, techy jargon, crypto/finance hype, generic stock-photo corporate.
+- Audience: owners and staff of jewelry shops in Morocco (often 30–60, phone-first, WhatsApp-native, speak Darija/Arabic
+  and French). Secondary: artisans/workshops, gold traders.
+- Proof points we can state truthfully: stock by gram with photos & quantities; sold-out items stay in history (never
+  deleted); installment schedules exact to the centime; old-gold trade-in deducted on the same receipt; 80 mm and A4
+  receipts; Excel reports; French + Arabic (RTL); WhatsApp reminders for due installments.
+- Do not invent: user counts, testimonials, certifications, discounts, or real gold prices. Any price in an example must
+  be labeled "prix fictif / مثال" (example only).
+
+--------------------------------------------------------------------
+3. NAME & LOGO RULES
+--------------------------------------------------------------------
+- Write the name "Orgest" (capital O, rest lowercase). Never "ORGEST" in running text, never "OrGest".
+- Logo = gold ring/coin with a white diamond-cut gem on top + wordmark. Files in the repo (frontend/public/assets/):
+    logo-full.png            full lockup (icon + wordmark)
+    logo-icon.png            icon only
+    logo-wordmark.png        wordmark for light backgrounds
+    logo-wordmark-dark.png   wordmark for dark backgrounds
+    favicon.svg / icon-192.png / icon-512.png   square app icons
+  (note: logo-icon.png currently needs re-export; use icon-512.png or favicon.svg as the icon until fixed)
+- Clear space: at least the height of the gem on all sides. Minimum size: icon 24 px, full lockup 96 px wide.
+- Backgrounds: wordmark (dark ink) on cream/white/light gold; wordmark-dark on Ink Black. Never place the logo on busy
+  photos without a solid or 60%+ dark overlay. Never recolor, stretch, rotate, outline, add shadows or effects.
+- Social avatar: icon on Ink Black (#14120E) background in a circle crop, icon centered at ~60% of the diameter.
+
+--------------------------------------------------------------------
+4. COLOR PALETTE (exact values from the product CSS)
+--------------------------------------------------------------------
+PRIMARY
+  Gold            #F2B630   brand color; primary buttons, highlights, the mascot
+  Gold Light      #F5C443   hover/focus, accents on dark backgrounds
+  Gold Pale       #FEEA89   soft highlight, badges
+  Gold Cream-50   #FFF8E1   tinted surfaces, hover backgrounds
+  Gold Deep       #C98A0B   gradients, borders on gold
+  Gold Bronze     #8A6209   text/links/eyebrows on light backgrounds (accessible gold text)
+NEUTRALS
+  Ink Black       #14120E   dark backgrounds, hero, splash
+  Ink             #1F1A12   body text on light
+  Muted           #6B6453   secondary text
+  Cream           #E7E4B8   logo-derived cream accent
+  Paper           #F7F4EC   default page background (warm off-white — prefer over pure white)
+  Surface         #FFFFFF   cards
+  Border          #E9E2D2   hairlines (strong: #E4DCCB)
+SEMANTIC (use sparingly, only to convey status)
+  Success         #17613A on #E3F1E8
+  Warning         #8A5A00 on #FBF0D5
+  Danger          #A12B2B on #F9E3E1
+  WhatsApp        #1A7F43 (CTA to WhatsApp only)
+SOFT CATEGORY TINTS (used for article/feature chips: background / ink)
+  Gold    #FFF4D6 / #8A6209      Blue   #E6EEF9 / #1E4F8F      Green  #E7F4EC / #1E5E3F
+  Violet  #F3E8F7 / #6B2F86      Rose   #FDECE3 / #9A3412
+USAGE RATIO for any visual: ~60% Paper/Cream or Ink Black (pick one dominant mode) · ~30% Ink/neutral · ~10% Gold.
+  Gold is an accent, never a full-bleed wash. One gold focal element per composition (button, number, mascot).
+GRADIENT (gold, for coin/metal feel only): linear 135° #FFE08A → #F2B630 (50%) → #B7790F. Mascot fill is radial:
+  #FFF1B8 → #F5C443 (45%) → #C98A12.
+CONTRAST: gold text on light backgrounds must use Gold Bronze #8A6209 (never #F2B630). Gold (#F2B630) text is allowed
+  only on Ink Black. Body text on Paper = Ink #1F1A12. Minimum contrast 4.5:1.
+
+--------------------------------------------------------------------
+5. TYPOGRAPHY
+--------------------------------------------------------------------
+- Primary typeface: **Readex Pro** (Google Fonts / @fontsource). Weights used: 300, 400, 500, 600, 700.
+  Covers Latin AND Arabic in one family, so FR and AR posts look like one brand.
+  Fallback stack: Readex Pro, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif.
+- Arabic fallback: IBM Plex Sans Arabic (already bundled in the product).
+- Hierarchy for social graphics:
+    Headline   Readex Pro 600–700, tight leading (1.15–1.25), sentence case. Max ~8 words.
+    Sub-line   Readex Pro 400–500, 40–50% of headline size.
+    Eyebrow    Readex Pro 500, UPPERCASE for Latin, letter-spacing 1.2px, in Gold Bronze (light bg) or Gold (dark bg).
+    Numbers    Readex Pro 600 with tabular figures; always keep numerals left-to-right even inside Arabic text.
+    CTA        Readex Pro 600.
+- No script, serif or decorative fonts. No more than 2 weights per graphic. Never use all-caps for Arabic.
+- Arabic text: right-to-left alignment, no letter-spacing, slightly larger size than the Latin equivalent (+8–10%),
+  line-height ≥ 1.4. Mixed FR/AR in one graphic: keep each language in its own block, don't interleave words.
+- Currency format: "4 656 DH" (space as thousands separator, "DH" after the number). Weight: "11,64 g" (comma decimal in
+  French). In Arabic copy use "درهم" or "DH". Percent: "3 %" (French spacing).
+
+--------------------------------------------------------------------
+6. SHAPE, SPACING, SURFACES
+--------------------------------------------------------------------
+- Corner radius: buttons/inputs 12 px · cards 18 px · chips pill (999 px). Rounded, friendly, never sharp boxes.
+- Flat design: borders (1 px #E9E2D2) instead of drop shadows. If a shadow is needed: very soft, low opacity, warm black.
+- Spacing scale: 4 / 8 / 12 / 14 / 20 / 32 px; generous padding, one idea per card.
+- Cards: white on Paper background, 1 px border, 18 px radius.
+- Buttons: Primary = Gold fill + Ink text. Secondary = white fill + 1 px strong border + Ink text. On dark: Gold fill or
+  transparent with cream text and a dark-gold border. WhatsApp CTA = WhatsApp green fill + white text.
+- Dark mode composition: Ink Black background, cream/white text, gold accents, 1 px #4A3E15 borders.
+
+--------------------------------------------------------------------
+7. ICON STYLE
+--------------------------------------------------------------------
+- Style: outline (stroke) icons on a 24×24 grid, stroke width 1.8 px (2.4 px for check marks), round line caps and round
+  joins, no fill, monochrome (currentColor). Simple geometric silhouettes, no gradients, no 3D, no emoji in graphics.
+- Icon set used in the product (names): dashboard, sale (cart), exchange (two arrows), buy-back (arrow down to tray),
+  stock (ingot/pile), workshop (hammer), calendar (installments), list, chart (bars), user, plus, search, print, warn
+  (triangle), check, tag, doc, trash, menu. Add new icons in the same construction.
+- Icon containers: rounded square (radius 12–14 px), 48 px, soft tint background (see Soft Category Tints) with the icon
+  in the matching ink color. Feature mapping:
+    Stock → gold tint · Sale → blue · Exchange → green · Buy-back → violet · Installments → rose ·
+    Workshop → gold · Receipts → blue · Reports/Excel → green
+- Size rules: icon ≈ 50% of its container; keep ≥ 2 px optical padding; never mix outline and filled styles.
+
+--------------------------------------------------------------------
+8. MASCOT — "LOUIZ" (the gold coin)
+--------------------------------------------------------------------
+- Louiz is a friendly golden coin character: round gold body (radial gold gradient), simple face with two dot eyes and a
+  smile, short stick arms and legs in bronze (#A86F0C), soft ellipse shadow beneath. Flat vector, no outlines on the face.
+- 7 moods = 7 message types (use the one that matches the content's emotion):
+    wave        greeting, intro, welcome, "bonjour", launch posts
+    happy       tips, positive results, default
+    thinking    questions, "did you know", explaining a calculation
+    worried     warnings, mistakes to avoid, late payments, risks
+    proud       achievements, milestones, success stories
+    celebrate   new feature, offers, mariage/Eid season, confetti
+    sleepy      closing time, night/weekend, "stop doing manual work"
+- Use: one Louiz per graphic, ≥ 20% of the shorter side for hero use; place on Paper, Cream, light-gold or Ink Black.
+  Speech bubble: white (or gold-50) rounded rectangle, 12–18 px radius, Ink text, max 12 words.
+  Louiz never holds real gold bars/cash photos; never replaces the logo; never in a different color than gold.
+- Louiz's voice: warm, helpful, a little playful; talks like a good colleague at the counter ("L'astuce de Louiz : …").
+
+--------------------------------------------------------------------
+9. IMAGERY & ILLUSTRATION
+--------------------------------------------------------------------
+- Preferred, in order: (1) real product screenshots (cleaned, no real customer data), (2) Louiz illustrations,
+  (3) clean flat scenes of a Moroccan jewelry counter (scale, gold pieces, receipt, phone), (4) warm macro photography
+  of gold jewelry on neutral warm backgrounds.
+- Photo treatment: warm, soft natural light, shallow depth of field, neutral cream/black backgrounds; never harsh
+  blue/cool tones; no stock handshake/laptop clichés.
+- Product screenshots: put them in a rounded-corner device frame (phone or browser) with 18–24 px radius on a Paper or
+  Ink Black background; crop to the one feature being talked about; blur or replace any real names/phone numbers;
+  use fictional data (e.g. "Bracelet 18K — 12,00 g").
+- Existing article illustrations: frontend/public/assets/blog/ (carats, inventaire, whatsapp, atelier, excel, recu,
+  echange, arabe .jpg). Product screenshots: docs/screenshots/*.png.
+- Do not use: real people's faces without consent, other brands' logos, real banknotes close-ups, religious imagery
+  decoratively, stock photos of recognizable gold-market brands.
+
+--------------------------------------------------------------------
+10. LAYOUT TEMPLATES (all graphics)
+--------------------------------------------------------------------
+Safe margins: 6% of width on each side (stories/reels: keep 250 px clear top and 340 px clear bottom).
+Sizes:
+  Instagram/Facebook feed post   1080×1350 (4:5)  or 1080×1080 (1:1)
+  Stories / Reels / TikTok       1080×1920 (9:16)
+  LinkedIn post                  1200×1200 or 1200×627
+  X / link preview (OG)          1200×630
+  YouTube thumbnail              1280×720
+  Carousel                       1080×1350, 5–8 slides, consistent grid
+Template A — "Tip" (educational): Paper background · eyebrow (category, Gold Bronze) · headline · 1 formula block or
+  example in a white card with 18 px radius · Louiz (thinking/happy) bottom corner · small logo bottom-left · handle.
+Template B — "Feature": Ink Black background · gold eyebrow · white headline · phone/browser screenshot in frame ·
+  icon chip + one-line benefit · Gold CTA button "Demander une démo".
+Template C — "Warning / mistake": Paper background · Louiz worried · headline starting with "Erreur :" / "غلطة :" ·
+  3 bullets max in a white card · Danger tint only on the small label.
+Template D — "Quote/FAQ": Gold-50 background · question as headline · answer in 2–3 lines · logo.
+Template E — "Carousel": slide 1 hook (big headline + Louiz) · slides 2–6 one idea each with number chip (gold circle,
+  Ink digit) · last slide CTA + WhatsApp number + logo. Same background color on all slides, progress dots optional.
+Formula block style (for calculations): white card, left border 4 px Gold, monospace-free Readex Pro 600 numbers,
+  e.g. "Poids net = poids brut × (1 − déduction)".
+
+--------------------------------------------------------------------
+11. MOTION (reels / stories / video)
+--------------------------------------------------------------------
+- Feel: smooth and gentle, never bouncy-flashy. Ease-out curves; 250–450 ms transitions; Louiz bobs softly (1.2–3 s loops).
+- Text appears by fade + 12–16 px upward slide; stagger items by 80–120 ms; numbers can count up over 600 ms.
+- Max 1 transition style per video (fade/slide). No glitch, zoom-punch or shaky-cam effects.
+- Structure for 15–30 s reel: hook (≤2 s, question or surprising number) → problem → Orgest solving it on screen →
+  result (receipt/total) → CTA with WhatsApp number. Always add captions (FR or AR on-screen text; many watch muted).
+- Sound: light, warm instrumental; no loud trending sounds that clash with a trust-based product.
+- Use prefers-reduced-motion mindset: content must be understandable from the still frames.
+
+--------------------------------------------------------------------
+12. VOICE & TONE
+--------------------------------------------------------------------
+- Tone: clear, calm, practical, respectful. Speaks to the jeweler as a professional ("vous" in French; friendly
+  Moroccan Arabic/Darija in AR social, Modern Standard only for formal/legal-ish text).
+- Short sentences. Concrete numbers. One idea per post. Lead with the benefit, then how.
+- Preferred words FR: bijoutier, comptoir, au gramme, prix du jour, reprise d'or, à tempérament, reçu, écart de stock.
+- Preferred words AR/Darija: مول الذهب، الكونطوار، بالغرام، ثمن اليوم، الذهب القديم، التقسيط، الوصل، الستوك.
+- Avoid: hype ("révolutionnaire", "#1"), fear-mongering about money loss, jargon (API, SaaS, cloud) in customer-facing
+  copy, guarantees we cannot keep, comparisons naming competitors.
+- Emojis: sparingly in captions (max 2–3; ✨ 💛 📲 ✅ ⚖️ are on-brand); none inside graphics.
+- Always label example prices: « (prix fictif, pour le calcul) » / « (مثال للتوضيح) ».
+- Language rule: one language per post by default (FR or AR). Bilingual posts = two clearly separated blocks, FR first
+  on LTR layouts; AR block right-aligned. Never machine-mix words.
+
+--------------------------------------------------------------------
+13. CONTENT PILLARS (what to post)
+--------------------------------------------------------------------
+ 1. Cours de l'or / carats      — 18K/21K/24K, prix du jour, conversions            (blog: carat-18k-21k-24k-prix-par-gramme)
+ 2. Caisse & ventes             — reprise d'or ancien, échange, reçus clairs        (blog: reprise-or-ancien-calculer-prix-juste)
+ 3. Tempérament / تقسيط         — acompte, échéancier, rappels WhatsApp, impayés    (blog: vente-a-temperament-bijoux-6-regles)
+ 4. Gestion de boutique         — inventaire au gramme, stock, rapports Excel, saison des mariages
+ 5. Atelier                     — or confié à l'artisan, poids remis/rendu, perte
+ 6. Produit / nouveautés        — new features with screenshot + 1 benefit
+ 7. Coulisses / Louiz           — light, human posts; seasonal greetings (Ramadan, Eid, mariages)
+Mix per week (4–5 posts): 2 educational tips · 1 feature · 1 mistake/warning or FAQ · 1 light/seasonal.
+Every educational post ends with a soft CTA: read the guide (orgest.tech/blog/<slug>) or ask for a demo on WhatsApp.
+
+--------------------------------------------------------------------
+14. CALLS TO ACTION
+--------------------------------------------------------------------
+FR: « Demander une démo sur WhatsApp » · « Lire le guide complet » · « Essayer Orgest avec vos articles »
+AR: « طلب عرض تجريبي عبر واتساب » · « قرا الدليل كامل » · « جرب Orgest بالسلعة ديالك »
+Link in bio / URL: https://orgest.tech (pricing section: https://orgest.tech/#pricing · blog: https://orgest.tech/blog)
+WhatsApp: +212 680 376 294 — in graphics write "+212 680 376 294"; in links use https://wa.me/212680376294 with a
+  prefilled message (e.g. "Bonjour, je voudrais une démonstration d'Orgest.").
+
+--------------------------------------------------------------------
+15. HASHTAGS & HANDLES (suggested — adjust to real handles)
+--------------------------------------------------------------------
+Brand: #Orgest   Core: #bijouterie #bijouterieMaroc #orMaroc #bijoutier #gestionboutique #logicielbijouterie
+AR: #مجوهرات #ذهب_المغرب #مول_الذهب #تقسيط
+Use 5–8 per post; brand + 2 pillar tags + 2–3 reach tags. Put in the first comment on Instagram.
+
+--------------------------------------------------------------------
+16. ACCESSIBILITY & QUALITY CHECKLIST
+--------------------------------------------------------------------
+[ ] Text contrast ≥ 4.5:1 (gold text only on Ink Black; Gold Bronze on light)
+[ ] Min font size: 28 px on 1080-wide graphics (body), 48 px+ for headlines
+[ ] Max ~30 words on a graphic; one message; one CTA
+[ ] Arabic is RTL-aligned and not letter-spaced; numerals stay LTR
+[ ] Alt text written for every image (describe the message, not just "image")
+[ ] Captions/subtitles on all videos
+[ ] No real customer names, phones, or prices in screenshots; examples labeled fictional
+[ ] Logo clear space respected; only one mascot; max 3 colors besides neutrals
+[ ] Numbers/calculations double-checked (e.g. 12,00 g × 0,97 = 11,64 g ; 11,64 × 400 = 4 656 DH)
+
+--------------------------------------------------------------------
+17. QUICK TOKENS (copy-paste)
+--------------------------------------------------------------------
+CSS variables:
+  --gold:#F2B630; --gold-300:#F5C443; --gold-100:#FEEA89; --gold-50:#FFF8E1; --gold-600:#C98A0B; --gold-700:#8A6209;
+  --black:#14120E; --ink:#1F1A12; --muted:#6B6453; --cream:#E7E4B8; --bg:#F7F4EC; --surface:#FFFFFF; --border:#E9E2D2;
+  --ok:#17613A; --warn:#8A5A00; --bad:#A12B2B; --wa:#1A7F43; --radius:12px; (cards 18px)
+Font: font-family:'Readex Pro',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+Canva/Figma palette order: #F2B630, #14120E, #F7F4EC, #8A6209, #FFF8E1, #E7E4B8, #1F1A12, #6B6453
+Icon grid: 24×24, stroke 1.8, round caps/joins, no fill.
+
+--------------------------------------------------------------------
+18. EXAMPLE BRIEFS (for the future skill to follow)
+--------------------------------------------------------------------
+Example 1 — Instagram tip (FR, 1080×1350, Template A)
+  Eyebrow: CARATS · Headline: « 18K, 21K ou 24K : quel prix au gramme ? » · Card formula: « Valeur de l'or = prix 24K × carat ÷ 24 » ·
+  Mini example: « 700 DH/g en 24K → 525 DH/g en 18K (prix fictif) » · Louiz thinking · Footer: logo + orgest.tech/blog
+  Caption: 2 short lines + 1 question to the audience + CTA + hashtags.
+Example 2 — Story (AR, 1080×1920, Template C)
+  Louiz worried · « غلطة كتكلف: استعمال ثمن البارح فـ شراء الذهب القديم » · 3 bullets · CTA: « جرب Orgest » sticker/link.
+Example 3 — Reel 20 s (FR)
+  0–2 s « Un client vous apporte une vieille gourmette… » → 2–8 s weighing + entering 12,00 g, carat 18K, déduction 3 % →
+  8–14 s total « 4 656 DH » appears with the receipt (prix fictif) → 14–20 s Louiz celebrate + « Orgest calcule, vous vendez »
+  + WhatsApp number.
+
+--------------------------------------------------------------------
+19. DON'TS (hard rules)
+--------------------------------------------------------------------
+- No colors outside this palette (no purple/blue gradients as brand colors; tints are for small chips only).
+- No stock-gold glitter, fireworks, or fake luxury effects; no neon.
+- No real gold price, exchange rate, or legal/financial promise.
+- No claims about security certifications, user numbers, or partnerships we don't have.
+- No competitor names. No political or religious content. Respect Ramadan/Eid greetings: simple, warm, no sales push.
+- Never alter the logo or the mascot's proportions.
+
+END OF PACK

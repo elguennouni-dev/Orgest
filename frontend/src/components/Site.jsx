@@ -71,7 +71,7 @@ export function SiteFooter() {
         </div>
         <div className="col"><strong>{t('site.product')}</strong><a href="/#features">{t('site.features')}</a><a href="/#pricing">{t('site.pricing')}</a><Link to="/login">{t('site.login')}</Link></div>
         <div className="col"><strong>{t('site.blog')}</strong><Link to="/blog">{t('site.blog')}</Link></div>
-        <div className="col"><strong>{t('site.support')}</strong><a href={waLink(t('landing.waMessage'))} target="_blank" rel="noopener noreferrer">{t('site.contact')}</a></div>
+        <div className="col"><strong>{t('site.support')}</strong><a href={waLink(t('landing.waMessage'))} target="_blank" rel="noopener noreferrer">{t('site.contact')}</a><a href="https://www.instagram.com/orgest.ma/" target="_blank" rel="noopener noreferrer me" aria-label="Instagram @orgest.ma"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={{ verticalAlign: '-3px', marginInlineEnd: 6 }}><rect x="3" y="3" width="18" height="18" rx="5" /><circle cx="12" cy="12" r="4" /><path d="M17.5 6.5h.01" /></svg>Instagram</a></div>
       </div>
       <div className="copy">{t('site.made')}</div>
     </footer>
