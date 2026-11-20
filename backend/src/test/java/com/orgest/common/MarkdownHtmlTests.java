@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 class MarkdownHtmlTests {
     @Test void rendersHeadingsListsAndEmphasis() {
         String h = MarkdownHtml.render("## Titre\nUn **gras** et *italique* et `code`.\n\n- a\n- b\n\n1. un\n2. deux\n\n> formule");
-        assertTrue(h.contains("<h2>Titre</h2>"));
+        assertTrue(h.contains("<h2 id=\"s1\">Titre</h2>"));
         assertTrue(h.contains("<strong>gras</strong>") && h.contains("<em>italique</em>") && h.contains("<code>code</code>"));
         assertTrue(h.contains("<ul>\n<li>a</li>\n<li>b</li>\n</ul>"));
         assertTrue(h.contains("<ol>\n<li>un</li>\n<li>deux</li>\n</ol>"));
