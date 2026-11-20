@@ -7,7 +7,7 @@ import { ErrorBox, Field, Loading, PageHead } from '../../components/ui.jsx';
 import Markdown from '../../components/Markdown.jsx';
 
 const slugify = (s) => s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 120);
-const EMPTY = { slug: '', title: '', excerpt: '', content: '', category: '', coverAlt: '', metaTitle: '', metaDescription: '', keywords: '', readMinutes: 3, published: false };
+const EMPTY = { slug: '', title: '', excerpt: '', content: '', category: '', coverAlt: '', metaTitle: '', metaDescription: '', keywords: '', readMinutes: 3, published: false, lang: 'fr' };
 
 export default function PostEditor() {
   const { t } = useI18n();
@@ -33,7 +33,8 @@ export default function PostEditor() {
     ['blogA.ck.title', (f.metaTitle || f.title).length >= 30 && (f.metaTitle || f.title).length <= 60],
     ['blogA.ck.desc', f.metaDescription.length >= 120 && f.metaDescription.length <= 160],
     ['blogA.ck.words', words >= 300],
-    ['blogA.ck.h2', (f.content.match(/^##\s+/gm) || []).length >= 2],
+    ['blogA.ck.h2', (f.content.match(/^##\s+/gm) || []).length >= 3],
+    ['blogA.ck.faq', /^##\s+.*(faq|questions fr|أسئلة)/im.test(f.content)],
     ['blogA.ck.cover', !!cover && f.coverAlt.trim().length > 0],
     ['blogA.ck.kw', f.keywords.trim().length > 0],
   ];
@@ -74,8 +75,9 @@ export default function PostEditor() {
         <div className="stack">
           <div className="card stack">
             <Field label={t('blogA.t')}><input className="input" required maxLength={160} value={f.title} onChange={(e) => set('title', e.target.value)} dir="auto" /></Field>
-            <div className="grid g2">
+            <div className="grid g3">
               <Field label={t('blogA.slug')} hint={t('blogA.slugHint')}><input className="input" required pattern="[a-z0-9]+(-[a-z0-9]+)*" minLength={3} maxLength={120} value={f.slug} onChange={(e) => { setSlugTouched(true); set('slug', e.target.value); }} dir="ltr" /></Field>
+              <Field label={t('blogA.lang')}><select value={f.lang} onChange={(e) => set('lang', e.target.value)}><option value="fr">Français</option><option value="ar">العربية</option></select></Field>
               <Field label={t('blogA.category')}><input className="input" maxLength={60} value={f.category} onChange={(e) => set('category', e.target.value)} dir="auto" /></Field>
             </div>
             <Field label={t('blogA.excerpt')} hint={`${f.excerpt.length}/300`}><textarea maxLength={300} rows={2} value={f.excerpt} onChange={(e) => set('excerpt', e.target.value)} dir="auto" /></Field>
@@ -88,8 +90,8 @@ export default function PostEditor() {
               </div>
             </div>
             {tab === 'edit'
-              ? <textarea required rows={22} maxLength={60000} value={f.content} onChange={(e) => set('content', e.target.value)} dir="auto" style={{ fontFamily: 'ui-monospace, Menlo, monospace', fontSize: 14 }} />
-              : <div className="b-article"><div className="body" dir="auto" style={{ maxWidth: 'none' }}><Markdown source={f.content} /></div></div>}
+              ? <textarea required rows={22} maxLength={60000} value={f.content} onChange={(e) => set('content', e.target.value)} dir={f.lang === 'ar' ? 'rtl' : 'ltr'} style={{ fontFamily: 'ui-monospace, Menlo, monospace', fontSize: 14 }} />
+              : <div className="b-article" lang={f.lang} dir={f.lang === 'ar' ? 'rtl' : 'ltr'}><div className="body" style={{ maxWidth: 'none' }}><Markdown source={f.content} /></div></div>}
             <span className="hint">{t('blogA.mdHelp')}</span>
           </div>
         </div>

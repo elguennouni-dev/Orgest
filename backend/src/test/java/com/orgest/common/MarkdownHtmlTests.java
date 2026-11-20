@@ -39,4 +39,35 @@ class MarkdownHtmlTests {
         String t = MarkdownHtml.plain("## Titre\nUn **gras** [lien](https://x.com) `c`\n> cite");
         assertEquals("Titre\nUn gras lien c\ncite", t);
     }
+
+    @Test void h2GetSequentialAnchorsAndHeadingsMatch() {
+        String src = "## Un\ntexte\n### Sous\n## Deux";
+        assertTrue(MarkdownHtml.render(src).contains("<h2 id=\"s1\">Un</h2>") && MarkdownHtml.render(src).contains("<h2 id=\"s2\">Deux</h2>"));
+        var hs = MarkdownHtml.headings(src);
+        assertEquals(2, hs.size());
+        assertEquals("s2", hs.get(1).id());
+        assertEquals("Deux", hs.get(1).text());
+    }
+
+    @Test void rendersTablesWithHeaderAndEscapesCells() {
+        String h = MarkdownHtml.render("| Carat | Or pur |\n| --- | --- |\n| 18K | **75 %** |\n| <b> | 87,5 % |");
+        assertTrue(h.contains("<thead><tr><th>Carat</th><th>Or pur</th></tr></thead>"));
+        assertTrue(h.contains("<td>18K</td><td><strong>75 %</strong></td>"));
+        assertTrue(h.contains("<td>&lt;b&gt;</td>"));
+    }
+
+    @Test void twoTablesSeparatedByBlankLineStaySeparate() {
+        String h = MarkdownHtml.render("| a |\n| - |\n| 1 |\n\n| b |\n| - |\n| 2 |");
+        assertEquals(2, h.split("<table>", -1).length - 1);
+    }
+
+    @Test void extractsFaqPairsUnderFaqHeadingOnly() {
+        String src = "## Intro\n### Pas une question\nignorée\n\n## Questions fréquentes\n### Q1 ?\nRéponse **un**.\n### Q2 ?\nRéponse deux.";
+        var qa = MarkdownHtml.faq(src);
+        assertEquals(2, qa.size());
+        assertEquals("Q1 ?", qa.get(0)[0]);
+        assertEquals("Réponse un.", qa.get(0)[1]);
+        assertEquals("Réponse deux.", qa.get(1)[1]);
+        assertTrue(MarkdownHtml.faq("## Intro\n### Q ?\nA").isEmpty());
+    }
 }

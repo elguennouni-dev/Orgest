@@ -60,18 +60,38 @@ public final class MarkdownHtml {
         return out.toString();
     }
 
+    private static final Pattern TABLE_ROW = Pattern.compile("^\\|.*\\|$");
+    private static final Pattern TABLE_SEP = Pattern.compile("^\\|?\\s*:?-{2,}:?\\s*(\\|\\s*:?-{2,}:?\\s*)*\\|?$");
+
     private record Block(String type, List<String> items) {}
+
+    private static List<String> cells(String row) {
+        String r = row.strip();
+        if (r.startsWith("|")) r = r.substring(1);
+        if (r.endsWith("|")) r = r.substring(0, r.length() - 1);
+        List<String> out = new ArrayList<>();
+        for (String c : r.split("\\|", -1)) out.add(c.strip());
+        return out;
+    }
 
     private static List<Block> parse(String source) {
         List<Block> blocks = new ArrayList<>();
         List<String> buf = new ArrayList<>();
         Block[] list = {null};
+        Block[] table = {null};
         Runnable flush = () -> { if (!buf.isEmpty()) { blocks.add(new Block("p", List.of(String.join(" ", buf)))); buf.clear(); } };
         Runnable flushList = () -> { if (list[0] != null) { blocks.add(list[0]); list[0] = null; } };
         for (String raw : (source == null ? "" : source).replace("\r", "").split("\n", -1)) {
             String l = raw.stripTrailing();
             Matcher m;
-            if (l.isBlank()) { flush.run(); flushList.run(); continue; }
+            if (l.isBlank()) { flush.run(); flushList.run(); table[0] = null; continue; }
+            if (TABLE_ROW.matcher(l.strip()).matches()) {
+                flush.run(); flushList.run();
+                if (table[0] == null) { table[0] = new Block("table", new ArrayList<>()); blocks.add(table[0]); }
+                table[0].items.add(l.strip());
+                continue;
+            }
+            table[0] = null;
             if ((m = H.matcher(l)).matches()) { flush.run(); flushList.run(); blocks.add(new Block("h" + m.group(1).length(), List.of(m.group(2)))); continue; }
             if ((m = UL.matcher(l)).matches()) { flush.run(); if (list[0] == null || !list[0].type.equals("ul")) { flushList.run(); list[0] = new Block("ul", new ArrayList<>()); } list[0].items.add(m.group(1)); continue; }
             if ((m = OL.matcher(l)).matches()) { flush.run(); if (list[0] == null || !list[0].type.equals("ol")) { flushList.run(); list[0] = new Block("ol", new ArrayList<>()); } list[0].items.add(m.group(1)); continue; }
@@ -83,11 +103,59 @@ public final class MarkdownHtml {
         return blocks;
     }
 
+    /** Titres de niveau 2 avec leur ancre (s1, s2…) — mêmes ids que Markdown.jsx. */
+    public record Heading(String id, String text) {}
+
+    public static List<Heading> headings(String source) {
+        List<Heading> out = new ArrayList<>();
+        for (Block b : parse(source)) if (b.type.equals("h2")) out.add(new Heading("s" + (out.size() + 1), plain(b.items.get(0)).strip()));
+        return out;
+    }
+
+    /** Paires question/réponse : sous un titre H2 « FAQ… », chaque H3 est une question et les paragraphes suivants sa réponse. */
+    public static List<String[]> faq(String source) {
+        List<String[]> out = new ArrayList<>();
+        boolean in = false; String q = null; StringBuilder a = new StringBuilder();
+        for (Block b : parse(source)) {
+            if (b.type.equals("h2")) {
+                if (q != null && a.length() > 0) out.add(new String[] {q, a.toString().strip()});
+                q = null; a.setLength(0);
+                String t = plain(b.items.get(0)).toLowerCase();
+                in = t.contains("faq") || t.contains("questions fréquentes") || t.contains("أسئلة") || t.contains("الأسئلة");
+            } else if (in && b.type.equals("h3")) {
+                if (q != null && a.length() > 0) out.add(new String[] {q, a.toString().strip()});
+                q = plain(b.items.get(0)).strip(); a.setLength(0);
+            } else if (in && q != null && (b.type.equals("p") || b.type.equals("ul") || b.type.equals("ol"))) {
+                for (String it : b.items) a.append(plain(it)).append(' ');
+            }
+        }
+        if (q != null && a.length() > 0) out.add(new String[] {q, a.toString().strip()});
+        return out;
+    }
+
     public static String render(String source) {
         StringBuilder sb = new StringBuilder();
+        int h2n = 0;
         for (Block b : parse(source)) {
             switch (b.type) {
-                case "h2" -> sb.append("<h2>").append(inline(b.items.get(0))).append("</h2>\n");
+                case "table" -> {
+                    List<String> rows = new ArrayList<>(b.items);
+                    sb.append("<table>\n");
+                    int start = 0;
+                    if (rows.size() >= 2 && TABLE_SEP.matcher(rows.get(1).strip()).matches()) {
+                        sb.append("<thead><tr>");
+                        for (String c : cells(rows.get(0))) sb.append("<th>").append(inline(c)).append("</th>");
+                        sb.append("</tr></thead>\n"); start = 2;
+                    }
+                    sb.append("<tbody>\n");
+                    for (int i = start; i < rows.size(); i++) {
+                        sb.append("<tr>");
+                        for (String c : cells(rows.get(i))) sb.append("<td>").append(inline(c)).append("</td>");
+                        sb.append("</tr>\n");
+                    }
+                    sb.append("</tbody></table>\n");
+                }
+                case "h2" -> sb.append("<h2 id=\"s").append(++h2n).append("\">").append(inline(b.items.get(0))).append("</h2>\n");
                 case "h3" -> sb.append("<h3>").append(inline(b.items.get(0))).append("</h3>\n");
                 case "ul", "ol" -> {
                     sb.append('<').append(b.type).append(">\n");

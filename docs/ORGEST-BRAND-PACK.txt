@@ -26,7 +26,7 @@ Hero line AR: « دبّر محل الذهب ديالك بسهولة. »
 - Audience: owners and staff of jewelry shops in Morocco (often 30–60, phone-first, WhatsApp-native, speak Darija/Arabic
   and French). Secondary: artisans/workshops, gold traders.
 - Proof points we can state truthfully: stock by gram with photos & quantities; sold-out items stay in history (never
-  deleted); installment schedules exact to the centime; old-gold trade-in deducted on the same receipt; 80 mm and A4
+  deleted); installment schedules exact to the centime; old-gold trade-in deducted on the same receipt; A5 and 80 mm
   receipts; Excel reports; French + Arabic (RTL); WhatsApp reminders for due installments.
 - Do not invent: user counts, testimonials, certifications, discounts, or real gold prices. Any price in an example must
   be labeled "prix fictif / مثال" (example only).

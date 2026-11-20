@@ -65,12 +65,12 @@ public class ContentService {
 
     // ---------- Blog ----------
     private static PostSummary summary(BlogPost p) {
-        return new PostSummary(p.id, p.slug, p.title, p.excerpt, p.category, p.cover, p.coverAlt, p.readMinutes, p.published, p.publishedAt, p.updatedAt);
+        return new PostSummary(p.id, p.slug, p.title, p.excerpt, p.category, p.cover, p.coverAlt, p.readMinutes, p.published, p.publishedAt, p.updatedAt, p.lang);
     }
 
     private static PostDto dto(BlogPost p) {
         return new PostDto(p.id, p.slug, p.title, p.excerpt, p.content, p.category, p.cover, p.coverAlt, p.metaTitle,
-                p.metaDescription, p.keywords, p.readMinutes, p.published, p.publishedAt, p.updatedAt);
+                p.metaDescription, p.keywords, p.readMinutes, p.published, p.publishedAt, p.updatedAt, p.lang);
     }
 
     public List<PostSummary> publicPosts() { return posts.findByPublishedTrueOrderByPublishedAtDesc().stream().map(ContentService::summary).toList(); }
@@ -92,6 +92,7 @@ public class ContentService {
         p.metaDescription = Text.blankToNull(Text.clean(in.metaDescription(), 170));
         p.keywords = Text.blankToNull(Text.clean(in.keywords(), 200));
         p.readMinutes = in.readMinutes();
+        if (in.lang() != null) p.lang = in.lang();
         if (in.published() && !p.published) p.publishedAt = Instant.now();
         if (!in.published()) p.publishedAt = null;
         p.published = in.published();

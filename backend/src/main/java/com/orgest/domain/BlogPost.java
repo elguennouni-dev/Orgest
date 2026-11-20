@@ -17,6 +17,7 @@ public class BlogPost {
     @Column(name = "meta_title") public String metaTitle;
     @Column(name = "meta_description") public String metaDescription;
     public String keywords;
+    @Column(nullable = false, length = 2) public String lang = "fr";
     @Column(name = "read_minutes", nullable = false) public int readMinutes = 3;
     @Column(nullable = false) public boolean published;
     @Column(name = "published_at") public Instant publishedAt;

@@ -174,12 +174,13 @@ public final class Dtos {
                          @Size(max = 170) String metaDescription,
                          @Size(max = 200) String keywords,
                          @NotNull @Min(1) @Max(60) Integer readMinutes,
-                         boolean published) {}
+                         boolean published,
+                         @Pattern(regexp = "^(fr|ar)$") String lang) {}
 
     public record PostSummary(Long id, String slug, String title, String excerpt, String category, String cover,
-                              String coverAlt, int readMinutes, boolean published, Instant publishedAt, Instant updatedAt) {}
+                              String coverAlt, int readMinutes, boolean published, Instant publishedAt, Instant updatedAt, String lang) {}
 
     public record PostDto(Long id, String slug, String title, String excerpt, String content, String category, String cover,
                           String coverAlt, String metaTitle, String metaDescription, String keywords, int readMinutes,
-                          boolean published, Instant publishedAt, Instant updatedAt) {}
+                          boolean published, Instant publishedAt, Instant updatedAt, String lang) {}
 }

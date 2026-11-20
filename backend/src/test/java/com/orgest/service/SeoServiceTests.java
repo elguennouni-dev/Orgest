@@ -27,7 +27,7 @@ class SeoServiceTests {
     private static final Instant UPD = Instant.parse("2026-03-05T09:00:00Z");
 
     private static PostDto post(String slug, String title, String body, String metaTitle, String metaDesc) {
-        return new PostDto(1L, slug, title, "Extrait", body, "Cat", null, null, metaTitle, metaDesc, "or, carat", 3, true, PUB, UPD);
+        return new PostDto(1L, slug, title, "Extrait", body, "Cat", null, null, metaTitle, metaDesc, "or, carat", 3, true, PUB, UPD, "fr");
     }
 
     @BeforeEach
@@ -40,7 +40,7 @@ class SeoServiceTests {
                 new SubPlanDto(1L, 1, new BigDecimal("200.00"), false, true),
                 new SubPlanDto(2L, 12, new BigDecimal("1800.00"), true, true),
                 new SubPlanDto(3L, 6, new BigDecimal("999.00"), false, false)));
-        when(content.publicPosts()).thenReturn(List.of(new PostSummary(1L, "reprise-or", "Reprise d'or", "Extrait", "Cat", null, null, 3, true, PUB, UPD)));
+        when(content.publicPosts()).thenReturn(List.of(new PostSummary(1L, "reprise-or", "Reprise d'or", "Extrait", "Cat", null, null, 3, true, PUB, UPD, "fr")));
         when(content.publicPost("reprise-or")).thenReturn(post("reprise-or", "Reprise d'or <b>", "## Étape\nTexte **gras** <script>x</script>", null, null));
         when(content.publicPost("absent")).thenThrow(AppException.notFound());
     }
@@ -65,7 +65,7 @@ class SeoServiceTests {
         assertTrue(h.contains("property=\"og:type\" content=\"article\""));
         assertTrue(h.contains("\"@type\":\"Article\"") && h.contains("\"@type\":\"BreadcrumbList\""));
         assertTrue(h.contains("<h1>Reprise d&#39;or &lt;b&gt;</h1>"));
-        assertTrue(h.contains("<h2>Étape</h2>") && h.contains("<strong>gras</strong>"));
+        assertTrue(h.contains("<h2 id=\"s1\">Étape</h2>") && h.contains("<strong>gras</strong>"));
         assertEquals(1, h.split("<meta name=\"robots\"", -1).length - 1, "une seule balise robots");
         assertTrue(h.contains("index, follow"));
     }
@@ -138,5 +138,21 @@ class SeoServiceTests {
         SeoService s = new SeoService(content, "", "/nonexistent/index.html", "", "1");
         String h = s.blog(BASE).html();
         assertTrue(h.contains("<title>") && h.contains("rel=\"canonical\""));
+    }
+
+    @Test void arabicPostIsRtlWithLocaleTocAndFaqSchema() {
+        String md = "## الخطوة الأولى\nنص\n\n## الخطوة الثانية\nنص\n\n## الخطوة الثالثة\nنص\n\n## أسئلة شائعة\n### كم يستغرق الأمر؟\nدقيقة واحدة.\n### هل هو مجاني؟\nلا.";
+        when(content.publicPost("ar-post")).thenReturn(new PostDto(2L, "ar-post", "عنوان المقال", "مقتطف", md, "تقسيط", null, null, null, null, "ذهب", 4, true, PUB, UPD, "ar"));
+        String h = seo.post(BASE, "ar-post").html();
+        assertTrue(h.contains("<html lang=\"ar\" dir=\"rtl\">"));
+        assertTrue(h.contains("property=\"og:locale\" content=\"ar_MA\""));
+        assertTrue(h.contains("\"inLanguage\":\"ar\""));
+        assertTrue(h.contains("<h2 id=\"s1\">الخطوة الأولى</h2>") && h.contains("href=\"#s2\""));
+        assertTrue(h.contains("\"@type\":\"FAQPage\"") && h.contains("كم يستغرق الأمر؟"));
+        assertTrue(h.contains("للإخبار والتوضيح"));
+    }
+
+    @Test void frenchPostKeepsLtrHtmlTag() {
+        assertTrue(seo.post(BASE, "reprise-or").html().contains("<html lang=\"fr\" dir=\"ltr\">"));
     }
 }

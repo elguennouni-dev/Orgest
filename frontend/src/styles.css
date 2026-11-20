@@ -766,3 +766,15 @@ tbody tr:nth-child(5) { animation-delay: .12s; } tbody tr:nth-child(n+6) { anima
 .post-cta { margin-top: 28px; padding: 22px; border-radius: 18px; background: #FFF4D6; border: 1px solid #F0DC9B; display: flex; flex-direction: column; gap: 10px; }
 .post-cta h2 { margin: 0; font-size: 22px; } .post-cta p { margin: 0; color: #5C5141; }
 .related { margin-top: 24px; } .related h2 { font-size: 20px; } .related ul { padding-inline-start: 20px; display: flex; flex-direction: column; gap: 6px; }
+
+/* ---------- Blog : sommaire, tableaux, auteur, arabe (RTL) ---------- */
+.toc { background: #FFF8E1; border: 1px solid #F0DC9B; border-radius: 16px; padding: 16px 20px; }
+.toc ol { margin: 8px 0 0; padding-inline-start: 22px; display: flex; flex-direction: column; gap: 6px; } .toc a { color: var(--gold-700); text-decoration: none; font-weight: 500; } .toc a:hover { text-decoration: underline; }
+.md-h2 { scroll-margin-top: 90px; }
+.b-article .body table { width: 100%; border-collapse: collapse; font-size: 15px; } .b-article .body th, .b-article .body td { padding: 10px 12px; border-bottom: 1px solid var(--border); text-align: start; }
+.b-article .body th { background: #FFF8E1; font-weight: 600; } .tablewrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 14px; background: #fff; }
+.disclaimer { margin: 6px 0 0; font-size: 13px; color: var(--muted); border-inline-start: 3px solid var(--gold); padding-inline-start: 12px; }
+.author { display: flex; gap: 14px; align-items: center; padding: 16px; border: 1px solid var(--border); border-radius: 16px; background: #fff; margin-top: 20px; }
+.author p { margin: 4px 0 0; color: #5C5141; font-size: 14px; line-height: 1.6; }
+.b-article[dir="rtl"] .body { text-align: right; } .b-article[dir="rtl"] .body h1, .b-article[dir="rtl"] .body h2, .b-article[dir="rtl"] .body h3 { line-height: 1.5; letter-spacing: 0; }
+.b-article[dir="rtl"] .body p, .b-article[dir="rtl"] .body li { line-height: 1.95; font-size: 17px; } .b-article[dir="rtl"] .formula { border-inline-start: 4px solid var(--gold); }

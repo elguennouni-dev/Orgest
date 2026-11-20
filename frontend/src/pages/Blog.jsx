@@ -18,10 +18,12 @@ export default function Blog() {
   useSeo({ title: 'Blog Orgest — Conseils pour bijoutiers : or, stock, à tempérament', description: 'Guides courts et concrets pour les bijoutiers : cours de l’or, reprise d’or ancien, ventes à tempérament, inventaire et gestion de boutique.' });
   const { data, loading } = useApi('/public/posts');
   const posts = data || [];
-  const cats = useMemo(() => ['Tous', ...new Set(posts.map((p) => p.category).filter(Boolean))], [posts]);
+  const byLang = useMemo(() => posts.filter((p) => lang === 'all' || p.lang === lang), [posts, lang]);
+  const cats = useMemo(() => ['Tous', ...new Set(byLang.map((p) => p.category).filter(Boolean))], [byLang]);
   const [cat, setCat] = useState('Tous');
+  const [lang, setLang] = useState('all');
   const [q, setQ] = useState('');
-  const shown = useMemo(() => posts.filter((a) => (cat === 'Tous' || a.category === cat) && (!q.trim() || ((a.title || '') + ' ' + (a.excerpt || '')).toLowerCase().includes(q.trim().toLowerCase()))), [posts, cat, q]);
+  const shown = useMemo(() => byLang.filter((a) => (cat === 'Tous' || a.category === cat) && (!q.trim() || ((a.title || '') + ' ' + (a.excerpt || '')).toLowerCase().includes(q.trim().toLowerCase()))), [byLang, cat, q]);
   const [lead, ...rest] = shown;
   const wa = waLink('Bonjour, je voudrais proposer un sujet pour le blog Orgest.');
 
@@ -44,11 +46,18 @@ export default function Blog() {
       </section>
 
       <main className="b-main">
+        {posts.some((p) => p.lang === 'ar') && (
+          <div className="chips" role="group" aria-label="Langue">
+            {[['all', 'Tous · الكل'], ['fr', 'Français'], ['ar', 'العربية']].map(([k, label]) => (
+              <button key={k} type="button" className={'chip' + (lang === k ? ' on' : '')} aria-pressed={lang === k} onClick={() => { setLang(k); setCat('Tous'); }}>{label}</button>
+            ))}
+          </div>
+        )}
         {cats.length > 2 && (
           <div className="chips" role="group" aria-label="Filtrer par rubrique">
             {cats.map((c) => (
               <button key={c} type="button" className={'chip' + (cat === c ? ' on' : '')} aria-pressed={cat === c} onClick={() => setCat(c)}>
-                {c} <span style={{ opacity: .6 }}>{c === 'Tous' ? posts.length : posts.filter((a) => a.category === c).length}</span>
+                {c} <span style={{ opacity: .6 }}>{c === 'Tous' ? byLang.length : byLang.filter((a) => a.category === c).length}</span>
               </button>
             ))}
           </div>
@@ -60,7 +69,7 @@ export default function Blog() {
               <div className="vis"><Thumb a={lead} size={200} /></div>
               <div className="txt">
                 <div><span className="b-tag">À LA UNE{lead.category ? ` · ${lead.category}` : ''}</span> · {lead.readMinutes} min de lecture</div>
-                <h2 dir="auto">{lead.title}</h2>
+                <h2 dir="auto" lang={lead.lang}>{lead.title}</h2>
                 <p dir="auto">{lead.excerpt}</p>
               </div>
             </Link>

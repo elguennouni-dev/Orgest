@@ -43,9 +43,12 @@ public class SeoService {
     public static final String BLOG_DESC = "Guides courts et concrets pour les bijoutiers : cours de l’or, reprise d’or ancien, ventes à tempérament, inventaire et gestion de boutique.";
     private static final Pattern HOST = Pattern.compile("^[A-Za-z0-9.-]{1,100}(:\\d{1,5})?$");
     private static final Pattern TITLE = Pattern.compile("<title>.*?</title>", Pattern.DOTALL);
+    private static final Pattern HTML_TAG = Pattern.compile("<html[^>]*>");
     private static final Pattern ROBOTS_META = Pattern.compile("<meta[^>]+name=\"robots\"[^>]*>");
     private static final DateTimeFormatter DAY = DateTimeFormatter.ISO_LOCAL_DATE.withZone(ZoneOffset.UTC);
     private static final DateTimeFormatter RFC822 = DateTimeFormatter.ofPattern("EEE, dd MMM yyyy HH:mm:ss 'GMT'", java.util.Locale.ENGLISH).withZone(ZoneOffset.UTC);
+    static final String DISCLAIMER_FR = "Ce guide est informatif : les prix et pourcentages cités sont des exemples et ne remplacent ni votre prix du jour, ni l’avis d’un comptable ou d’un juriste.";
+    static final String DISCLAIMER_AR = "هذا الدليل للإخبار والتوضيح فقط: الأثمنة والنسب المذكورة أمثلة ولا تغني عن ثمن اليوم المعتمد عندك ولا عن استشارة محاسب أو مستشار قانوني.";
     private static final String FALLBACK_TEMPLATE = "<!doctype html><html lang=\"fr\"><head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><title>Orgest</title></head><body><div id=\"root\"></div></body></html>";
 
     private final ContentService content;
@@ -84,13 +87,13 @@ public class SeoService {
         String from = cheapest(content.publicPlans());
         List<Faq> l = new ArrayList<>();
         l.add(new Faq("Qu’est-ce qu’Orgest ?", "Orgest est un logiciel en ligne de gestion pour bijouteries et commerçants d’or au Maroc : stock au gramme, ventes, échange d’or ancien, ventes à tempérament, suivi de l’atelier et rapports, depuis un ordinateur, une tablette ou un téléphone."));
-        l.add(new Faq("Orgest convient-il à une petite bijouterie ?", "Oui. L’application est pensée pour le comptoir : une seule personne peut saisir le cours du jour, encaisser une vente et imprimer le reçu en quelques secondes. Vous pouvez ajouter des employés avec leurs propres accès si vous le souhaitez."));
+        l.add(new Faq("Orgest convient-il à une petite bijouterie ?", "Oui. L’application est pensée pour le comptoir : une seule personne peut saisir le cours du jour, encaisser une vente et imprimer le reçu en quelques secondes."));
         l.add(new Faq("Peut-on gérer les ventes à tempérament (paiement échelonné) ?", "Oui. Orgest calcule l’acompte, le reste à payer et un échéancier mensuel exact au centime, puis suit chaque paiement et les retards pour vous aider à relancer vos clients, par exemple sur WhatsApp."));
         l.add(new Faq("Comment Orgest calcule-t-il le prix d’un bijou en or ?", "Le prix se calcule à partir du poids, du prix du jour par carat (18K, 21K, 24K) et de la main d’œuvre. L’or ancien repris en échange est converti en poids net puis déduit automatiquement du total, et tout figure sur le reçu."));
         l.add(new Faq("Le stock est-il suivi pièce par pièce ?", "Oui. Chaque article garde sa photo, son carat, son poids et sa quantité. Quand un article est vendu, il reste dans l’historique avec une quantité à zéro au lieu d’être supprimé."));
         l.add(new Faq("Orgest existe-t-il en arabe ?", "Oui. L’interface est disponible en français et en arabe (de droite à gauche), et la langue choisie est conservée d’un écran à l’autre."));
-        l.add(new Faq("Quel est le prix d’Orgest ?", from == null ? "Les abonnements sont mensuels ou à durée plus longue, sans frais d’installation. Consultez la section tarifs de la page d’accueil ou écrivez-nous sur WhatsApp."
-                : "Les abonnements démarrent à partir de " + from + " DH par mois, sans frais d’installation, et plus la durée est longue, plus le prix mensuel baisse."));
+        l.add(new Faq("Quel est le prix d’Orgest ?", from == null ? "Les abonnements existent en plusieurs durées, avec toutes les fonctionnalités incluses. Consultez la section tarifs de la page d’accueil ou écrivez-nous sur WhatsApp."
+                : "Les abonnements démarrent à partir de " + from + " DH par mois, avec toutes les fonctionnalités incluses et un support par WhatsApp."));
         l.add(new Faq("Comment essayer Orgest ?", "Contactez-nous sur WhatsApp au +" + whatsapp + " : nous créons votre boutique et vous montrons l’application avec vos propres articles."));
         return l;
     }
@@ -115,7 +118,7 @@ public class SeoService {
         b.append("<main class=\"seo-static\"><h1>").append(esc(BRAND)).append(" : le logiciel de gestion des bijouteries au Maroc</h1>\n")
          .append("<p>").append(esc(HOME_DESC)).append("</p>\n<h2>Fonctionnalités</h2>\n<ul>\n")
          .append("<li><strong>Stock au gramme</strong> : carat, poids, catégorie, photo et quantité de chaque bijou.</li>\n")
-         .append("<li><strong>Ventes et reçus</strong> : prix du jour, main d’œuvre, reçu imprimable (A4 ou ticket 80 mm).</li>\n")
+         .append("<li><strong>Ventes et reçus</strong> : prix du jour, main d’œuvre, reçu imprimable (A5 ou ticket 80 mm).</li>\n")
          .append("<li><strong>Échange et reprise d’or ancien</strong> : poids net déduit automatiquement du total.</li>\n")
          .append("<li><strong>Ventes à tempérament</strong> : acompte, échéancier exact au centime, suivi des retards et rappels WhatsApp.</li>\n")
          .append("<li><strong>Atelier</strong> : or confié à l’artisan, poids remis et rendu, perte.</li>\n")
@@ -159,7 +162,7 @@ public class SeoService {
         faqLd.put("@type", "FAQPage");
         faqLd.put("mainEntity", faq.stream().map(f -> Map.of("@type", "Question", "name", f.q(), "acceptedAnswer", Map.of("@type", "Answer", "text", f.a()))).toList());
         return new Page(200, build(new Meta(HOME_TITLE, HOME_DESC, base + "/", "website", base + "/assets/icon-512.png", null, true,
-                "orgest, logiciel bijouterie maroc, gestion bijouterie, stock or, vente à tempérament, caisse bijoutier"),
+                "orgest, logiciel bijouterie maroc, gestion bijouterie, stock or, vente à tempérament, caisse bijoutier", "fr"),
                 b.toString(), List.of(org, site, app, faqLd)));
     }
 
@@ -169,7 +172,7 @@ public class SeoService {
         List<Map<String, Object>> items = new ArrayList<>();
         int i = 1;
         for (PostSummary p : posts) {
-            b.append("<article><h2><a href=\"/blog/").append(esc(p.slug())).append("\">").append(esc(p.title())).append("</a></h2>");
+            b.append("<article lang=\"").append("ar".equals(p.lang()) ? "ar" : "fr").append("\"><h2><a href=\"/blog/").append(esc(p.slug())).append("\">").append(esc(p.title())).append("</a></h2>");
             if (p.category() != null) b.append("<p><em>").append(esc(p.category())).append("</em></p>");
             if (p.excerpt() != null) b.append("<p>").append(esc(p.excerpt())).append("</p>");
             b.append("</article>\n");
@@ -180,7 +183,7 @@ public class SeoService {
         coll.put("@type", "CollectionPage"); coll.put("name", BLOG_TITLE); coll.put("url", base + "/blog"); coll.put("description", BLOG_DESC); coll.put("inLanguage", "fr");
         coll.put("isPartOf", Map.of("@id", base + "/#website"));
         if (!items.isEmpty()) coll.put("mainEntity", Map.of("@type", "ItemList", "itemListElement", items));
-        return new Page(200, build(new Meta(BLOG_TITLE, BLOG_DESC, base + "/blog", "website", base + "/assets/icon-512.png", null, true, null),
+        return new Page(200, build(new Meta(BLOG_TITLE, BLOG_DESC, base + "/blog", "website", base + "/assets/icon-512.png", null, true, null, "fr"),
                 b.toString(), List.of(coll, breadcrumb(base, null, null))));
     }
 
@@ -188,7 +191,7 @@ public class SeoService {
         PostDto p;
         try { p = content.publicPost(slug); }
         catch (AppException e) {
-            String html = build(new Meta("Article introuvable — " + BRAND, "Cet article n’existe pas ou n’est plus publié.", base + "/blog", "website", null, null, false, null),
+            String html = build(new Meta("Article introuvable — " + BRAND, "Cet article n’existe pas ou n’est plus publié.", base + "/blog", "website", null, null, false, null, "fr"),
                     "<main class=\"seo-static\"><h1>Article introuvable</h1><p><a href=\"/blog\">Retour au blog</a></p></main>", List.of());
             return new Page(404, html);
         }
@@ -196,19 +199,36 @@ public class SeoService {
         String img = p.cover() != null ? base + "/api/public/blog-cover/" + p.cover() : base + "/assets/icon-512.png";
         String title = blank(p.metaTitle()) ? p.title() : p.metaTitle();
         String desc = !blank(p.metaDescription()) ? p.metaDescription() : (!blank(p.excerpt()) ? p.excerpt() : snippet(p.content(), 160));
-        StringBuilder b = new StringBuilder("<main class=\"seo-static\"><article>\n<nav><a href=\"/blog\">Blog</a>");
+        boolean ar = "ar".equals(p.lang());
+        String lang = ar ? "ar" : "fr";
+        StringBuilder b = new StringBuilder("<main class=\"seo-static\"><article lang=\"" + lang + "\" dir=\"" + (ar ? "rtl" : "ltr") + "\">\n<nav><a href=\"/blog\">" + (ar ? "المدونة" : "Blog") + "</a>");
         if (!blank(p.category())) b.append(" › ").append(esc(p.category()));
         b.append("</nav>\n<h1>").append(esc(p.title())).append("</h1>\n");
         if (p.cover() != null) b.append("<img src=\"").append(esc(img)).append("\" alt=\"").append(esc(blank(p.coverAlt()) ? p.title() : p.coverAlt())).append("\">\n");
-        b.append(MarkdownHtml.render(p.content())).append("</article></main>");
+        List<MarkdownHtml.Heading> toc = MarkdownHtml.headings(p.content());
+        if (toc.size() >= 3) {
+            b.append("<nav aria-label=\"").append(ar ? "فهرس المقال" : "Sommaire").append("\"><ol>");
+            for (MarkdownHtml.Heading h : toc) b.append("<li><a href=\"#").append(h.id()).append("\">").append(esc(h.text())).append("</a></li>");
+            b.append("</ol></nav>\n");
+        }
+        b.append(MarkdownHtml.render(p.content()));
+        b.append("<p><em>").append(ar ? DISCLAIMER_AR : DISCLAIMER_FR).append("</em></p></article></main>");
         Map<String, Object> art = new LinkedHashMap<>();
         art.put("@type", "Article"); art.put("headline", p.title()); art.put("description", desc); art.put("image", List.of(img));
         art.put("datePublished", (p.publishedAt() != null ? p.publishedAt() : p.updatedAt()).toString()); art.put("dateModified", p.updatedAt().toString());
-        art.put("inLanguage", "fr"); art.put("mainEntityOfPage", Map.of("@type", "WebPage", "@id", url));
-        art.put("author", Map.of("@type", "Organization", "name", "Équipe " + BRAND, "url", base + "/"));
+        art.put("inLanguage", lang); art.put("mainEntityOfPage", Map.of("@type", "WebPage", "@id", url));
+        art.put("author", Map.of("@type", "Organization", "name", (ar ? "فريق " : "Équipe ") + BRAND, "url", base + "/"));
         art.put("publisher", Map.of("@type", "Organization", "name", BRAND, "logo", Map.of("@type", "ImageObject", "url", base + "/assets/icon-512.png")));
         if (!blank(p.keywords())) art.put("keywords", p.keywords());
-        return new Page(200, build(new Meta(title, desc, url, "article", img, p.updatedAt(), true, p.keywords()), b.toString(), List.of(art, breadcrumb(base, p.title(), url))));
+        List<Map<String, Object>> ld = new ArrayList<>(List.of(art, breadcrumb(base, p.title(), url)));
+        List<String[]> qa = MarkdownHtml.faq(p.content());
+        if (!qa.isEmpty()) {
+            Map<String, Object> f = new LinkedHashMap<>();
+            f.put("@type", "FAQPage");
+            f.put("mainEntity", qa.stream().map(x -> Map.of("@type", "Question", "name", x[0], "acceptedAnswer", Map.of("@type", "Answer", "text", x[1]))).toList());
+            ld.add(f);
+        }
+        return new Page(200, build(new Meta(title, desc, url, "article", img, p.updatedAt(), true, p.keywords(), lang), b.toString(), ld));
     }
 
     private Map<String, Object> breadcrumb(String base, String title, String url) {
@@ -220,7 +240,7 @@ public class SeoService {
     }
 
     // ---------- Injection dans index.html ----------
-    record Meta(String title, String description, String canonical, String type, String image, Instant modified, boolean index, String keywords) {}
+    record Meta(String title, String description, String canonical, String type, String image, Instant modified, boolean index, String keywords, String lang) {}
 
     String build(Meta m, String bodyHtml, List<Map<String, Object>> jsonLd) {
         String t = template();
@@ -230,7 +250,7 @@ public class SeoService {
         h.append("    <meta name=\"robots\" content=\"").append(m.index ? "index, follow, max-image-preview:large, max-snippet:-1" : "noindex, follow").append("\" />\n");
         if (m.index) h.append("    <link rel=\"canonical\" href=\"").append(esc(m.canonical)).append("\" />\n");
         h.append("    <link rel=\"alternate\" type=\"application/rss+xml\" title=\"Blog Orgest\" href=\"/feed.xml\" />\n");
-        h.append("    <meta property=\"og:site_name\" content=\"").append(BRAND).append("\" />\n    <meta property=\"og:locale\" content=\"fr_FR\" />\n");
+        h.append("    <meta property=\"og:site_name\" content=\"").append(BRAND).append("\" />\n    <meta property=\"og:locale\" content=\"" + ("ar".equals(m.lang) ? "ar_MA" : "fr_FR") + "\" />\n");
         h.append("    <meta property=\"og:type\" content=\"").append(m.type).append("\" />\n");
         h.append("    <meta property=\"og:title\" content=\"").append(esc(m.title)).append("\" />\n");
         h.append("    <meta property=\"og:description\" content=\"").append(esc(m.description)).append("\" />\n");
@@ -248,6 +268,8 @@ public class SeoService {
             h.append("    <script type=\"application/ld+json\">").append(jsonSafe(root)).append("</script>\n");
         }
         String out = ROBOTS_META.matcher(t).replaceAll("");
+        boolean ar = "ar".equals(m.lang);
+        out = HTML_TAG.matcher(out).replaceFirst(java.util.regex.Matcher.quoteReplacement("<html lang=\"" + (ar ? "ar" : "fr") + "\" dir=\"" + (ar ? "rtl" : "ltr") + "\">"));
         out = TITLE.matcher(out).replaceFirst(java.util.regex.Matcher.quoteReplacement("<title>" + esc(m.title) + "</title>"));
         int head = out.indexOf("</head>");
         if (head >= 0) out = out.substring(0, head) + h + "  " + out.substring(head);
