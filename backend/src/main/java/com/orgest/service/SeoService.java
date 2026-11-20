@@ -1,8 +1,7 @@
 package com.orgest.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.orgest.common.AppException;
+import com.orgest.common.Json;
 import com.orgest.common.MarkdownHtml;
 import com.orgest.web.Dtos.PostDto;
 import com.orgest.web.Dtos.PostSummary;
@@ -52,7 +51,6 @@ public class SeoService {
     private static final String FALLBACK_TEMPLATE = "<!doctype html><html lang=\"fr\"><head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><title>Orgest</title></head><body><div id=\"root\"></div></body></html>";
 
     private final ContentService content;
-    private final ObjectMapper json = new ObjectMapper();
     private final String siteUrl;
     private final String indexFile;
     private final String indexUrl;
@@ -239,6 +237,57 @@ public class SeoService {
         return Map.of("@type", "BreadcrumbList", "itemListElement", l);
     }
 
+    // ---------- Outils gratuits ----------
+    public static final String TOOLS_TITLE = "Outils gratuits pour bijoutiers — reprise d’or, carats, échéancier";
+    public static final String TOOLS_DESC = "Calculateurs gratuits pour bijoutiers au Maroc : reprise d’or ancien, conversion des carats, échéancier à tempérament au centime. أدوات مجانية لأصحاب محلات الذهب.";
+
+    public Page tools(String base) {
+        StringBuilder b = new StringBuilder("<main class=\"seo-static\"><h1>Outils gratuits pour bijoutiers · أدوات مجانية لأصحاب محلات الذهب</h1>\n<p>").append(esc(TOOLS_DESC)).append("</p>\n");
+        List<Map<String, Object>> items = new ArrayList<>();
+        int i = 1;
+        for (ToolCatalog.Tool t : ToolCatalog.ALL) {
+            b.append("<article lang=\"").append(t.lang()).append("\"><h2><a href=\"/outils/").append(t.slug()).append("\">").append(esc(t.title())).append("</a></h2><p>").append(esc(t.description())).append("</p></article>\n");
+            items.add(Map.of("@type", "ListItem", "position", i++, "url", base + "/outils/" + t.slug(), "name", t.title()));
+        }
+        b.append("<p><a href=\"/\">Accueil</a></p></main>");
+        Map<String, Object> coll = new LinkedHashMap<>();
+        coll.put("@type", "CollectionPage"); coll.put("name", TOOLS_TITLE); coll.put("url", base + "/outils"); coll.put("description", TOOLS_DESC);
+        coll.put("isPartOf", Map.of("@id", base + "/#website")); coll.put("mainEntity", Map.of("@type", "ItemList", "itemListElement", items));
+        Map<String, Object> bc = Map.of("@type", "BreadcrumbList", "itemListElement", List.of(
+                Map.of("@type", "ListItem", "position", 1, "name", "Accueil", "item", base + "/"),
+                Map.of("@type", "ListItem", "position", 2, "name", "Outils", "item", base + "/outils")));
+        return new Page(200, build(new Meta(TOOLS_TITLE, TOOLS_DESC, base + "/outils", "website", base + "/assets/icon-512.png", null, true, null, "fr"), b.toString(), List.of(coll, bc)));
+    }
+
+    public Page tool(String base, String slug) {
+        java.util.Optional<ToolCatalog.Tool> found = ToolCatalog.bySlug(slug);
+        if (found.isEmpty()) {
+            return new Page(404, build(new Meta("Outil introuvable — " + BRAND, "Cet outil n’existe pas.", base + "/outils", "website", null, null, false, null, "fr"),
+                    "<main class=\"seo-static\"><h1>Outil introuvable</h1><p><a href=\"/outils\">Tous les outils</a></p></main>", List.of()));
+        }
+        ToolCatalog.Tool t = found.get();
+        boolean ar = "ar".equals(t.lang());
+        String url = base + "/outils/" + t.slug();
+        StringBuilder b = new StringBuilder("<main class=\"seo-static\"><article lang=\"" + t.lang() + "\" dir=\"" + (ar ? "rtl" : "ltr") + "\">\n<nav><a href=\"/outils\">" + (ar ? "الأدوات" : "Outils") + "</a></nav>\n<h1>")
+            .append(esc(t.title())).append("</h1>\n<p>").append(esc(t.intro())).append("</p>\n<h2>").append(ar ? "المعادلة" : "La formule").append("</h2>\n<p>")
+            .append(esc(t.formula())).append("</p>\n<p>").append(esc(t.example())).append("</p>\n<h2>").append(ar ? "أسئلة شائعة" : "Questions fréquentes").append("</h2>\n");
+        for (ToolCatalog.Faq f : t.faq()) b.append("<h3>").append(esc(f.q())).append("</h3>\n<p>").append(esc(f.a())).append("</p>\n");
+        b.append("<p><em>").append(ar ? DISCLAIMER_AR : DISCLAIMER_FR).append("</em></p></article></main>");
+        Map<String, Object> app = new LinkedHashMap<>();
+        app.put("@type", "WebApplication"); app.put("name", t.title()); app.put("url", url); app.put("description", t.description());
+        app.put("applicationCategory", "BusinessApplication"); app.put("operatingSystem", "Web"); app.put("inLanguage", t.lang()); app.put("isAccessibleForFree", true);
+        app.put("offers", Map.of("@type", "Offer", "price", "0", "priceCurrency", "MAD"));
+        app.put("publisher", Map.of("@id", base + "/#organization"));
+        Map<String, Object> faq = new LinkedHashMap<>();
+        faq.put("@type", "FAQPage");
+        faq.put("mainEntity", t.faq().stream().map(f -> Map.of("@type", "Question", "name", f.q(), "acceptedAnswer", Map.of("@type", "Answer", "text", f.a()))).toList());
+        Map<String, Object> bc = Map.of("@type", "BreadcrumbList", "itemListElement", List.of(
+                Map.of("@type", "ListItem", "position", 1, "name", "Accueil", "item", base + "/"),
+                Map.of("@type", "ListItem", "position", 2, "name", ar ? "الأدوات" : "Outils", "item", base + "/outils"),
+                Map.of("@type", "ListItem", "position", 3, "name", t.title(), "item", url)));
+        return new Page(200, build(new Meta(t.metaTitle(), t.description(), url, "website", base + "/assets/icon-512.png", null, true, null, t.lang()), b.toString(), List.of(app, faq, bc)));
+    }
+
     // ---------- Injection dans index.html ----------
     record Meta(String title, String description, String canonical, String type, String image, Instant modified, boolean index, String keywords, String lang) {}
 
@@ -285,10 +334,7 @@ public class SeoService {
         return out;
     }
 
-    private String jsonSafe(Object o) {
-        try { return json.writeValueAsString(o).replace("<", "\\u003c").replace(">", "\\u003e").replace("&", "\\u0026"); }
-        catch (JsonProcessingException e) { throw new IllegalStateException(e); }
-    }
+    private String jsonSafe(Object o) { return Json.write(o); }
 
     private String template() {
         long now = System.currentTimeMillis();
@@ -325,6 +371,7 @@ public class SeoService {
           .append("Orgest est un logiciel SaaS marocain pour bijouteries : stock au gramme, ventes et reçus, échange d’or ancien, ventes à tempérament (paiement échelonné), atelier, rapports Excel. Interface en français et en arabe.\n\n## Pages\n\n")
           .append("- [Accueil](").append(base).append("/): présentation, fonctionnalités, tarifs, questions fréquentes\n")
           .append("- [Blog](").append(base).append("/blog): guides pratiques pour bijoutiers\n")
+          .append("- [Outils gratuits](").append(base).append("/outils): calculateurs reprise d’or, carats, échéancier à tempérament\n")
           .append("- [Instagram](").append(INSTAGRAM).append("): conseils et nouveautés en images\n")
           .append("- [Flux RSS](").append(base).append("/feed.xml): nouveaux articles\n")
           .append("- [Texte complet des articles](").append(base).append("/llms-full.txt)\n\n## Articles\n\n");
@@ -333,6 +380,8 @@ public class SeoService {
             if (!blank(p.excerpt())) s.append(": ").append(p.excerpt().replace('\n', ' '));
             s.append('\n');
         }
+        s.append("\n## Outils gratuits\n\n");
+        for (ToolCatalog.Tool t : ToolCatalog.ALL) s.append("- [").append(t.title()).append("](").append(base).append("/outils/").append(t.slug()).append("): ").append(t.description()).append('\n');
         s.append("\n## Contact\n\n- WhatsApp : +").append(whatsapp).append("\n- Instagram : ").append(INSTAGRAM).append('\n');
         return s.toString();
     }
@@ -355,6 +404,8 @@ public class SeoService {
         StringBuilder sb = new StringBuilder("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\n");
         url(sb, base + "/", latest, "weekly", "1.0");
         url(sb, base + "/blog", latest, "daily", "0.8");
+        url(sb, base + "/outils", null, "monthly", "0.8");
+        for (ToolCatalog.Tool t : ToolCatalog.ALL) url(sb, base + "/outils/" + t.slug(), null, "monthly", "0.8");
         for (PostSummary p : posts) url(sb, base + "/blog/" + p.slug(), DAY.format(p.updatedAt()), "monthly", "0.7");
         return sb.append("</urlset>\n").toString();
     }

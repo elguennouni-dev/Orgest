@@ -7,6 +7,7 @@ import Landing from './pages/Landing.jsx';
 import Login from './pages/Login.jsx';
 import Blog from './pages/Blog.jsx';
 import BlogPost from './pages/BlogPost.jsx';
+import { ToolPage, ToolsHub } from './pages/Tools.jsx';
 import Plans from './pages/admin/Plans.jsx';
 import BlogAdmin from './pages/admin/BlogAdmin.jsx';
 import PostEditor from './pages/admin/PostEditor.jsx';
@@ -44,6 +45,8 @@ export default function App() {
       <Route path="/login" element={<Page><Login /></Page>} />
       <Route path="/blog" element={<Page><Blog /></Page>} />
       <Route path="/blog/:slug" element={<Page><BlogPost /></Page>} />
+      <Route path="/outils" element={<Page><ToolsHub /></Page>} />
+      <Route path="/outils/:slug" element={<Page><ToolPage /></Page>} />
 
       <Route path="/app" element={<Guard role="SHOP"><ShopLayout /></Guard>}>
         <Route index element={<Dashboard />} />

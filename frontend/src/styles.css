@@ -778,3 +778,14 @@ tbody tr:nth-child(5) { animation-delay: .12s; } tbody tr:nth-child(n+6) { anima
 .author p { margin: 4px 0 0; color: #5C5141; font-size: 14px; line-height: 1.6; }
 .b-article[dir="rtl"] .body { text-align: right; } .b-article[dir="rtl"] .body h1, .b-article[dir="rtl"] .body h2, .b-article[dir="rtl"] .body h3 { line-height: 1.5; letter-spacing: 0; }
 .b-article[dir="rtl"] .body p, .b-article[dir="rtl"] .body li { line-height: 1.95; font-size: 17px; } .b-article[dir="rtl"] .formula { border-inline-start: 4px solid var(--gold); }
+
+/* ---------- Outils gratuits ---------- */
+.tool-card { background: #fff; border: 1px solid var(--border); border-radius: 18px; padding: 20px; }
+.tool-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: start; }
+.tool-res { display: flex; flex-direction: column; gap: 10px; background: #FFF8E1; border: 1px solid #F0DC9B; border-radius: 16px; padding: 16px; }
+.tool-res > div { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; } .tool-res span { color: #5C5141; }
+.tool-res .big b { font-size: 28px; color: var(--gold-700); }
+.tool-card tr.on td { background: #FFF8E1; font-weight: 600; } .tool-card tfoot th { background: #FFF8E1; }
+.errbox { background: var(--bad-bg); color: var(--bad); padding: 12px 14px; border-radius: 12px; margin: 0; }
+@media (max-width: 720px) { .tool-grid { grid-template-columns: 1fr; } }
+.field .lbl { font-weight: 600; font-size: 14px; } .field .hint { color: var(--muted); font-size: 13px; }

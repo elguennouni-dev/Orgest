@@ -272,6 +272,19 @@ location ~ ^/blog/([a-z0-9-]+)/?\$ {
     error_page 500 502 503 504 = @spa;
     $SEC_HEADERS
 }
+location = /outils {
+    proxy_pass http://127.0.0.1:$APP_PORT/api/public/seo/tools;
+    proxy_set_header Host \$host; proxy_set_header X-Forwarded-Proto \$scheme;
+    error_page 500 502 503 504 = @spa;
+    $SEC_HEADERS
+}
+location ~ ^/outils/([a-z0-9-]+)/?\$ {
+    rewrite ^/outils/([a-z0-9-]+)/?\$ /api/public/seo/tools/\$1 break;
+    proxy_pass http://127.0.0.1:$APP_PORT;
+    proxy_set_header Host \$host; proxy_set_header X-Forwarded-Proto \$scheme;
+    error_page 500 502 503 504 = @spa;
+    $SEC_HEADERS
+}
 location @spa {
     root $WEB_ROOT;
     rewrite ^ /index.html break;

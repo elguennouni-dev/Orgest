@@ -155,4 +155,35 @@ class SeoServiceTests {
     @Test void frenchPostKeepsLtrHtmlTag() {
         assertTrue(seo.post(BASE, "reprise-or").html().contains("<html lang=\"fr\" dir=\"ltr\">"));
     }
+
+    @Test void toolPageIsLocalisedWithWebApplicationAndFaqSchema() {
+        String h = seo.tool(BASE, "hasibat-aqsat-bai3-bittaqsit").html();
+        assertTrue(h.contains("<html lang=\"ar\" dir=\"rtl\">"));
+        assertTrue(h.contains("\"@type\":\"WebApplication\"") && h.contains("\"isAccessibleForFree\":true") && h.contains("\"@type\":\"FAQPage\""));
+        assertTrue(h.contains("rel=\"canonical\" href=\"https://orgest.tech/outils/hasibat-aqsat-bai3-bittaqsit\""));
+        assertEquals(404, seo.tool(BASE, "inconnu").status());
+        assertTrue(seo.tool(BASE, "inconnu").html().contains("noindex"));
+    }
+
+    @Test void toolsAreInSitemapHubAndLlms() {
+        assertTrue(seo.sitemap(BASE).contains("<loc>https://orgest.tech/outils/calculateur-reprise-or-ancien</loc>"));
+        assertTrue(seo.sitemap(BASE).contains("<loc>https://orgest.tech/outils</loc>"));
+        assertTrue(seo.tools(BASE).html().contains("href=\"/outils/muhawwil-ayarat-addahab-thaman-algram\""));
+        assertTrue(seo.llms(BASE).contains("## Outils gratuits"));
+    }
+
+    @Test void toolCatalogIsConsistent() {
+        var slugs = ToolCatalog.ALL.stream().map(ToolCatalog.Tool::slug).toList();
+        assertEquals(slugs.size(), slugs.stream().distinct().count());
+        for (ToolCatalog.Tool t : ToolCatalog.ALL) {
+            assertTrue(t.slug().matches("^[a-z0-9]+(-[a-z0-9]+)*$"), t.slug());
+            assertTrue(java.util.List.of("reprise", "carats", "echeancier").contains(t.kind()));
+            assertTrue(t.lang().equals("fr") || t.lang().equals("ar"));
+            assertFalse(t.faq().isEmpty());
+            assertTrue(t.metaTitle().length() <= 70, t.slug());
+        }
+        // chaque outil existe dans les deux langues
+        for (String kind : java.util.List.of("reprise", "carats", "echeancier"))
+            assertEquals(2, ToolCatalog.ALL.stream().filter(t -> t.kind().equals(kind)).count(), kind);
+    }
 }
