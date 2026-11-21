@@ -7,6 +7,8 @@ import { ErrorBox, Field, KARATS, Loading, Modal } from '../../components/ui.jsx
 import { Icon, P } from '../../components/icons.jsx';
 import Louiz from '../../components/Louiz.jsx';
 import { lineTotal, round2, saleSummary } from '../../lib/money.js';
+import { cameraScanSupported, exactRef } from '../../lib/scan.js';
+import ScanModal from '../../components/ScanModal.jsx';
 
 let uid = 0;
 
@@ -27,6 +29,8 @@ export default function Sale({ mode }) {
   const [free, setFree] = useState(null);
   const [error, setError] = useState(null);
   const [busy, setBusy] = useState(false);
+  const [scanning, setScanning] = useState(false);
+  const [scanMsg, setScanMsg] = useState(null);
 
   const sellOf = (k) => Number(prices.data?.find((p) => p.karat === k)?.sellPerGram || 0);
   const buyOf = (k) => Number(prices.data?.find((p) => p.karat === k)?.buyPerGram || 0);
@@ -35,6 +39,17 @@ export default function Sale({ mode }) {
   const toggle = (it) => {
     if (lines.some((l) => l.itemId === it.id)) setLines(lines.filter((l) => l.itemId !== it.id));
     else setLines([...lines, { key: 'i' + it.id, itemId: it.id, label: `${it.name} (${it.ref})`, karat: it.karat, weightG: Number(it.weightG), qty: 1, max: it.quantity ?? 1, price: sellOf(it.karat), making: Number(it.makingPerGram) }]);
+  };
+  const linesRef = useRef(lines); linesRef.current = lines;
+  const addByCode = async (code) => {
+    setScanMsg(null);
+    try {
+      const r = await api(`/shop/items?status=IN_STOCK&q=${encodeURIComponent(code)}&size=10`);
+      const it = exactRef(r.content, code);
+      if (!it) { setScanMsg(t('scan.notFound') + code); return false; }
+      if (!linesRef.current.some((l) => l.itemId === it.id)) toggle(it);
+      return true;
+    } catch (e) { setError(e); return false; }
   };
   const upd = (key, k, v) => setLines(lines.map((l) => (l.key === key ? { ...l, [k]: v } : l)));
 
@@ -131,8 +146,10 @@ export default function Sale({ mode }) {
           <div className="bar">
             <label className="search grow" style={{ flex: '1 1 280px' }}>
               <Icon d={P.search} size={18} />
-              <input type="search" value={q} onChange={(e) => setQ(e.target.value)} placeholder={t('pos.search')} aria-label={t('search')} autoFocus />
+              <input type="search" value={q} onChange={(e) => setQ(e.target.value)} placeholder={t('pos.search')} aria-label={t('search')} autoFocus
+                onKeyDown={(e) => { if (e.key === 'Enter' && q.trim() && !e.isComposing) { e.preventDefault(); addByCode(q.trim()).then((ok) => { if (ok) setQ(''); }); } }} />
             </label>
+            {cameraScanSupported() && <button type="button" className="btn" onClick={() => setScanning(true)}>{t('scan.btn')}</button>}
             <div className="chips" role="group">
               {[0, ...KARATS].map((k) => (
                 <button key={k} type="button" className={'chip' + (karat === k ? ' on' : '')} aria-pressed={karat === k} onClick={() => setKarat(k)}>{k ? `${k}K` : t('pos.all')}</button>
@@ -140,6 +157,7 @@ export default function Sale({ mode }) {
             </div>
           </div>
 
+          {scanMsg && <p role="alert" className="muted">{scanMsg}</p>}
           {items.loading && !items.data ? <Loading /> : emptyStock ? (
             <div className="empty-louiz" style={{ flex: 1, minHeight: 420 }}>
               <Louiz mood="thinking" size={140} />
@@ -261,6 +279,7 @@ export default function Sale({ mode }) {
         </button>
       )}
 
+      {scanning && <ScanModal onClose={() => setScanning(false)} onCode={addByCode} />}
       {free && (
         <Modal title={t('pos.offTitle')} onClose={() => setFree(null)}>
           <div className="stack">
