@@ -5,11 +5,13 @@ import { SiteFooter, SiteHeader } from '../components/Site.jsx';
 import { Icon, P } from '../components/icons.jsx';
 import Louiz from '../components/Louiz.jsx';
 import { waLink } from '../config.js';
+import { assignPhotos, heroPhotos, photoFor } from '../lib/blogPhoto.js';
 
-function Thumb({ a, size = 128 }) {
+function Thumb({ a, map, small = true }) {
+  const ph = photoFor(a, small, map);
   return (
-    <div className="b-thumb" style={{ background: '#FFF4D6', color: '#8A6209' }}>
-      {a.cover ? <img src={`/api/public/blog-cover/${a.cover}`} alt={a.coverAlt || a.title} loading="lazy" /> : <Louiz mood="happy" size={size} />}
+    <div className="b-thumb">
+      <img src={ph.src} alt={ph.alt} loading="lazy" decoding="async" width="640" height="384" />
     </div>
   );
 }
@@ -18,6 +20,7 @@ export default function Blog() {
   useSeo({ title: 'Blog Orgest — Conseils pour bijoutiers : or, stock, à tempérament', description: 'Guides courts et concrets pour les bijoutiers : cours de l’or, reprise d’or ancien, ventes à tempérament, inventaire et gestion de boutique.' });
   const { data, loading } = useApi('/public/posts');
   const posts = data || [];
+  const photoMap = useMemo(() => assignPhotos(posts), [posts]);
   const [cat, setCat] = useState('Tous');
   const [lang, setLang] = useState('all');
   const [q, setQ] = useState('');
@@ -33,7 +36,7 @@ export default function Blog() {
       <section className="b-hero">
         <div className="in">
           <div className="stack" style={{ gap: 18 }}>
-            <span className="eyebrow" style={{ color: 'var(--gold-700)' }}>Le blog d'Orgest</span>
+            <span className="eyebrow" style={{ color: 'var(--gold-300)' }}>Le blog d'Orgest</span>
             <h1>Conseils et méthodes pour les bijoutiers qui comptent au gramme près.</h1>
             <p>Cours de l'or, reprise d'or ancien, ventes à tempérament, atelier, inventaire : des guides courts et concrets, écrits pour le comptoir.</p>
             <label className="b-search">
@@ -41,7 +44,9 @@ export default function Blog() {
               <input type="search" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Rechercher : reprise, carat, inventaire…" aria-label="Rechercher un article" />
             </label>
           </div>
-          <div className="b-hero-l"><Louiz mood="wave" size={240} /></div>
+          <div className="b-hero-l" aria-hidden="true">
+            {heroPhotos().map((ph, i) => <img key={ph.src} className={'bh-ph p' + (i + 1)} src={ph.src} alt="" width="1200" height="720" decoding="async" fetchPriority={i === 0 ? 'high' : 'low'} />)}
+          </div>
         </div>
       </section>
 
@@ -66,7 +71,7 @@ export default function Blog() {
         {lead && (
           <section className="b-feature" aria-label="À la une">
             <Link to={`/blog/${lead.slug}`} className="bf-main">
-              <div className="vis"><Thumb a={lead} size={200} /></div>
+              <div className="vis"><Thumb a={lead} map={photoMap} small={false} /></div>
               <div className="txt">
                 <div><span className="b-tag">À LA UNE{lead.category ? ` · ${lead.category}` : ''}</span> · {lead.readMinutes} min de lecture</div>
                 <h2 dir="auto" lang={lead.lang}>{lead.title}</h2>
@@ -81,13 +86,15 @@ export default function Blog() {
           <div className="b-grid" style={{ marginTop: 16 }}>
             {rest.map((a) => (
               <article className="b-card" key={a.slug}>
-                <Link to={`/blog/${a.slug}`} aria-label={a.title}><Thumb a={a} /></Link>
+                <Link to={`/blog/${a.slug}`} aria-label={a.title}><Thumb a={a} map={photoMap} /></Link>
                 <div className="txt"><span className="b-tag">{a.category}</span><strong dir="auto"><Link to={`/blog/${a.slug}`} style={{ color: 'inherit', textDecoration: 'none' }}>{a.title}</Link></strong><p dir="auto">{a.excerpt}</p><span className="muted">{a.readMinutes} min de lecture · Équipe Orgest</span></div>
               </article>
             ))}
           </div>
           {!loading && shown.length === 0 && <div className="empty-louiz"><Louiz mood="thinking" size={110} /><p>{posts.length === 0 ? 'Les premiers articles arrivent bientôt.' : 'Aucun article pour cette recherche.'}</p></div>}
         </section>
+
+        <p className="b-credit muted">Photos : <a href="https://unsplash.com" target="_blank" rel="noopener noreferrer">Unsplash</a> (licence libre), Syed F Hashemi, Luisana Galicia, LUM3N, Sama Hosseini, Fallon Michael, Yasamine June.</p>
 
         <section className="post-cta" aria-label="Essayer Orgest">
           <h2>Moins de calculs, plus de ventes</h2>

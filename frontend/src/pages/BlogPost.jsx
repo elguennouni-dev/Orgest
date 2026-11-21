@@ -4,6 +4,7 @@ import { useApi, useSeo } from '../hooks.js';
 import { fmtDate } from '../i18n.jsx';
 import { SiteFooter, SiteHeader } from '../components/Site.jsx';
 import Louiz from '../components/Louiz.jsx';
+import { assignPhotos, photoFor } from '../lib/blogPhoto.js';
 import Markdown, { headings } from '../components/Markdown.jsx';
 import { waLink } from '../config.js';
 
@@ -30,7 +31,8 @@ export default function BlogPost() {
   const L = p?.lang === 'ar' ? 'ar' : 'fr';
   const c = COPY[L];
   const toc = useMemo(() => (p ? headings(p.content) : []), [p]);
-  const img = p?.cover ? `/api/public/blog-cover/${p.cover}` : null;
+  const photo = p ? photoFor(p, false, assignPhotos(all && all.some((x) => x.slug === p.slug) ? all : [...(all || []), p])) : null;
+  const img = p?.cover ? photo.src : null;
   useSeo(p ? {
     title: p.metaTitle || p.title,
     description: p.metaDescription || p.excerpt || undefined,
@@ -53,7 +55,12 @@ export default function BlogPost() {
                 <span className="b-tag">{p.category} · {p.readMinutes} {c.min}</span>
                 <h1 style={{ fontSize: 'clamp(28px, 4vw, 40px)', fontWeight: 600, lineHeight: 1.25 }}>{p.title}</h1>
                 <div className="by"><Louiz mood="happy" size={44} /><span><strong>{c.by}</strong><br /><span className="muted">{fmtDate(p.publishedAt || p.updatedAt)}</span></span></div>
-                {img && <img className="cover" src={img} alt={p.coverAlt || p.title} />}
+                {photo && (
+                  <figure className="cover-fig">
+                    <img className="cover" src={photo.src} alt={photo.alt} width="1200" height="720" decoding="async" />
+                    {photo.credit && <figcaption>Photo : <a href={photo.credit.url} target="_blank" rel="noopener noreferrer">{photo.credit.by}</a> · Unsplash</figcaption>}
+                  </figure>
+                )}
                 {toc.length >= 3 && (
                   <nav className="toc" aria-label={c.toc}>
                     <strong>{c.toc}</strong>
