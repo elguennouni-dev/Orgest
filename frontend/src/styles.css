@@ -421,7 +421,7 @@ td.wrap { white-space: normal; }
 .site-head .langtog { background: #1F1B14; }
 .site-head .langtog button { color: #A79E8C; } .site-head .langtog button.on { background: var(--gold); color: var(--black); }
 .site-hero { background: var(--black); color: #EDE6D6; }
-.site-hero .in { max-width: 1240px; margin: 0 auto; padding: 56px 32px 72px; display: grid; grid-template-columns: 1.2fr .8fr; gap: 32px; align-items: center; }
+.site-hero .in { max-width: 1240px; margin: 0 auto; padding: 56px 32px 72px; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; }
 .site-hero h1 { font-size: clamp(32px, 5vw, 56px); line-height: 1.08; font-weight: 600; color: #fff; }
 .site-hero h1 b { color: var(--gold-300); font-weight: 600; }
 .site-hero p { margin: 0; font-size: 19px; line-height: 1.6; color: #C9BFAA; max-width: 560px; }
@@ -869,3 +869,14 @@ tbody tr:nth-child(5) { animation-delay: .12s; } tbody tr:nth-child(n+6) { anima
   .showcase h2, .showcase .showcase-sub, .showcase .sc-tabs, .showcase .sc-browser, .showcase .sc-phone, .showcase .sc-cap { opacity: 1; transform: none; }
   .sc-view img { transition: opacity .2s; transform: none; }
 }
+
+/* Film de présentation (remplace Louiz dans le hero) */
+.hero-video { position: relative; border-radius: 18px; overflow: hidden; background: #14120E; border: 1px solid #4A3E15; box-shadow: 0 30px 70px -20px rgba(0, 0, 0, .6), 0 0 0 6px rgba(245, 196, 67, .08); animation: popIn .7s var(--ease) .2s both; }
+.hero-video video { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; background: #14120E; }
+.hv-play { position: absolute; inset: 0; margin: auto; width: 76px; height: 76px; border-radius: 50%; border: 0; background: var(--gold-300); color: #14120E; display: grid; place-items: center; cursor: pointer; box-shadow: 0 10px 30px rgba(0, 0, 0, .45); transition: transform .2s; }
+.hv-play::before { content: ''; position: absolute; inset: -8px; border-radius: 50%; border: 2px solid var(--gold-300); opacity: .6; animation: hv-ring 2.2s ease-out infinite; }
+.hv-play:hover { transform: scale(1.08); }
+.hv-play svg { margin-inline-start: 3px; }
+[dir='rtl'] .hv-play svg { transform: scaleX(-1); }
+@keyframes hv-ring { to { transform: scale(1.5); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .hero-video, .hv-play::before { animation: none; } }

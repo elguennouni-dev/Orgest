@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { useI18n } from '../i18n.jsx';
 import { SiteFooter, SiteHeader } from '../components/Site.jsx';
 import { Icon, P } from '../components/icons.jsx';
-import Louiz from '../components/Louiz.jsx';
+import HeroVideo from '../components/HeroVideo.jsx';
 import Showcase from '../components/Showcase.jsx';
 import Faq from '../components/Faq.jsx';
 import { waLink } from '../config.js';
@@ -34,10 +34,7 @@ export default function Landing() {
               <Link className="btn" to="/blog" style={{ minHeight: 52, background: 'transparent', color: '#FFF4D6', borderColor: '#4A3E15' }}>{t('landing.readBlog')}</Link>
             </div>
           </div>
-          <div className="hero-louiz">
-            <div className="bubble">{t('landing.louiz')}</div>
-            <Louiz mood="wave" size={240} />
-          </div>
+          <HeroVideo />
         </div>
       </section>
 
