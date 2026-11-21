@@ -233,10 +233,40 @@ SEC_HEADERS="add_header Content-Security-Policy \"default-src 'self'; script-src
         add_header Cross-Origin-Opener-Policy \"same-origin\" always;
         $HSTS"
 
+# Limitation de débit (http{}) : fichier à part, inclus par aaPanel comme les vhosts. Zones par IP.
+mkdir -p "$VHOST_DIR"
+cat > "$VHOST_DIR/orgest-ratelimit.conf" <<'EOF_RL'
+# --- Orgest : limitation de débit (généré par deploy.sh) ---
+limit_req_zone $binary_remote_addr zone=orgest_public:10m rate=10r/s;
+limit_req_zone $binary_remote_addr zone=orgest_img:10m rate=30r/s;
+# --- fin Orgest ---
+EOF_RL
+
 NGINX_BODY="# --- Orgest (généré par deploy.sh, ne pas modifier à la main) ---
 client_max_body_size 8m;
 server_tokens off;
 
+location ^~ /api/public/blog-cover/ {
+    limit_req zone=orgest_img burst=100 nodelay;
+    limit_req_status 429;
+    proxy_pass http://127.0.0.1:$APP_PORT;
+    proxy_set_header Host \$host;
+    proxy_set_header X-Real-IP \$remote_addr;
+    proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto \$scheme;
+}
+location ^~ /api/public/ {
+    limit_req zone=orgest_public burst=40 nodelay;
+    limit_req_status 429;
+    proxy_pass http://127.0.0.1:$APP_PORT;
+    proxy_http_version 1.1;
+    proxy_set_header Host \$host;
+    proxy_set_header X-Real-IP \$remote_addr;
+    proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto \$scheme;
+    proxy_read_timeout 60s;
+    proxy_hide_header X-Powered-By;
+}
 location ^~ /api/ {
     proxy_pass http://127.0.0.1:$APP_PORT;
     proxy_http_version 1.1;
@@ -257,12 +287,16 @@ location = / {
     proxy_pass http://127.0.0.1:$APP_PORT/api/public/seo/home;
     proxy_set_header Host \$host; proxy_set_header X-Forwarded-Proto \$scheme;
     error_page 500 502 503 504 = @spa;
+    limit_req zone=orgest_public burst=40 nodelay;
+    limit_req_status 429;
     $SEC_HEADERS
 }
 location = /blog {
     proxy_pass http://127.0.0.1:$APP_PORT/api/public/seo/blog;
     proxy_set_header Host \$host; proxy_set_header X-Forwarded-Proto \$scheme;
     error_page 500 502 503 504 = @spa;
+    limit_req zone=orgest_public burst=40 nodelay;
+    limit_req_status 429;
     $SEC_HEADERS
 }
 location ~ ^/blog/([a-z0-9-]+)/?\$ {
@@ -270,12 +304,16 @@ location ~ ^/blog/([a-z0-9-]+)/?\$ {
     proxy_pass http://127.0.0.1:$APP_PORT;
     proxy_set_header Host \$host; proxy_set_header X-Forwarded-Proto \$scheme;
     error_page 500 502 503 504 = @spa;
+    limit_req zone=orgest_public burst=40 nodelay;
+    limit_req_status 429;
     $SEC_HEADERS
 }
 location = /outils {
     proxy_pass http://127.0.0.1:$APP_PORT/api/public/seo/tools;
     proxy_set_header Host \$host; proxy_set_header X-Forwarded-Proto \$scheme;
     error_page 500 502 503 504 = @spa;
+    limit_req zone=orgest_public burst=40 nodelay;
+    limit_req_status 429;
     $SEC_HEADERS
 }
 location ~ ^/outils/([a-z0-9-]+)/?\$ {
@@ -283,6 +321,8 @@ location ~ ^/outils/([a-z0-9-]+)/?\$ {
     proxy_pass http://127.0.0.1:$APP_PORT;
     proxy_set_header Host \$host; proxy_set_header X-Forwarded-Proto \$scheme;
     error_page 500 502 503 504 = @spa;
+    limit_req zone=orgest_public burst=40 nodelay;
+    limit_req_status 429;
     $SEC_HEADERS
 }
 location @spa {
