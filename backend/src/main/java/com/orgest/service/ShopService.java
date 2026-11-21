@@ -23,7 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class ShopService {
-    static final Set<Integer> KARATS = Set.of(18, 21, 24);
+    static final Set<Integer> KARATS = Set.of(18, 21, 24, 800, 925, 999);
     private final GoldPriceRepository prices;
     private final ItemRepository items;
     private final UserRepository users;
@@ -52,7 +52,7 @@ public class ShopService {
     public List<PriceDto> prices(Long shopId) {
         List<GoldPrice> rows = prices.findByShopIdOrderByKaratAsc(shopId);
         List<PriceDto> out = new ArrayList<>();
-        for (int k : new int[]{18, 21, 24}) {
+        for (int k : new int[]{18, 21, 24, 800, 925, 999}) {
             GoldPrice g = rows.stream().filter(x -> x.karat == k).findFirst().orElse(null);
             out.add(g == null ? new PriceDto(k, BigDecimal.ZERO, BigDecimal.ZERO, null)
                     : new PriceDto(k, g.sellPerGram, g.buyPerGram, g.updatedAt));

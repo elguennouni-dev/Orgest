@@ -120,6 +120,15 @@ class SalesServiceTests {
     }
 
     @Test
+    void silverItemSellsLikeGoldWithItsOwnTitle() {
+        stock(stockItem(1, 925, "100.000"));
+        SaleDto s = svc.createSale(SHOP, req(Enums.SaleType.SALE, null, List.of(item(1, "10", "2")), null,
+                Enums.PaymentMode.CASH, null, null));
+        assertEquals(925, s.lines().get(0).karat());
+        assertEquals(d("1200.00"), s.subtotal());   // 100 g × (10 + 2)
+    }
+
+    @Test
     void exchangeSubtractsTradeInAndFreezesWeights() {
         stock(stockItem(1, 18, "10.000"));
         SaleDto s = svc.createSale(SHOP, req(Enums.SaleType.EXCHANGE, "Fatima", List.of(item(1, "640", "100")),

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useAuth } from '../../auth.jsx';
 import { useApi } from '../../hooks.js';
 import { fmtWeight, useI18n } from '../../i18n.jsx';
+import { purity } from '../../lib/purity.js';
 import Barcode from '../../components/Barcode.jsx';
 import { ErrorBox, Loading, PageHead } from '../../components/ui.jsx';
 
@@ -46,7 +47,7 @@ export default function Labels() {
                     <td><input type="checkbox" checked={!!sel[it.id]} onChange={() => toggle(it)} aria-label={it.ref} /></td>
                     <td className="num" dir="ltr">{it.ref}</td>
                     <td>{it.name}</td>
-                    <td>{it.karat}K</td>
+                    <td>{purity(it.karat)}</td>
                     <td className="num">{fmtWeight(it.weightG)}</td>
                     <td>{sel[it.id] && <input className="input" type="number" min="1" max="100" style={{ width: 80 }} value={sel[it.id].copies} onChange={(e) => copies(it.id, e.target.value)} />}</td>
                   </tr>
@@ -62,7 +63,7 @@ export default function Labels() {
           <div className="label" key={k}>
             <div className="ls">{me.shopName}</div>
             <div className="ln" dir="auto">{item.name}</div>
-            <div className="lk num">{item.karat}K · {fmtWeight(item.weightG)} g</div>
+            <div className="lk num">{purity(item.karat)} · {fmtWeight(item.weightG)} g</div>
             <Barcode value={item.ref} height={30} />
           </div>
         ))}

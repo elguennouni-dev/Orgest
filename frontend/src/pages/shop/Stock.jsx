@@ -4,6 +4,7 @@ import { download } from '../../api.js';
 import { useAuth } from '../../auth.jsx';
 import { useApi } from '../../hooks.js';
 import { fmtWeight, Money, useI18n } from '../../i18n.jsx';
+import { purity } from '../../lib/purity.js';
 import Louiz from '../../components/Louiz.jsx';
 import { ErrorBox, KARATS, Loading, PageHead } from '../../components/ui.jsx';
 
@@ -32,7 +33,7 @@ export default function Stock() {
         <input className="input grow" placeholder={t('search')} value={q} onChange={(e) => { setQ(e.target.value); setPage(0); }} />
         <select style={{ width: 130 }} value={karat} onChange={(e) => { setKarat(Number(e.target.value)); setPage(0); }}>
           <option value={0}>{t('allKarats')}</option>
-          {KARATS.map((k) => <option key={k} value={k}>{k}K</option>)}
+          {KARATS.map((k) => <option key={k} value={k}>{purity(k)}</option>)}
         </select>
         <select style={{ width: 150 }} value={status} onChange={(e) => { setStatus(e.target.value); setPage(0); }}>
           <option value="IN_STOCK">{t('stock.inStock')}</option>
@@ -56,7 +57,7 @@ export default function Stock() {
               </div>
               <div className="body">
                 <b>{i.name}</b>
-                <span className="muted">{i.ref} · {i.karat}K · <span className="num">{fmtWeight(i.weightG)} g</span></span>
+                <span className="muted">{i.ref} · {purity(i.karat)} · <span className="num">{fmtWeight(i.weightG)} g</span></span>
                 <span className="hint">{t('stock.making')}: <Money v={i.makingPerGram} />/g</span>
                 <span className="hint num">{t('stock.totalWeight')}: {fmtWeight(Number(i.weightG) * i.quantity)} g</span>
                 {owner && <Link className="btn sm" to={`/app/stock/${i.id}/edit`}>{i.quantity === 0 ? t('stock.restock') : t('edit')}</Link>}

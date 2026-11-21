@@ -134,5 +134,5 @@ export function Loading() {
   return <Loader size={72} />;
 }
 
-export const KARATS = [18, 21, 24];
+export const KARATS = [18, 21, 24, 800, 925, 999];
 export const CATEGORIES = ['ring', 'bracelet', 'necklace', 'earrings', 'pendant', 'chain', 'set', 'other'];

@@ -157,7 +157,7 @@ public final class Dtos {
                                BigDecimal buybackMonth, long stockCount, BigDecimal stockWeightG,
                                BigDecimal stockValue, long overdueInstallments, BigDecimal installmentsOutstanding,
                                long openWorkshop, List<SaleSummary> recentSales, List<PriceDto> prices,
-                               List<CategoryTotal> topCategories, BigDecimal creditsDue, long creditCustomers) {}
+                               List<CategoryTotal> topCategories, BigDecimal creditsDue, long creditCustomers, BigDecimal silverWeightG) {}
 
     // ---------- Clients / crédit ----------
     public record CustomerDto(Long id, String name, String phone, String note, BigDecimal creditDue, Instant createdAt) {}

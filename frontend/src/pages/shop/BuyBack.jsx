@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { api } from '../../api.js';
 import { useApi } from '../../hooks.js';
 import { fmtDateTime, fmtMoney, fmtWeight, Money, useI18n } from '../../i18n.jsx';
+import { purity } from '../../lib/purity.js';
 import { ErrorBox, Field, KARATS, PageHead } from '../../components/ui.jsx';
 import { netWeight, tradeInValue } from '../../lib/money.js';
 
@@ -42,7 +43,7 @@ export default function BuyBack() {
             <Field label={t('phone')}><input className="input" value={f.phone} maxLength={30} onChange={set('phone')} dir="ltr" /></Field>
             <Field label={'CIN (' + t('optional') + ')'}><input className="input" value={f.cin} maxLength={20} onChange={set('cin')} dir="ltr" /></Field>
             <Field label={t('buyback.description')}><input className="input" value={f.description} maxLength={255} onChange={set('description')} /></Field>
-            <Field label={t('karat')}><select value={f.karat} onChange={(e) => setF({ ...f, karat: e.target.value, price: '' })}>{KARATS.map((k) => <option key={k} value={k}>{k}K</option>)}</select></Field>
+            <Field label={t('karat')}><select value={f.karat} onChange={(e) => setF({ ...f, karat: e.target.value, price: '' })}>{KARATS.map((k) => <option key={k} value={k}>{purity(k)}</option>)}</select></Field>
             <Field label={t('buyback.gross')}><input className="input" type="number" min="0.001" step="0.001" value={f.gross} onChange={set('gross')} required dir="ltr" /></Field>
             <Field label={t('buyback.deduction')} hint={t('buyback.deductionHint')}><input className="input" type="number" min="0" max="99" step="0.1" value={f.ded} onChange={set('ded')} dir="ltr" /></Field>
             <Field label={t('buyback.priceG')} hint={`${t('dash.buyPrice')}: ${fmtMoney(buy(f.karat))}`}><input className="input" type="number" min="0" step="0.01" placeholder={String(buy(f.karat))} value={f.price} onChange={set('price')} dir="ltr" /></Field>
@@ -58,7 +59,7 @@ export default function BuyBack() {
           <h2>{t('buyback.recent')}</h2>
           <div className="tablewrap"><table><tbody>
             {list.data?.content.map((b) => (
-              <tr key={b.id}><td>{b.number}</td><td className="muted">{fmtDateTime(b.createdAt)}</td><td>{b.karat}K · {fmtWeight(b.netWeightG)} g</td><td><Money v={b.total} /></td><td><Link className="btn sm" to={`/app/buyback/${b.id}`}>{t('receipt.open')}</Link></td></tr>
+              <tr key={b.id}><td>{b.number}</td><td className="muted">{fmtDateTime(b.createdAt)}</td><td>{purity(b.karat)} · {fmtWeight(b.netWeightG)} g</td><td><Money v={b.total} /></td><td><Link className="btn sm" to={`/app/buyback/${b.id}`}>{t('receipt.open')}</Link></td></tr>
             ))}
             {list.data?.content.length === 0 && <tr><td className="muted">{t('buyback.none')}</td></tr>}
           </tbody></table></div>

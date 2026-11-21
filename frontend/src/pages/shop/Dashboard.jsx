@@ -4,6 +4,7 @@ import { api } from '../../api.js';
 import { useAuth } from '../../auth.jsx';
 import { useApi } from '../../hooks.js';
 import { fmtDateTime, fmtInt, fmtMoney, fmtWeight, Money, useI18n } from '../../i18n.jsx';
+import { purity, weightLabel } from '../../lib/purity.js';
 import { ErrorBox, Loading } from '../../components/ui.jsx';
 import { Icon, P } from '../../components/icons.jsx';
 import Louiz from '../../components/Louiz.jsx';
@@ -38,6 +39,13 @@ function PricesCard({ prices, entered, editing, setEditing, onSaved }) {
       });
       delete d[`24.${field}`]; d[`24.${field}`] = true;
     }
+    // Argent : 925 et 800 se déduisent du 999 de la même façon.
+    if (karat === 999) {
+      const n = Number(value);
+      [[925, 0.925], [800, 0.8]].forEach(([k, f]) => {
+        if (!d[`${k}.${field}`]) next[k] = { ...next[k], [field]: value === '' || !n ? '' : String(r2(n * f)) };
+      });
+    }
     setVals(next); setDirty(d);
   };
 
@@ -49,7 +57,7 @@ function PricesCard({ prices, entered, editing, setEditing, onSaved }) {
     } catch (e) { setError(e); } finally { setBusy(false); }
   };
 
-  const order = [18, 21, 24];
+  const order = [18, 21, 24, 800, 925, 999];
   return (
     <section className="panel" id="prices-card">
       <div className="hd">
@@ -65,12 +73,12 @@ function PricesCard({ prices, entered, editing, setEditing, onSaved }) {
           const empty = !(p.sellPerGram > 0);
           return (
             <div key={k} className={'carat' + (empty && !editing ? ' empty' : '')}>
-              <b>{k}K</b>
+              <b>{purity(k)}</b>
               {['sell', 'buy'].map((f) => (
                 <div className="ln" key={f}>
                   <span>{f === 'sell' ? t('dash.sell') : t('dash.buy')}</span>
                   {editing
-                    ? <input className="input" type="number" min="0" step="0.01" inputMode="decimal" dir="ltr" aria-label={`${k}K ${f}`} value={vals[k]?.[f] ?? ''} onChange={(e) => change(k, f, e.target.value)} />
+                    ? <input className="input" type="number" min="0" step="0.01" inputMode="decimal" dir="ltr" aria-label={`${purity(k)} ${f}`} value={vals[k]?.[f] ?? ''} onChange={(e) => change(k, f, e.target.value)} />
                     : <b>{empty ? '—' : fmtMoney(f === 'sell' ? p.sellPerGram : p.buyPerGram)} {empty ? t('dh') : ''}</b>}
                 </div>
               ))}
@@ -95,7 +103,7 @@ export default function Dashboard() {
   const [tour, setTour] = useState(() => { try { return !localStorage.getItem(tourKey); } catch { return false; } });
   const closeTour = () => { try { localStorage.setItem(tourKey, '1'); } catch { /* ignore */ } setTour(false); };
 
-  const entered = useMemo(() => !!d && d.prices.some((p) => p.sellPerGram > 0 && isToday(p.updatedAt)), [d]);
+  const entered = useMemo(() => !!d && d.prices.some((p) => p.karat < 100 && p.sellPerGram > 0 && isToday(p.updatedAt)), [d]);
 
   if (loading && !d) return <Loading />;
   if (error) return <ErrorBox error={error} />;
@@ -150,7 +158,7 @@ export default function Dashboard() {
       <section className="kpis" aria-label="KPI">
         <div className="kpi2"><span className="l">{t('dash.salesToday')}</span><span className="v num">{fmtInt(d.salesToday)} <small>{t('dh')}</small></span><span className="s">{t('dash.salesCount', { n: d.salesCountToday })}{d.salesCountToday > 0 ? ` · ${t('dash.avgBasket')} ${fmtInt(avg)} ${t('dh')}` : ''}</span></div>
         <div className="kpi2"><span className="l">{t('dash.salesMonth')}</span><span className="v num">{fmtInt(d.salesMonth)} <small>{t('dh')}</small></span><span className="s">{t('dash.buybackMonth')} : {fmtInt(d.buybackMonth)} {t('dh')}</span></div>
-        <div className="kpi2"><span className="l">{t('dash.stock')}</span><span className="v num">{fmtInt(d.stockCount)} <small>{t('dash.piece')}</small></span><span className="s">{fmtWeight(d.stockWeightG)} g · {t('dash.value')} ≈ {fmtInt(d.stockValue)} {t('dh')}</span></div>
+        <div className="kpi2"><span className="l">{t('dash.stock')}</span><span className="v num">{fmtInt(d.stockCount)} <small>{t('dash.piece')}</small></span><span className="s">{fmtWeight(d.stockWeightG)} g{Number(d.silverWeightG) > 0 ? ` + Ag ${weightLabel(d.silverWeightG, fmtWeight)}` : ''} · {t('dash.value')} ≈ {fmtInt(d.stockValue)} {t('dh')}</span></div>
         <div className="kpi2"><span className="l">{t('dash.credits')}</span><span className="v num">{fmtInt(d.creditsDue)} <small>{t('dh')}</small></span><span className="s"><Link to="/app/customers">{t('dash.creditCust', { n: d.creditCustomers })}</Link></span></div>
         <div className="kpi2"><span className="l">{t('dash.installments')}</span><span className="v num">{fmtInt(d.installmentsOutstanding)} <small>{t('dh')}</small></span><span className={'s' + (d.overdueInstallments === 0 ? ' ok' : '')}>{d.overdueInstallments === 0 ? t('dash.noneLate') : t('dash.overdue', { n: d.overdueInstallments })}</span></div>
       </section>

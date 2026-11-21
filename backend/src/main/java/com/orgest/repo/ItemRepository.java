@@ -29,9 +29,13 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
     Page<Item> search(@Param("shop") Long shop, @Param("statuses") Collection<Enums.ItemStatus> statuses,
                       @Param("q") String q, @Param("karat") int karat, Pageable pageable);
 
-    /** Poids total en stock = Σ poids unitaire × quantité. */
-    @Query("select coalesce(sum(i.weightG * i.quantity),0) from Item i where i.shopId = :shop and i.quantity > 0")
+    /** Poids d'or en stock (carats 18/21/24) = Σ poids unitaire × quantité. */
+    @Query("select coalesce(sum(i.weightG * i.quantity),0) from Item i where i.shopId = :shop and i.quantity > 0 and i.karat < 100")
     BigDecimal stockWeight(@Param("shop") Long shop);
+
+    /** Poids d'argent en stock (titres 800/925/999). */
+    @Query("select coalesce(sum(i.weightG * i.quantity),0) from Item i where i.shopId = :shop and i.quantity > 0 and i.karat >= 100")
+    BigDecimal silverStockWeight(@Param("shop") Long shop);
 
     /** Nombre de pièces en stock (Σ quantités). */
     @Query("select coalesce(sum(i.quantity),0) from Item i where i.shopId = :shop")

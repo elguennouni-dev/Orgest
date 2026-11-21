@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { api } from '../../api.js';
 import { useI18n } from '../../i18n.jsx';
+import { purity } from '../../lib/purity.js';
 import { CATEGORIES, ErrorBox, Field, KARATS, PageHead } from '../../components/ui.jsx';
 import PhotoCapture from '../../components/PhotoCapture.jsx';
 
@@ -56,7 +57,7 @@ export default function ItemForm() {
               <select value={f.category} onChange={set('category')}>{CATEGORIES.map((c) => <option key={c} value={c}>{t('cat.' + c)}</option>)}</select>
             </Field>
             <Field label={t('karat')}>
-              <select value={f.karat} onChange={set('karat')}>{KARATS.map((k) => <option key={k} value={k}>{k}K</option>)}</select>
+              <select value={f.karat} onChange={set('karat')}>{KARATS.map((k) => <option key={k} value={k}>{purity(k)}</option>)}</select>
             </Field>
             <Field label={t('stock.qty')} hint={t('stock.qtyHint')}><input className="input" type="number" step="1" min="0" max="100000" inputMode="numeric" value={f.quantity} onChange={set('quantity')} required dir="ltr" /></Field>
             <Field label={t('stock.unitWeight')}><input className="input" type="number" step="0.001" min="0.001" value={f.weightG} onChange={set('weightG')} required dir="ltr" /></Field>

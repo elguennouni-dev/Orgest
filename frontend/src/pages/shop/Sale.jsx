@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { api } from '../../api.js';
 import { useApi } from '../../hooks.js';
 import { fmtDate, fmtMoney, fmtWeight, Money, useI18n } from '../../i18n.jsx';
+import { purity } from '../../lib/purity.js';
 import { ErrorBox, Field, KARATS, Loading, Modal } from '../../components/ui.jsx';
 import { Icon, P } from '../../components/icons.jsx';
 import Louiz from '../../components/Louiz.jsx';
@@ -143,7 +144,7 @@ export default function Sale({ mode }) {
         </div>
         <Link to="/app" className="price-chip" title={t('dash.pricesTitle')}>
           <Icon d={P.warn} size={16} sw={2} />
-          {KARATS.map((k) => `${k}K ${sellOf(k) > 0 ? fmtMoney(sellOf(k)) : '—'}`).join(' · ')} {t('dh')}/g{!pricesSet && ` · ${t('pos.priceChip')}`}
+          {KARATS.filter((k) => k < 100 || sellOf(k) > 0).map((k) => `${purity(k)} ${sellOf(k) > 0 ? fmtMoney(sellOf(k)) : '—'}`).join(' · ')} {t('dh')}/g{!pricesSet && ` · ${t('pos.priceChip')}`}
         </Link>
       </header>
 
@@ -158,7 +159,7 @@ export default function Sale({ mode }) {
             {cameraScanSupported() && <button type="button" className="btn" onClick={() => setScanning(true)}>{t('scan.btn')}</button>}
             <div className="chips" role="group">
               {[0, ...KARATS].map((k) => (
-                <button key={k} type="button" className={'chip' + (karat === k ? ' on' : '')} aria-pressed={karat === k} onClick={() => setKarat(k)}>{k ? `${k}K` : t('pos.all')}</button>
+                <button key={k} type="button" className={'chip' + (karat === k ? ' on' : '')} aria-pressed={karat === k} onClick={() => setKarat(k)}>{k ? `${purity(k)}` : t('pos.all')}</button>
               ))}
             </div>
           </div>
@@ -179,7 +180,7 @@ export default function Sale({ mode }) {
               <div className="pos-grid">
                 {list.map((it) => (
                   <button key={it.id} type="button" className={'pcard' + (lines.some((l) => l.itemId === it.id) ? ' sel' : '')} onClick={() => toggle(it)} aria-pressed={lines.some((l) => l.itemId === it.id)}>
-                    <div className="ph">{it.hasPhoto ? <img loading="lazy" src={`/api/shop/items/${it.id}/photo`} alt="" /> : <span>◈</span>}<span className="k">{it.karat}K</span></div>
+                    <div className="ph">{it.hasPhoto ? <img loading="lazy" src={`/api/shop/items/${it.id}/photo`} alt="" /> : <span>◈</span>}<span className="k">{purity(it.karat)}</span></div>
                     <div className="bd"><b>{it.name}</b><span className="muted num">{fmtWeight(it.weightG)} g · {it.ref}</span></div>
                     {(it.quantity ?? 1) > 1 && <span className="qbadge num">×{it.quantity}</span>}
                   </button>
@@ -196,7 +197,7 @@ export default function Sale({ mode }) {
 
           {lines.length === 0 ? <div className="dash">{t('pos.touch')}</div> : lines.map((l) => (
             <div key={l.key} className="tline">
-              <div className="t"><b>{l.label}</b><span className="num muted">{l.karat}K · {l.qty > 1 ? `${l.qty} × ` : ''}{fmtWeight(l.weightG)} g</span></div>
+              <div className="t"><b>{l.label}</b><span className="num muted">{purity(l.karat)} · {l.qty > 1 ? `${l.qty} × ` : ''}{fmtWeight(l.weightG)} g</span></div>
               <div className="qty" role="group" aria-label={t('stock.qty')}>
                 <button type="button" className="btn sm" aria-label="−" disabled={l.qty <= 1} onClick={() => upd(l.key, 'qty', l.qty - 1)}>−</button>
                 <b className="num">{l.qty}</b>
@@ -221,7 +222,7 @@ export default function Sale({ mode }) {
           </div>
           {withOld && (
             <div className="grid g2">
-              <Field label={t('karat')}><select value={old.karat} onChange={(e) => setOld({ ...old, karat: Number(e.target.value), price: '' })}>{KARATS.map((k) => <option key={k} value={k}>{k}K</option>)}</select></Field>
+              <Field label={t('karat')}><select value={old.karat} onChange={(e) => setOld({ ...old, karat: Number(e.target.value), price: '' })}>{KARATS.map((k) => <option key={k} value={k}>{purity(k)}</option>)}</select></Field>
               <Field label={t('buyback.gross')}><input className="input" type="number" min="0" step="0.001" inputMode="decimal" value={old.gross} onChange={(e) => setOld({ ...old, gross: e.target.value })} dir="ltr" /></Field>
               <Field label={t('buyback.deduction')}><input className="input" type="number" min="0" max="99" step="0.1" inputMode="decimal" value={old.ded} onChange={(e) => setOld({ ...old, ded: e.target.value })} dir="ltr" /></Field>
               <Field label={t('buyback.priceG')}><input className="input" type="number" min="0" step="0.01" placeholder={String(buyOf(old.karat))} value={old.price} onChange={(e) => setOld({ ...old, price: e.target.value })} dir="ltr" /></Field>
@@ -305,7 +306,7 @@ export default function Sale({ mode }) {
           <div className="stack">
             <Field label={t('pos.offDesc')}><input className="input" autoFocus maxLength={160} value={free.desc} onChange={(e) => setFree({ ...free, desc: e.target.value })} /></Field>
             <div className="grid g2">
-              <Field label={t('karat')}><select value={free.karat} onChange={(e) => setFree({ ...free, karat: Number(e.target.value) })}>{KARATS.map((k) => <option key={k} value={k}>{k}K</option>)}</select></Field>
+              <Field label={t('karat')}><select value={free.karat} onChange={(e) => setFree({ ...free, karat: Number(e.target.value) })}>{KARATS.map((k) => <option key={k} value={k}>{purity(k)}</option>)}</select></Field>
               <Field label={t('weightG')}><input className="input" type="number" min="0" step="0.001" inputMode="decimal" dir="ltr" value={free.weight} onChange={(e) => setFree({ ...free, weight: e.target.value })} /></Field>
               <Field label={t('stock.qty')}><input className="input" type="number" min="1" max="999" step="1" inputMode="numeric" dir="ltr" value={free.qty} onChange={(e) => setFree({ ...free, qty: e.target.value })} /></Field>
               <Field label={t('receipt.making')}><input className="input" type="number" min="0" step="0.01" inputMode="decimal" dir="ltr" value={free.making} onChange={(e) => setFree({ ...free, making: e.target.value })} /></Field>

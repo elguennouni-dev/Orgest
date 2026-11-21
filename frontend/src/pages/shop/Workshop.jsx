@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { api } from '../../api.js';
 import { useApi, waPhone } from '../../hooks.js';
 import { fmtDate, fmtWeight, Money, useI18n } from '../../i18n.jsx';
+import { purity } from '../../lib/purity.js';
 import { ErrorBox, Field, KARATS, Loading, Modal, PageHead } from '../../components/ui.jsx';
 
 const EMPTY = { customerName: '', customerPhone: '', description: '', karat: 18, artisanName: '', artisanPhone: '', givenWeightG: '0', labourCost: '0', depositAmount: '0', agreedPrice: '0', dueDate: '', note: '' };
@@ -45,7 +46,7 @@ export default function Workshop() {
                 return (
                   <tr key={w.id}>
                     <td>{w.number}</td>
-                    <td className="wrap"><b>{w.description}</b><br /><span className="muted">{w.customerName || '—'} · {w.karat}K</span></td>
+                    <td className="wrap"><b>{w.description}</b><br /><span className="muted">{w.customerName || '—'} · {purity(w.karat)}</span></td>
                     <td className="wrap">{w.artisanName}<br /><span className="muted num">{w.artisanPhone}</span></td>
                     <td className="num">{fmtWeight(w.givenWeightG)} g</td>
                     <td className="num">{w.receivedWeightG != null ? `${fmtWeight(w.receivedWeightG)} g` : '—'}</td>
@@ -79,7 +80,7 @@ export default function Workshop() {
               <Field label={t('workshop.artisanPhone')}><input className="input" maxLength={30} value={form.artisanPhone} onChange={set('artisanPhone')} dir="ltr" /></Field>
               <Field label={t('customer')}><input className="input" maxLength={120} value={form.customerName} onChange={set('customerName')} /></Field>
               <Field label={t('phone')}><input className="input" maxLength={30} value={form.customerPhone} onChange={set('customerPhone')} dir="ltr" /></Field>
-              <Field label={t('karat')}><select value={form.karat} onChange={set('karat')}>{KARATS.map((k) => <option key={k} value={k}>{k}K</option>)}</select></Field>
+              <Field label={t('karat')}><select value={form.karat} onChange={set('karat')}>{KARATS.map((k) => <option key={k} value={k}>{purity(k)}</option>)}</select></Field>
               <Field label={t('workshop.given')}><input className="input" type="number" min="0" step="0.001" value={form.givenWeightG} onChange={set('givenWeightG')} dir="ltr" /></Field>
               <Field label={t('workshop.labour')}><input className="input" type="number" min="0" step="0.01" value={form.labourCost} onChange={set('labourCost')} dir="ltr" /></Field>
               <Field label={t('workshop.price')}><input className="input" type="number" min="0" step="0.01" value={form.agreedPrice} onChange={set('agreedPrice')} dir="ltr" /></Field>
