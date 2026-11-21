@@ -1,6 +1,7 @@
 package com.orgest.service;
 
 import com.orgest.common.AppException;
+import com.orgest.common.Text;
 import com.orgest.domain.AppUser;
 import com.orgest.domain.Enums;
 import com.orgest.repo.UserRepository;
