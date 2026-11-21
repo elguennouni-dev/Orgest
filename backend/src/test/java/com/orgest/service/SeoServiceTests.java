@@ -35,7 +35,7 @@ class SeoServiceTests {
         Path index = dir.resolve("index.html");
         Files.writeString(index, TEMPLATE);
         content = mock(ContentService.class);
-        seo = new SeoService(content, "", index.toString(), "", "212680376294");
+        seo = new SeoService(content, "", index.toString(), "", "212730819719");
         when(content.publicPlans()).thenReturn(List.of(
                 new SubPlanDto(1L, 1, new BigDecimal("200.00"), false, true),
                 new SubPlanDto(2L, 12, new BigDecimal("1800.00"), true, true),

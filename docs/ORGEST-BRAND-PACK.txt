@@ -10,7 +10,7 @@ Orgest is a SaaS for Moroccan jewelry shops and gold traders. It manages gold st
 quantities), sales, gold exchange / old-gold buy-back, installment sales ("à tempérament / تقسيط") with exact schedules,
 workshop gold tracking, printable receipts and Excel reports. Bilingual French / Arabic (RTL supported).
 Instagram: https://www.instagram.com/orgest.ma/ (@orgest.ma)
-Live site: https://orgest.tech · Contact: WhatsApp +212 680 376 294 (https://wa.me/212680376294)
+Live site: https://orgest.tech · Contact: WhatsApp +212 730 819 719 (https://wa.me/212730819719)
 
 Official tagline FR: « Système de Gestion des Commerçants d'Or »
 Official tagline AR: « نظام تدبير تجار الذهب »
@@ -226,7 +226,7 @@ Every educational post ends with a soft CTA: read the guide (orgest.tech/blog/<s
 FR: « Demander une démo sur WhatsApp » · « Lire le guide complet » · « Essayer Orgest avec vos articles »
 AR: « طلب عرض تجريبي عبر واتساب » · « قرا الدليل كامل » · « جرب Orgest بالسلعة ديالك »
 Link in bio / URL: https://orgest.tech (pricing section: https://orgest.tech/#pricing · blog: https://orgest.tech/blog)
-WhatsApp: +212 680 376 294 — in graphics write "+212 680 376 294"; in links use https://wa.me/212680376294 with a
+WhatsApp: +212 730 819 719 — in graphics write "+212 730 819 719"; in links use https://wa.me/212730819719 with a
   prefilled message (e.g. "Bonjour, je voudrais une démonstration d'Orgest.").
 
 --------------------------------------------------------------------

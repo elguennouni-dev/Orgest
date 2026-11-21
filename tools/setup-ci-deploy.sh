@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 # À lancer sur le VPS (root), depuis /opt/orgest-src :
-#   sudo ./tools/setup-ci-deploy.sh orgest.tech 212680376294            (première fois)
-#   sudo ./tools/setup-ci-deploy.sh orgest.tech 212680376294 --rotate   (nouvelle clé, l'ancienne est révoquée)
+#   sudo ./tools/setup-ci-deploy.sh orgest.tech 212730819719            (première fois)
+#   sudo ./tools/setup-ci-deploy.sh orgest.tech 212730819719 --rotate   (nouvelle clé, l'ancienne est révoquée)
 # Crée la commande « orgest-deploy » et une clé SSH qui ne peut faire QUE cela (GitHub Actions).
 set -Eeuo pipefail
 ROTATE=0; ARGS=()
 for a in "$@"; do [[ "$a" == "--rotate" ]] && ROTATE=1 || ARGS+=("$a"); done
-DOMAIN="${ARGS[0]:?Usage: $0 <domaine> [numero_whatsapp] [--rotate]}"; WA="${ARGS[1]:-212680376294}"
+DOMAIN="${ARGS[0]:?Usage: $0 <domaine> [numero_whatsapp] [--rotate]}"; WA="${ARGS[1]:-212730819719}"
 [[ $EUID -eq 0 ]] || { echo "Exécutez en root."; exit 1; }
 REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 [[ -f "$REPO/deploy.sh" ]] || { echo "Lancez depuis le dépôt Orgest."; exit 1; }

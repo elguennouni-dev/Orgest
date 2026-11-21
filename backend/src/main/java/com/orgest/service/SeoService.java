@@ -62,7 +62,7 @@ public class SeoService {
                       @Value("${orgest.site-url:}") String siteUrl,
                       @Value("${orgest.index-file:}") String indexFile,
                       @Value("${orgest.index-url:}") String indexUrl,
-                      @Value("${orgest.whatsapp:212680376294}") String whatsapp) {
+                      @Value("${orgest.whatsapp:212730819719}") String whatsapp) {
         this.content = content;
         this.siteUrl = siteUrl == null ? "" : siteUrl.replaceAll("/+$", "");
         this.indexFile = indexFile;

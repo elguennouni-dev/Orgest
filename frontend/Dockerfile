@@ -4,7 +4,7 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci --no-audit --no-fund
 COPY . .
-ARG VITE_WHATSAPP=212680376294
+ARG VITE_WHATSAPP=212730819719
 ENV VITE_WHATSAPP=$VITE_WHATSAPP
 RUN npm run build
 

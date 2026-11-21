@@ -245,9 +245,9 @@ Commandes utiles : `journalctl -u orgest -f` · `systemctl restart orgest` · `/
 ### Domaine, déploiement automatique et Docker
 
 **Nouveau domaine (ex. `orgest.tech`)** : DNS → enregistrement A vers l'IP du VPS · aaPanel > Website > Add site (statique) > SSL Let's Encrypt + Force HTTPS · puis
-`cd /opt/orgest-src && git pull && sudo ./deploy.sh orgest.tech --whatsapp 212680376294`.
+`cd /opt/orgest-src && git pull && sudo ./deploy.sh orgest.tech --whatsapp 212730819719`.
 
-**Déploiement automatique (GitHub Actions)** : sur le VPS `sudo ./tools/setup-ci-deploy.sh orgest.tech 212680376294`, puis copier les 4 valeurs affichées dans GitHub > Settings > Secrets and variables > Actions (`VPS_HOST`, `VPS_USER`, `VPS_KNOWN_HOSTS`, `VPS_SSH_KEY`). Chaque push sur `main` compile/teste puis déploie. La clé SSH ne peut exécuter que `orgest-deploy`.
+**Déploiement automatique (GitHub Actions)** : sur le VPS `sudo ./tools/setup-ci-deploy.sh orgest.tech 212730819719`, puis copier les 4 valeurs affichées dans GitHub > Settings > Secrets and variables > Actions (`VPS_HOST`, `VPS_USER`, `VPS_KNOWN_HOSTS`, `VPS_SSH_KEY`). Chaque push sur `main` compile/teste puis déploie. La clé SSH ne peut exécuter que `orgest-deploy`.
 
 **Docker (alternative)** : `cp .env.docker.example .env && nano .env && docker compose up -d --build` ; le site écoute sur `127.0.0.1:8088` (à mettre derrière le proxy HTTPS d'aaPanel). Ne pas lancer en même temps que le déploiement systemd sur le même domaine.
 
