@@ -122,7 +122,7 @@ public final class Dtos {
 
     public record SaleDto(Long id, String number, String type, String customerName, String customerPhone,
                           BigDecimal subtotal, BigDecimal tradeInAmount, BigDecimal balance, String paymentMode,
-                          BigDecimal downPayment, int months, String payMethod, Instant createdAt, List<LineDto> lines,
+                          BigDecimal downPayment, int months, String payMethod, BigDecimal creditDue, Long customerId, Instant createdAt, List<LineDto> lines,
                           List<InstallmentDto> installments, BuybackDto buyback) {}
 
     public record SaleSummary(Long id, String number, String type, String customerName, BigDecimal subtotal,
@@ -157,7 +157,20 @@ public final class Dtos {
                                BigDecimal buybackMonth, long stockCount, BigDecimal stockWeightG,
                                BigDecimal stockValue, long overdueInstallments, BigDecimal installmentsOutstanding,
                                long openWorkshop, List<SaleSummary> recentSales, List<PriceDto> prices,
-                               List<CategoryTotal> topCategories) {}
+                               List<CategoryTotal> topCategories, BigDecimal creditsDue, long creditCustomers) {}
+
+    // ---------- Clients / crédit ----------
+    public record CustomerDto(Long id, String name, String phone, String note, BigDecimal creditDue, Instant createdAt) {}
+
+    public record CustomerRequest(@NotBlank @Size(max = 120) String name, @Size(max = 30) String phone,
+                                  @Size(max = 500) String note) {}
+
+    public record CustomerPayRequest(@NotNull @DecimalMin("0.01") @DecimalMax("1000000000") BigDecimal amount,
+                                     Enums.SalePay method, @Size(max = 255) String note) {}
+
+    public record CustomerPayDto(Long id, Long saleId, BigDecimal amount, String method, String note, Instant createdAt) {}
+
+    public record CustomerDetail(CustomerDto customer, List<SaleSummary> sales, List<CustomerPayDto> payments) {}
 
     public record CategoryTotal(String category, BigDecimal total, long pieces) {}
 

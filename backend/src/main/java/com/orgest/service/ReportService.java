@@ -62,7 +62,8 @@ public class ReportService {
                 installments.countByShopIdAndPaidFalseAndDueDateBefore(shopId, today),
                 installments.outstanding(shopId),
                 workshop.countByShopIdAndStatusIn(shopId, List.of(Enums.WorkshopStatus.SENT, Enums.WorkshopStatus.READY)),
-                recent, prices, topCategories(shopId, m0, m1));
+                recent, prices, topCategories(shopId, m0, m1),
+                Money.round2(sales.creditTotal(shopId)), sales.creditCustomers(shopId));
     }
 
     private List<CategoryTotal> topCategories(Long shopId, Instant from, Instant to) {

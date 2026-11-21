@@ -22,6 +22,9 @@ public class Sale {
     @Enumerated(EnumType.STRING) @Column(name = "payment_mode", nullable = false) public Enums.PaymentMode paymentMode;
     @Column(name = "down_payment", nullable = false) public BigDecimal downPayment = BigDecimal.ZERO;
     @Column(nullable = false) public int months;
+    @Column(name = "customer_id") public Long customerId;
+    /** Reste dû par le client pour une vente à crédit (0 sinon). */
+    @Column(name = "credit_due", nullable = false) public BigDecimal creditDue = BigDecimal.ZERO;
     @Enumerated(EnumType.STRING) @Column(name = "pay_method", nullable = false) public Enums.SalePay payMethod = Enums.SalePay.CASH;
     @Column(name = "created_at", nullable = false) public Instant createdAt = Instant.now();
     @OneToMany(mappedBy = "sale", cascade = CascadeType.ALL, orphanRemoval = true)

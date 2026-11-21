@@ -7,7 +7,7 @@ public final class Enums {
     public enum SaleType { SALE, EXCHANGE }
     public enum PaymentMode { CASH, INSTALLMENT }
     /** Moyen de règlement encaissé sur une vente (distinct des paiements d'abonnement {@link PayMethod}). */
-    public enum SalePay { CASH, CHEQUE, CARD, TRANSFER }
+    public enum SalePay { CASH, CHEQUE, CARD, TRANSFER, CREDIT }
     public enum PayMethod { WAFACASH, VIREMENT, CASHPLUS, CASH }
     public enum WorkshopStatus { SENT, READY, DELIVERED, CANCELLED }
 }

@@ -25,6 +25,8 @@ import Reports from './pages/shop/Reports.jsx';
 import Account from './pages/shop/Account.jsx';
 import Team from './pages/shop/Team.jsx';
 import Labels from './pages/shop/Labels.jsx';
+import Customers from './pages/shop/Customers.jsx';
+import CustomerDetail from './pages/shop/CustomerDetail.jsx';
 import Clients from './pages/admin/Clients.jsx';
 import NewClient from './pages/admin/NewClient.jsx';
 import ClientDetail from './pages/admin/ClientDetail.jsx';
@@ -71,6 +73,8 @@ export default function App() {
         <Route path="workshop" element={<Workshop />} />
         <Route path="installments" element={<Installments />} />
         <Route path="reports" element={<OwnerOnly><Reports /></OwnerOnly>} />
+        <Route path="customers" element={<Customers />} />
+        <Route path="customers/:id" element={<CustomerDetail />} />
         <Route path="labels" element={<Labels />} />
         <Route path="team" element={<OwnerOnly><Team /></OwnerOnly>} />
         <Route path="account" element={<OwnerOnly><Account /></OwnerOnly>} />

@@ -95,6 +95,7 @@ export function SaleReceipt({ sale }) {
         <span className="num">{fmtMoney(Math.abs(sale.balance))} {t('dh')}</span>
       </div>
       {sale.payMethod && <div className="tot"><span>{t('paym.label')}</span><b>{t('paym.' + sale.payMethod)}</b></div>}
+      {Number(sale.creditDue) > 0 && <><div className="tot"><span>{t('receipt.paidNow')}</span><b className="num">{fmtMoney(sale.downPayment)} {t('dh')}</b></div><div className="tot"><span>{t('credit.due')}</span><b className="num">{fmtMoney(sale.creditDue)} {t('dh')}</b></div></>}
       {sale.paymentMode === 'INSTALLMENT' ? (
         <>
           <div className="tot"><span>{t('receipt.paidNow')}</span><b className="num">{fmtMoney(paid)} {t('dh')}</b></div>

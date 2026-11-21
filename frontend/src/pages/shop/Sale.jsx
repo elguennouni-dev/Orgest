@@ -11,7 +11,7 @@ import { cameraScanSupported, exactRef } from '../../lib/scan.js';
 import ScanModal from '../../components/ScanModal.jsx';
 
 let uid = 0;
-const PAY_METHODS = ['CASH', 'CHEQUE', 'CARD', 'TRANSFER'];
+const PAY_METHODS = ['CASH', 'CHEQUE', 'CARD', 'TRANSFER', 'CREDIT'];
 
 export default function Sale({ mode }) {
   const { t } = useI18n();
@@ -21,6 +21,7 @@ export default function Sale({ mode }) {
   const [karat, setKarat] = useState(0);
   const items = useApi(`/shop/items?status=IN_STOCK&q=${encodeURIComponent(q)}&karat=${karat}&size=60`);
   const prices = useApi('/shop/prices');
+  const custList = useApi('/shop/customers?size=100');
   const [lines, setLines] = useState([]);
   const [cust, setCust] = useState({ name: '', phone: '' });
   const [showCust, setShowCust] = useState(false);
@@ -64,7 +65,10 @@ export default function Sale({ mode }) {
   const linesOk = lines.every((l) => Number(l.price) > 0 && Number(l.weightG) > 0 && Number(l.making || 0) >= 0 && l.qty >= 1 && l.qty <= l.max);
   const oldOk = !withOld || (Number(old.gross) > 0 && Number(old.ded || 0) >= 0 && Number(old.ded || 0) <= 99 && oldPrice > 0 && calc.net > 0);
   const instErr = pay.mode === 'INSTALLMENT' ? calc.instError : null;
-  const canSubmit = lines.length > 0 && linesOk && oldOk && !instErr && !busy;
+  const isCredit = pay.mode === 'CASH' && pay.method === 'CREDIT';
+  const creditDown = Math.max(Number(pay.down || 0), 0);
+  const creditErr = !isCredit ? null : !cust.name.trim() ? 'CUSTOMER_REQUIRED' : !(calc.balance > 0) ? 'NO_BALANCE' : creditDown >= calc.balance ? 'DOWN_TOO_HIGH' : null;
+  const canSubmit = lines.length > 0 && linesOk && oldOk && !instErr && !creditErr && !busy;
   const blocker = lines.length === 0 ? t('pos.needOne') : !linesOk ? t('pos.fixPrice') : !oldOk ? t('pos.fixOld') : null;
 
   const submit = async () => {
@@ -81,7 +85,7 @@ export default function Sale({ mode }) {
         oldGold: withOld ? { karat: Number(old.karat), grossWeightG: Number(old.gross), deductionPct: Number(old.ded || 0), pricePerGram: oldPrice, description: old.description || null, customerName: cust.name || null, customerPhone: cust.phone || null } : null,
         paymentMode: pay.mode,
         payMethod: pay.method,
-        downPayment: pay.mode === 'INSTALLMENT' ? Number(pay.down || 0) : null,
+        downPayment: pay.mode === 'INSTALLMENT' || isCredit ? Number(pay.down || 0) : null,
         months: pay.mode === 'INSTALLMENT' ? Number(pay.months) : null,
       };
       const sale = await api('/shop/sales', { method: 'POST', body });
@@ -232,7 +236,7 @@ export default function Sale({ mode }) {
           </button>
           {showCust && (
             <div className="grid g2">
-              <Field label={t('name')}><input className="input" value={cust.name} maxLength={120} onChange={(e) => setCust({ ...cust, name: e.target.value })} /></Field>
+              <Field label={t('name')}><input className="input" list="cust-list" value={cust.name} maxLength={120} onChange={(e) => { const v = e.target.value; const m = (custList.data?.content || []).find((c) => c.name === v); setCust({ name: v, phone: m && m.phone && !cust.phone ? m.phone : cust.phone }); }} /><datalist id="cust-list">{(custList.data?.content || []).map((c) => <option key={c.id} value={c.name} />)}</datalist></Field>
               <Field label={t('phone')}><input className="input" value={cust.phone} maxLength={30} onChange={(e) => setCust({ ...cust, phone: e.target.value })} dir="ltr" /></Field>
             </div>
           )}
@@ -241,13 +245,21 @@ export default function Sale({ mode }) {
             <span style={{ fontSize: 14, fontWeight: 500 }}>{t('pos.payment')}</span>
             <div className="paymodes" role="group">
               <button type="button" className={pay.mode === 'CASH' ? 'on' : ''} aria-pressed={pay.mode === 'CASH'} onClick={() => setPay({ ...pay, mode: 'CASH' })}>{t('pay.cash')}</button>
-              <button type="button" className={pay.mode === 'INSTALLMENT' ? 'on' : ''} aria-pressed={pay.mode === 'INSTALLMENT'} onClick={() => { setPay({ ...pay, mode: 'INSTALLMENT' }); setShowCust(true); }}>{t('sale.installment')}</button>
+              <button type="button" className={pay.mode === 'INSTALLMENT' ? 'on' : ''} aria-pressed={pay.mode === 'INSTALLMENT'} onClick={() => { setPay({ ...pay, mode: 'INSTALLMENT', method: pay.method === 'CREDIT' ? 'CASH' : pay.method }); setShowCust(true); }}>{t('sale.installment')}</button>
             </div>
             <Field label={t('paym.label')}>
-              <select value={pay.method} onChange={(e) => setPay({ ...pay, method: e.target.value })}>
-                {PAY_METHODS.map((m) => <option key={m} value={m}>{t('paym.' + m)}</option>)}
+              <select value={pay.method} onChange={(e) => { setPay({ ...pay, method: e.target.value }); if (e.target.value === 'CREDIT') setShowCust(true); }}>
+                {PAY_METHODS.filter((m) => m !== 'CREDIT' || pay.mode === 'CASH').map((m) => <option key={m} value={m}>{t('paym.' + m)}</option>)}
               </select>
             </Field>
+            {isCredit && (
+              <div className="stack" style={{ gap: 6 }}>
+                <Field label={t('sale.down')}><input className="input" type="number" min="0" step="0.01" inputMode="decimal" value={pay.down} onChange={(e) => setPay({ ...pay, down: e.target.value })} dir="ltr" /></Field>
+                <div className="hint" aria-live="polite">
+                  {creditErr ? <span style={{ color: 'var(--bad)' }}>{t('err.' + creditErr)}</span> : <>{t('credit.due')}: <b><Money v={round2(calc.balance - creditDown)} /></b></>}
+                </div>
+              </div>
+            )}
             {pay.mode === 'INSTALLMENT' && (
               <div className="grid g2">
                 <Field label={t('sale.down')}><input className="input" type="number" min="0" step="0.01" inputMode="decimal" value={pay.down} onChange={(e) => setPay({ ...pay, down: e.target.value })} dir="ltr" /></Field>
@@ -269,6 +281,7 @@ export default function Sale({ mode }) {
           <div className="totals">
             <div className="r"><span>{t('pos.subtotal')}</span><span className="num"><Money v={calc.subtotal} /></span></div>
             {withOld && <div className="r"><span>{t('receipt.tradeIn')}</span><span className="num">− <Money v={calc.tradeIn} /></span></div>}
+            {isCredit && !creditErr && <div className="r"><span>{t('credit.due')}</span><span className="num"><Money v={round2(calc.balance - creditDown)} /></span></div>}
             {pay.mode === 'INSTALLMENT' && !instErr && <div className="r"><span>{t('receipt.paidNow')}</span><span className="num"><Money v={calc.down} /></span></div>}
             <div className="big"><b>{calc.balance < 0 ? t('pos.refund') : t('pos.rest')}</b><b className="num"><Money v={Math.abs(calc.balance)} /></b></div>
           </div>

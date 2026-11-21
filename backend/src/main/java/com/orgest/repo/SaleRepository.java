@@ -33,6 +33,20 @@ public interface SaleRepository extends JpaRepository<Sale, Long> {
          + "group by coalesce(i.category, 'AUTRE') order by sum(l.lineTotal) desc")
     List<Object[]> categoryTotals(@Param("shop") Long shop, @Param("from") Instant from, @Param("to") Instant to);
 
+    @Query("select coalesce(sum(s.creditDue),0) from Sale s where s.shopId = :shop")
+    BigDecimal creditTotal(@Param("shop") Long shop);
+
+    @Query("select count(distinct s.customerId) from Sale s where s.shopId = :shop and s.creditDue > 0")
+    long creditCustomers(@Param("shop") Long shop);
+
+    @Query("select s.customerId, sum(s.creditDue) from Sale s where s.shopId = :shop and s.customerId in :ids group by s.customerId")
+    List<Object[]> creditByCustomer(@Param("shop") Long shop, @Param("ids") java.util.Collection<Long> ids);
+
+    @jakarta.persistence.Lock(jakarta.persistence.LockModeType.PESSIMISTIC_WRITE)
+    List<Sale> findByShopIdAndCustomerIdAndCreditDueGreaterThanOrderByCreatedAtAsc(Long shopId, Long customerId, BigDecimal min);
+
+    Page<Sale> findByShopIdAndCustomerIdOrderByCreatedAtDesc(Long shopId, Long customerId, Pageable pageable);
+
     @Query("select count(s) from Sale s where s.shopId = :shop and s.type = :type and s.createdAt >= :from and s.createdAt < :to")
     long exchangesBetween(@Param("shop") Long shop, @Param("type") com.orgest.domain.Enums.SaleType type, @Param("from") Instant from, @Param("to") Instant to);
 }

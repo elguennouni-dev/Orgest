@@ -45,7 +45,7 @@ class SalesServiceTests {
             it.forEach(saved::add);
             return saved;
         });
-        svc = new SalesService(sales, buybacks, installments, items, counters, mock(AuditService.class));
+        svc = new SalesService(sales, buybacks, installments, items, counters, mock(AuditService.class), mock(com.orgest.service.CustomerService.class));
     }
 
     private Item stockItem(long id, int karat, String weight) {
@@ -101,6 +101,21 @@ class SalesServiceTests {
         SaleDto b = svc.createSale(SHOP, new SaleRequest(Enums.SaleType.SALE, null, "0600000000",
                 List.of(item(2, "640", "100")), null, Enums.PaymentMode.CASH, null, null, Enums.SalePay.CHEQUE));
         assertEquals("CHEQUE", b.payMethod());
+    }
+
+    @Test
+    void creditSaleKeepsRemainderDueAndRequiresCustomer() {
+        stock(stockItem(1, 18, "10.000"));
+        SaleDto s = svc.createSale(SHOP, new SaleRequest(Enums.SaleType.SALE, "Ali", "0600000000",
+                List.of(item(1, "640", "100")), null, Enums.PaymentMode.CASH, d("1000"), null, Enums.SalePay.CREDIT));
+        assertEquals("CREDIT", s.payMethod());
+        assertEquals(d("1000.00"), s.downPayment());
+        assertEquals(d("6400.00"), s.creditDue());
+        stock(stockItem(2, 18, "10.000"));
+        assertEquals("CUSTOMER_REQUIRED", assertThrows(AppException.class, () -> svc.createSale(SHOP, new SaleRequest(Enums.SaleType.SALE, null, null,
+                List.of(item(2, "640", "100")), null, Enums.PaymentMode.CASH, null, null, Enums.SalePay.CREDIT))).code());
+        assertEquals("DOWN_TOO_HIGH", assertThrows(AppException.class, () -> svc.createSale(SHOP, new SaleRequest(Enums.SaleType.SALE, "Ali", null,
+                List.of(item(2, "640", "100")), null, Enums.PaymentMode.CASH, d("7400"), null, Enums.SalePay.CREDIT))).code());
     }
 
     @Test

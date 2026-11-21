@@ -25,9 +25,11 @@ public class SalesService {
     private final ItemRepository items;
     private final CounterService counters;
     private final AuditService audit;
+    private final CustomerService customers;
 
     public SalesService(SaleRepository sales, BuybackRepository buybacks, InstallmentRepository installments,
-                        ItemRepository items, CounterService counters, AuditService audit) {
+                        ItemRepository items, CounterService counters, AuditService audit, CustomerService customers) {
+        this.customers = customers;
         this.sales = sales;
         this.buybacks = buybacks;
         this.installments = installments;
@@ -144,10 +146,13 @@ public class SalesService {
             s.buybackId = tradeIn.id;
         }
         s.balance = Money.round2(s.subtotal.subtract(s.tradeInAmount));
+        Customer customer = customers.resolve(shopId, s.customerName, s.customerPhone);
+        s.customerId = customer == null ? null : customer.id;
 
         BigDecimal paidNow;
         List<Installment> plan = new ArrayList<>();
         if (r.paymentMode() == Enums.PaymentMode.INSTALLMENT) {
+            if (s.payMethod == Enums.SalePay.CREDIT) throw AppException.bad("CREDIT_WITH_INSTALLMENT");
             BigDecimal down = Money.round2(Money.nz(r.downPayment()));
             InstallmentPlanner.validate(s.customerName, s.balance, down, r.months());
             int months = r.months();
@@ -163,6 +168,18 @@ public class SalesService {
                 in.amount = t.amount();
                 plan.add(in);
             }
+        } else if (s.payMethod == Enums.SalePay.CREDIT) {
+            // Vente à crédit : le client règle plus tard (carnet clients), éventuellement avec une avance.
+            if (s.customerName == null) throw AppException.bad("CUSTOMER_REQUIRED");
+            if (s.balance.signum() <= 0) throw AppException.bad("NO_BALANCE");
+            BigDecimal down = Money.round2(Money.nz(r.downPayment()));
+            if (down.signum() < 0) throw AppException.bad("DOWN_NEGATIVE");
+            if (down.compareTo(s.balance) >= 0) throw AppException.bad("DOWN_TOO_HIGH");
+            s.paymentMode = Enums.PaymentMode.CASH;
+            s.months = 0;
+            s.downPayment = down;
+            s.creditDue = s.balance.subtract(down);
+            paidNow = down;
         } else {
             s.paymentMode = Enums.PaymentMode.CASH;
             s.months = 0;
@@ -197,7 +214,7 @@ public class SalesService {
                 .map(l -> new LineDto(l.description, l.karat, l.weightG, l.pricePerGram, l.makingPerGram, l.lineTotal, l.quantity))
                 .toList();
         return new SaleDto(s.id, s.number, s.type.name(), s.customerName, s.customerPhone, s.subtotal,
-                s.tradeInAmount, s.balance, s.paymentMode.name(), s.downPayment, s.months, s.payMethod.name(), s.createdAt, lines,
+                s.tradeInAmount, s.balance, s.paymentMode.name(), s.downPayment, s.months, s.payMethod.name(), s.creditDue, s.customerId, s.createdAt, lines,
                 plan.stream().map(SalesService::toDto).toList(), b == null ? null : toDto(b));
     }
 

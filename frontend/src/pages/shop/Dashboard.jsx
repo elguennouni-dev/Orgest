@@ -151,6 +151,7 @@ export default function Dashboard() {
         <div className="kpi2"><span className="l">{t('dash.salesToday')}</span><span className="v num">{fmtInt(d.salesToday)} <small>{t('dh')}</small></span><span className="s">{t('dash.salesCount', { n: d.salesCountToday })}{d.salesCountToday > 0 ? ` · ${t('dash.avgBasket')} ${fmtInt(avg)} ${t('dh')}` : ''}</span></div>
         <div className="kpi2"><span className="l">{t('dash.salesMonth')}</span><span className="v num">{fmtInt(d.salesMonth)} <small>{t('dh')}</small></span><span className="s">{t('dash.buybackMonth')} : {fmtInt(d.buybackMonth)} {t('dh')}</span></div>
         <div className="kpi2"><span className="l">{t('dash.stock')}</span><span className="v num">{fmtInt(d.stockCount)} <small>{t('dash.piece')}</small></span><span className="s">{fmtWeight(d.stockWeightG)} g · {t('dash.value')} ≈ {fmtInt(d.stockValue)} {t('dh')}</span></div>
+        <div className="kpi2"><span className="l">{t('dash.credits')}</span><span className="v num">{fmtInt(d.creditsDue)} <small>{t('dh')}</small></span><span className="s"><Link to="/app/customers">{t('dash.creditCust', { n: d.creditCustomers })}</Link></span></div>
         <div className="kpi2"><span className="l">{t('dash.installments')}</span><span className="v num">{fmtInt(d.installmentsOutstanding)} <small>{t('dh')}</small></span><span className={'s' + (d.overdueInstallments === 0 ? ' ok' : '')}>{d.overdueInstallments === 0 ? t('dash.noneLate') : t('dash.overdue', { n: d.overdueInstallments })}</span></div>
       </section>
 
