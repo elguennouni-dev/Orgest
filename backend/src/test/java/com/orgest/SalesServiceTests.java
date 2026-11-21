@@ -114,8 +114,9 @@ class SalesServiceTests {
         stock(stockItem(2, 18, "10.000"));
         assertEquals("CUSTOMER_REQUIRED", assertThrows(AppException.class, () -> svc.createSale(SHOP, new SaleRequest(Enums.SaleType.SALE, null, null,
                 List.of(item(2, "640", "100")), null, Enums.PaymentMode.CASH, null, null, Enums.SalePay.CREDIT))).code());
+        stock(stockItem(3, 18, "10.000"));
         assertEquals("DOWN_TOO_HIGH", assertThrows(AppException.class, () -> svc.createSale(SHOP, new SaleRequest(Enums.SaleType.SALE, "Ali", null,
-                List.of(item(2, "640", "100")), null, Enums.PaymentMode.CASH, d("7400"), null, Enums.SalePay.CREDIT))).code());
+                List.of(item(3, "640", "100")), null, Enums.PaymentMode.CASH, d("7400"), null, Enums.SalePay.CREDIT))).code());
     }
 
     @Test
