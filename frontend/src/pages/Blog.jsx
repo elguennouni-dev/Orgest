@@ -18,11 +18,11 @@ export default function Blog() {
   useSeo({ title: 'Blog Orgest — Conseils pour bijoutiers : or, stock, à tempérament', description: 'Guides courts et concrets pour les bijoutiers : cours de l’or, reprise d’or ancien, ventes à tempérament, inventaire et gestion de boutique.' });
   const { data, loading } = useApi('/public/posts');
   const posts = data || [];
-  const byLang = useMemo(() => posts.filter((p) => lang === 'all' || p.lang === lang), [posts, lang]);
-  const cats = useMemo(() => ['Tous', ...new Set(byLang.map((p) => p.category).filter(Boolean))], [byLang]);
   const [cat, setCat] = useState('Tous');
   const [lang, setLang] = useState('all');
   const [q, setQ] = useState('');
+  const byLang = useMemo(() => posts.filter((p) => lang === 'all' || p.lang === lang), [posts, lang]);
+  const cats = useMemo(() => ['Tous', ...new Set(byLang.map((p) => p.category).filter(Boolean))], [byLang]);
   const shown = useMemo(() => byLang.filter((a) => (cat === 'Tous' || a.category === cat) && (!q.trim() || ((a.title || '') + ' ' + (a.excerpt || '')).toLowerCase().includes(q.trim().toLowerCase()))), [byLang, cat, q]);
   const [lead, ...rest] = shown;
   const wa = waLink('Bonjour, je voudrais proposer un sujet pour le blog Orgest.');
