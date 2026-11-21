@@ -141,6 +141,23 @@ public class ShopController {
                 .body(new FileSystemResource(p));
     }
 
+    // ----- Logo (écriture : commerçant ; lecture : commerçant + employés pour les reçus) -----
+    @PostMapping(value = "/logo", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public MeResponse uploadLogo(@RequestParam("file") MultipartFile file) { return shop.setLogo(me(), file); }
+
+    @DeleteMapping("/logo")
+    public MeResponse removeLogo() { return shop.removeLogo(me()); }
+
+    @GetMapping("/logo")
+    public ResponseEntity<Resource> logo() throws IOException {
+        Path p = shop.logoPath(me());
+        return ResponseEntity.ok()
+                .contentType(MediaType.IMAGE_JPEG)
+                .header(HttpHeaders.CACHE_CONTROL, "private, max-age=600")
+                .contentLength(Files.size(p))
+                .body(new FileSystemResource(p));
+    }
+
     // ----- Ventes / échanges -----
     @PostMapping("/sales")
     @ResponseStatus(HttpStatus.CREATED)

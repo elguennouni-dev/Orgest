@@ -133,14 +133,14 @@ function Shell({ groups, children, searchable }) {
 
 const STAFF_GROUPS = [
   { title: 'nav.g.cash', items: [['/app/sale', 'nav.sale', 'sale'], ['/app/exchange', 'nav.exchange', 'exchange'], ['/app/buyback', 'nav.buyback', 'buyback']] },
-  { title: 'nav.g.inv', items: [['/app/stock', 'nav.stock', 'stock'], ['/app/workshop', 'nav.workshop', 'workshop']] },
+  { title: 'nav.g.inv', items: [['/app/stock', 'nav.stock', 'stock'], ['/app/workshop', 'nav.workshop', 'workshop'], ['/app/labels', 'nav.labels', 'tag']] },
   { title: 'nav.g.follow', items: [['/app/installments', 'nav.installments', 'calendar'], ['/app/sales', 'nav.sales', 'list']] },
 ];
 
 const SHOP_GROUPS = [
   { items: [['/app', 'nav.dashboard', 'dash', true]] },
   { title: 'nav.g.cash', items: [['/app/sale', 'nav.sale', 'sale'], ['/app/exchange', 'nav.exchange', 'exchange'], ['/app/buyback', 'nav.buyback', 'buyback']] },
-  { title: 'nav.g.inv', items: [['/app/stock', 'nav.stock', 'stock'], ['/app/workshop', 'nav.workshop', 'workshop']] },
+  { title: 'nav.g.inv', items: [['/app/stock', 'nav.stock', 'stock'], ['/app/workshop', 'nav.workshop', 'workshop'], ['/app/labels', 'nav.labels', 'tag']] },
   { title: 'nav.g.follow', items: [['/app/installments', 'nav.installments', 'calendar'], ['/app/sales', 'nav.sales', 'list'], ['/app/reports', 'nav.reports', 'chart']] },
   { title: 'nav.g.account', items: [['/app/team', 'nav.team', 'user'], ['/app/account', 'nav.myshop', 'user']] },
 ];

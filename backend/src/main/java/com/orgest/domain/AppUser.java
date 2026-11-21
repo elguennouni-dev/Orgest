@@ -19,6 +19,7 @@ public class AppUser {
     public String address;
     public String ice;
     @Column(name = "receipt_footer") public String receiptFooter;
+    @Column(name = "logo_file") public String logoFile;
     @Column(nullable = false) public boolean active = true;
     @Column(name = "subscription_end") public LocalDate subscriptionEnd;
     @Column(name = "token_version", nullable = false) public int tokenVersion = 0;

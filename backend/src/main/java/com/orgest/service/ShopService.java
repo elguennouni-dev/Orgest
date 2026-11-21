@@ -156,6 +156,32 @@ public class ShopService {
         return photos.resolve(shopId, i.photoFile);
     }
 
+    // ---------- Logo de la boutique (affiché sur les reçus) ----------
+    @Transactional
+    public MeResponse setLogo(Long shopId, MultipartFile file) {
+        AppUser u = users.findById(shopId).orElseThrow(AppException::notFound);
+        String name = photos.store(shopId, file);
+        String old = u.logoFile;
+        u.logoFile = name;
+        users.save(u);
+        photos.delete(shopId, old);
+        return AuthService.toMe(u);
+    }
+
+    @Transactional
+    public MeResponse removeLogo(Long shopId) {
+        AppUser u = users.findById(shopId).orElseThrow(AppException::notFound);
+        photos.delete(shopId, u.logoFile);
+        u.logoFile = null;
+        return AuthService.toMe(users.save(u));
+    }
+
+    @Transactional(readOnly = true)
+    public Path logoPath(Long shopId) {
+        AppUser u = users.findById(shopId).orElseThrow(AppException::notFound);
+        return photos.resolve(shopId, u.logoFile);
+    }
+
     // ---------- Compte ----------
     @Transactional
     public MeResponse updateProfile(Long shopId, UpdateProfileRequest r) {

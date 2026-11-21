@@ -127,6 +127,8 @@ td.wrap { white-space: normal; }
 /* ----- Reçu imprimable ----- */
 .receipt { background: #fff; color: #000; border: 1px solid var(--border); margin: 0 auto; padding: 18px; font-size: 13px; line-height: 1.45; }
 .receipt.a5 { width: 148mm; min-height: 200mm; }
+.receipt.a4 { width: 186mm; min-height: 260mm; font-size: 14px; }
+.receipt .rlogo { max-height: 22mm; max-width: 60%; object-fit: contain; margin-bottom: 4px; }
 .receipt.t80 { width: 72mm; padding: 8px; font-size: 12px; }
 .receipt h2 { text-align: center; font-size: 17px; margin: 0; }
 .receipt .center { text-align: center; }
@@ -794,3 +796,19 @@ tbody tr:nth-child(5) { animation-delay: .12s; } tbody tr:nth-child(n+6) { anima
 .topcats li{display:grid;grid-template-columns:110px 1fr auto;gap:10px;align-items:center;font-size:14px}
 .topcats .bar{height:8px;background:var(--line,#e8e2d4);border-radius:99px;overflow:hidden}
 .topcats .bar i{display:block;height:100%;background:linear-gradient(90deg,#F2B630,#B7790F);border-radius:99px}
+
+/* ----- Étiquettes à code-barres ----- */
+.label-sheet { display: none; }
+.label { box-sizing: border-box; overflow: hidden; background: #fff; color: #000; padding: 1.5mm 2mm; display: flex; flex-direction: column; justify-content: space-between; font-size: 7pt; line-height: 1.15; break-inside: avoid; }
+.label .ls { font-weight: 700; font-size: 6.5pt; text-transform: uppercase; letter-spacing: .02em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.label .ln { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.label .lk { font-weight: 700; }
+.label svg { height: 11mm; }
+@media screen { .label-sheet { display: grid; gap: 6px; margin-top: 18px; grid-template-columns: repeat(auto-fill, 200px); } .label { border: 1px dashed #bbb; width: 200px; height: 100px; font-size: 9pt; } .label svg { height: 36px; } }
+@media print {
+  .label-sheet { display: grid; margin: 0; gap: 0; }
+  .label-sheet.a4 { grid-template-columns: repeat(3, 70mm); grid-auto-rows: 37mm; }
+  .label-sheet.a4 .label { width: 70mm; height: 37mm; }
+  .label-sheet.roll { grid-template-columns: 50mm; grid-auto-rows: 25mm; }
+  .label-sheet.roll .label { width: 50mm; height: 25mm; page-break-after: always; }
+}

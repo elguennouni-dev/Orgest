@@ -71,13 +71,13 @@ public class AuthService {
         AppUser owner = users.findById(u.ownerId).orElseThrow(AppException::notFound);
         MeResponse m = toMe(owner);
         return new MeResponse(u.id, u.username, Enums.Role.STAFF.name(), m.shopName(), m.ownerName(), m.phone(), m.city(),
-                m.address(), m.ice(), m.receiptFooter(), u.active && owner.active, m.subscriptionEnd(), m.subscriptionValid(), m.daysLeft());
+                m.address(), m.ice(), m.receiptFooter(), u.active && owner.active, m.subscriptionEnd(), m.subscriptionValid(), m.daysLeft(), m.hasLogo());
     }
 
     public static MeResponse toMe(AppUser u) {
         long days = u.subscriptionEnd == null ? 0
                 : java.time.temporal.ChronoUnit.DAYS.between(Money.today(), u.subscriptionEnd);
         return new MeResponse(u.id, u.username, u.role.name(), u.shopName, u.ownerName, u.phone, u.city, u.address,
-                u.ice, u.receiptFooter, u.active, u.subscriptionEnd, u.subscriptionValid(), days);
+                u.ice, u.receiptFooter, u.active, u.subscriptionEnd, u.subscriptionValid(), days, u.logoFile != null);
     }
 }

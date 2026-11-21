@@ -14,6 +14,14 @@ export default function Account() {
   const [err, setErr] = useState(null);
   const [perr, setPerr] = useState(null);
   const set = (k) => (e) => setF({ ...f, [k]: e.target.value });
+  const [logoV, setLogoV] = useState(0);
+  const uploadLogo = async (e) => {
+    const file = e.target.files?.[0]; e.target.value = '';
+    if (!file) return;
+    setErr(null);
+    try { const form = new FormData(); form.append('file', file); setMe(await api('/shop/logo', { method: 'POST', form })); setLogoV((v) => v + 1); setMsg(t('saved')); } catch (x) { setErr(x); }
+  };
+  const removeLogo = async () => { setErr(null); try { setMe(await api('/shop/logo', { method: 'DELETE' })); setMsg(t('saved')); } catch (x) { setErr(x); } };
 
   const saveProfile = async (e) => {
     e.preventDefault(); setErr(null); setMsg('');
@@ -31,6 +39,15 @@ export default function Account() {
       {msg && <div className="okbox" style={{ marginBottom: 12 }}>{msg}</div>}
       <div className="grid g2" style={{ alignItems: 'start' }}>
         <div className="stack">
+          <div className="card stack">
+            <h2>{t('logo.title')}</h2>
+            <p className="muted" style={{ margin: 0 }}>{t('logo.help')}</p>
+            {me.hasLogo && <img src={`/api/shop/logo?v=${logoV}`} alt="" style={{ maxHeight: 90, maxWidth: '100%', objectFit: 'contain', alignSelf: 'flex-start' }} />}
+            <div className="row">
+              <label className="btn">{t('logo.upload')}<input type="file" accept="image/png,image/jpeg" hidden onChange={uploadLogo} /></label>
+              {me.hasLogo && <button type="button" className="btn" onClick={removeLogo}>{t('logo.remove')}</button>}
+            </div>
+          </div>
           <div className="card">
             <h2>{t('account.subscription')}</h2>
             <p>{t('status')}: {me.subscriptionValid ? <span className="badge ok">{t('account.active')}</span> : <span className="badge bad">{t('account.expired')}</span>}</p>

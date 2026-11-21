@@ -17,7 +17,7 @@ public final class Dtos {
 
     public record MeResponse(Long id, String username, String role, String shopName, String ownerName, String phone,
                              String city, String address, String ice, String receiptFooter, boolean active,
-                             LocalDate subscriptionEnd, boolean subscriptionValid, long daysLeft) {}
+                             LocalDate subscriptionEnd, boolean subscriptionValid, long daysLeft, boolean hasLogo) {}
 
     public record StaffDto(Long id, String username, String name, boolean active, Instant createdAt) {}
 

@@ -8,13 +8,14 @@ const time = (v) => new Date(v).toLocaleTimeString('fr-FR', { hour: '2-digit', m
 export function ReceiptFrame({ children }) {
   const { t } = useI18n();
   const [fmt, setFmt] = useState('a5');
-  const page = fmt === 'a5' ? '@page { size: A5 portrait; margin: 8mm; }' : '@page { size: 80mm auto; margin: 3mm; }';
+  const page = fmt === 'a5' ? '@page { size: A5 portrait; margin: 8mm; }' : fmt === 'a4' ? '@page { size: A4 portrait; margin: 12mm; }' : '@page { size: 80mm auto; margin: 3mm; }';
   return (
     <>
       <style>{page}</style>
       <div className="row no-print" style={{ marginBottom: 14 }}>
         <select style={{ width: 220 }} value={fmt} onChange={(e) => setFmt(e.target.value)}>
           <option value="a5">{t('receipt.a5')}</option>
+          <option value="a4">{t('receipt.a4')}</option>
           <option value="t80">{t('receipt.t80')}</option>
         </select>
         <button className="btn primary" onClick={() => window.print()}>🖨 {t('print')}</button>
@@ -29,6 +30,7 @@ function ShopHeader({ title, number, date }) {
   const { t } = useI18n();
   return (
     <>
+      {me.hasLogo && <div className="center"><img className="rlogo" src="/api/shop/logo" alt="" /></div>}
       <h2>{me.shopName}</h2>
       <div className="center">
         {me.address && <div dir="auto">{me.address}{me.city ? ` — ${me.city}` : ''}</div>}
