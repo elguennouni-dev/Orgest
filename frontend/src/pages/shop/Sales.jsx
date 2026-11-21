@@ -23,7 +23,7 @@ export default function Sales() {
                 <td>{s.number}</td><td className="muted">{fmtDateTime(s.createdAt)}</td>
                 <td><span className={'badge' + (s.type === 'EXCHANGE' ? ' warn' : '')}>{t('type.' + s.type)}</span></td>
                 <td>{s.customerName || '—'}</td><td><Money v={s.subtotal} /></td>
-                <td>{t('pay.' + s.paymentMode)}</td>
+                <td>{t('pay.' + s.paymentMode)}{s.payMethod && s.payMethod !== 'CASH' ? ` · ${t('paym.' + s.payMethod)}` : ''}</td>
                 <td><Link className="btn sm" to={`/app/sales/${s.id}`}>{t('receipt.open')}</Link></td>
               </tr>
             ))}

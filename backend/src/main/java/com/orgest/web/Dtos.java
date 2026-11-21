@@ -103,7 +103,8 @@ public final class Dtos {
                               @Valid BuybackRequest oldGold,
                               @NotNull Enums.PaymentMode paymentMode,
                               @DecimalMin("0") @DecimalMax("1000000000") BigDecimal downPayment,
-                              @Min(0) @Max(36) Integer months) {}
+                              @Min(0) @Max(36) Integer months,
+                              Enums.SalePay payMethod) {}
 
     public record LineDto(String description, int karat, BigDecimal weightG, BigDecimal pricePerGram,
                           BigDecimal makingPerGram, BigDecimal lineTotal, int quantity) {}
@@ -113,11 +114,11 @@ public final class Dtos {
 
     public record SaleDto(Long id, String number, String type, String customerName, String customerPhone,
                           BigDecimal subtotal, BigDecimal tradeInAmount, BigDecimal balance, String paymentMode,
-                          BigDecimal downPayment, int months, Instant createdAt, List<LineDto> lines,
+                          BigDecimal downPayment, int months, String payMethod, Instant createdAt, List<LineDto> lines,
                           List<InstallmentDto> installments, BuybackDto buyback) {}
 
     public record SaleSummary(Long id, String number, String type, String customerName, BigDecimal subtotal,
-                              BigDecimal balance, String paymentMode, Instant createdAt) {}
+                              BigDecimal balance, String paymentMode, String payMethod, Instant createdAt) {}
 
     public record PlanDto(Long saleId, String saleNumber, String customerName, String customerPhone,
                           BigDecimal remaining, BigDecimal paid, LocalDate nextDue, long overdueCount,
@@ -147,7 +148,10 @@ public final class Dtos {
     public record DashboardDto(BigDecimal salesToday, long salesCountToday, BigDecimal salesMonth,
                                BigDecimal buybackMonth, long stockCount, BigDecimal stockWeightG,
                                BigDecimal stockValue, long overdueInstallments, BigDecimal installmentsOutstanding,
-                               long openWorkshop, List<SaleSummary> recentSales, List<PriceDto> prices) {}
+                               long openWorkshop, List<SaleSummary> recentSales, List<PriceDto> prices,
+                               List<CategoryTotal> topCategories) {}
+
+    public record CategoryTotal(String category, BigDecimal total, long pieces) {}
 
     public record DayPoint(LocalDate date, BigDecimal total) {}
 

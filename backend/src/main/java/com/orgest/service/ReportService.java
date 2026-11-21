@@ -62,7 +62,13 @@ public class ReportService {
                 installments.countByShopIdAndPaidFalseAndDueDateBefore(shopId, today),
                 installments.outstanding(shopId),
                 workshop.countByShopIdAndStatusIn(shopId, List.of(Enums.WorkshopStatus.SENT, Enums.WorkshopStatus.READY)),
-                recent, prices);
+                recent, prices, topCategories(shopId, m0, m1));
+    }
+
+    private List<CategoryTotal> topCategories(Long shopId, Instant from, Instant to) {
+        return sales.categoryTotals(shopId, from, to).stream().limit(5)
+                .map(r -> new CategoryTotal((String) r[0], Money.round2((BigDecimal) r[1]), ((Number) r[2]).longValue()))
+                .toList();
     }
 
     private static void checkRange(LocalDate from, LocalDate to) {

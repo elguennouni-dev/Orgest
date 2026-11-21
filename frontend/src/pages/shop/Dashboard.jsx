@@ -158,6 +158,20 @@ export default function Dashboard() {
         <div className="l">
           <PricesCard prices={d.prices} entered={entered} editing={editing} setEditing={setEditing} onSaved={reload} />
           <section className="panel">
+            <div className="hd"><h2>{t('dash.topCats')}</h2></div>
+            {(d.topCategories || []).length === 0 ? <p className="muted" style={{ margin: 0 }}>{t('dash.noCats')}</p> : (
+              <ul className="topcats">
+                {d.topCategories.map((c) => (
+                  <li key={c.category}>
+                    <span className="n">{c.category === 'AUTRE' ? t('cat.other') : t('cat.' + c.category.toLowerCase())}</span>
+                    <span className="bar"><i style={{ width: Math.max(4, (Number(c.total) / Number(d.topCategories[0].total)) * 100) + '%' }} /></span>
+                    <span className="num">{fmtInt(c.total)} {t('dh')}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
+          <section className="panel">
             <div className="hd"><h2>{t('dash.recent')}</h2><Link to="/app/sales" style={{ fontSize: 14, fontWeight: 500 }}>{t('seeAll')}</Link></div>
             {d.recentSales.length === 0 ? <p className="muted" style={{ margin: 0 }}>{t('dash.noSales')}</p> : (
               <div className="tablewrap">

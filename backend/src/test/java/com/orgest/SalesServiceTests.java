@@ -73,7 +73,7 @@ class SalesServiceTests {
 
     private static SaleRequest req(Enums.SaleType type, String customer, List<LineIn> lines, BuybackRequest old,
                                    Enums.PaymentMode mode, String down, Integer months) {
-        return new SaleRequest(type, customer, "0600000000", lines, old, mode, down == null ? null : d(down), months);
+        return new SaleRequest(type, customer, "0600000000", lines, old, mode, down == null ? null : d(down), months, null);
     }
 
     @Test
@@ -89,6 +89,18 @@ class SalesServiceTests {
         assertEquals(d("7400.00"), s.downPayment());
         assertTrue(s.installments().isEmpty());
         assertEquals(Enums.ItemStatus.SOLD, it.status);
+    }
+
+    @Test
+    void payMethodDefaultsToCashAndKeepsChoice() {
+        stock(stockItem(1, 18, "10.000"));
+        SaleDto a = svc.createSale(SHOP, req(Enums.SaleType.SALE, null, List.of(item(1, "640", "100")), null,
+                Enums.PaymentMode.CASH, null, null));
+        assertEquals("CASH", a.payMethod());
+        stock(stockItem(2, 18, "10.000"));
+        SaleDto b = svc.createSale(SHOP, new SaleRequest(Enums.SaleType.SALE, null, "0600000000",
+                List.of(item(2, "640", "100")), null, Enums.PaymentMode.CASH, null, null, Enums.SalePay.CHEQUE));
+        assertEquals("CHEQUE", b.payMethod());
     }
 
     @Test

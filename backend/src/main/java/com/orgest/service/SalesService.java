@@ -100,6 +100,7 @@ public class SalesService {
         s.type = type;
         s.customerName = Text.blankToNull(r.customerName());
         s.customerPhone = Text.blankToNull(r.customerPhone());
+        s.payMethod = r.payMethod() == null ? Enums.SalePay.CASH : r.payMethod();
 
         BigDecimal subtotal = BigDecimal.ZERO;
         for (LineIn l : r.lines()) {
@@ -196,7 +197,7 @@ public class SalesService {
                 .map(l -> new LineDto(l.description, l.karat, l.weightG, l.pricePerGram, l.makingPerGram, l.lineTotal, l.quantity))
                 .toList();
         return new SaleDto(s.id, s.number, s.type.name(), s.customerName, s.customerPhone, s.subtotal,
-                s.tradeInAmount, s.balance, s.paymentMode.name(), s.downPayment, s.months, s.createdAt, lines,
+                s.tradeInAmount, s.balance, s.paymentMode.name(), s.downPayment, s.months, s.payMethod.name(), s.createdAt, lines,
                 plan.stream().map(SalesService::toDto).toList(), b == null ? null : toDto(b));
     }
 
@@ -207,7 +208,7 @@ public class SalesService {
 
     static SaleSummary summary(Sale s) {
         return new SaleSummary(s.id, s.number, s.type.name(), s.customerName, s.subtotal, s.balance,
-                s.paymentMode.name(), s.createdAt);
+                s.paymentMode.name(), s.payMethod.name(), s.createdAt);
     }
 
     @Transactional(readOnly = true)

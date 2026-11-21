@@ -11,6 +11,7 @@ import { cameraScanSupported, exactRef } from '../../lib/scan.js';
 import ScanModal from '../../components/ScanModal.jsx';
 
 let uid = 0;
+const PAY_METHODS = ['CASH', 'CHEQUE', 'CARD', 'TRANSFER'];
 
 export default function Sale({ mode }) {
   const { t } = useI18n();
@@ -25,7 +26,7 @@ export default function Sale({ mode }) {
   const [showCust, setShowCust] = useState(false);
   const [withOld, setWithOld] = useState(isEx);
   const [old, setOld] = useState({ karat: 18, gross: '', ded: '0', price: '', description: '' });
-  const [pay, setPay] = useState({ mode: 'CASH', months: 6, down: '' });
+  const [pay, setPay] = useState({ mode: 'CASH', months: 6, down: '', method: 'CASH' });
   const [free, setFree] = useState(null);
   const [error, setError] = useState(null);
   const [busy, setBusy] = useState(false);
@@ -79,6 +80,7 @@ export default function Sale({ mode }) {
           : { description: l.label, karat: l.karat, weightG: l.weightG, quantity: l.qty, pricePerGram: Number(l.price || 0), makingPerGram: Number(l.making || 0) })),
         oldGold: withOld ? { karat: Number(old.karat), grossWeightG: Number(old.gross), deductionPct: Number(old.ded || 0), pricePerGram: oldPrice, description: old.description || null, customerName: cust.name || null, customerPhone: cust.phone || null } : null,
         paymentMode: pay.mode,
+        payMethod: pay.method,
         downPayment: pay.mode === 'INSTALLMENT' ? Number(pay.down || 0) : null,
         months: pay.mode === 'INSTALLMENT' ? Number(pay.months) : null,
       };
@@ -241,6 +243,11 @@ export default function Sale({ mode }) {
               <button type="button" className={pay.mode === 'CASH' ? 'on' : ''} aria-pressed={pay.mode === 'CASH'} onClick={() => setPay({ ...pay, mode: 'CASH' })}>{t('pay.cash')}</button>
               <button type="button" className={pay.mode === 'INSTALLMENT' ? 'on' : ''} aria-pressed={pay.mode === 'INSTALLMENT'} onClick={() => { setPay({ ...pay, mode: 'INSTALLMENT' }); setShowCust(true); }}>{t('sale.installment')}</button>
             </div>
+            <Field label={t('paym.label')}>
+              <select value={pay.method} onChange={(e) => setPay({ ...pay, method: e.target.value })}>
+                {PAY_METHODS.map((m) => <option key={m} value={m}>{t('paym.' + m)}</option>)}
+              </select>
+            </Field>
             {pay.mode === 'INSTALLMENT' && (
               <div className="grid g2">
                 <Field label={t('sale.down')}><input className="input" type="number" min="0" step="0.01" inputMode="decimal" value={pay.down} onChange={(e) => setPay({ ...pay, down: e.target.value })} dir="ltr" /></Field>
