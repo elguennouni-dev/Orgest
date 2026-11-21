@@ -19,6 +19,14 @@ public final class Dtos {
                              String city, String address, String ice, String receiptFooter, boolean active,
                              LocalDate subscriptionEnd, boolean subscriptionValid, long daysLeft) {}
 
+    public record StaffDto(Long id, String username, String name, boolean active, Instant createdAt) {}
+
+    public record StaffRequest(@NotBlank @Pattern(regexp = "^[A-Za-z0-9]{2,19}$") String code,
+                               @NotBlank @Size(max = 120) String name,
+                               @NotBlank @Size(max = 128) String password) {}
+
+    public record StaffUpdate(@Size(max = 120) String name, @Size(max = 128) String password, Boolean active) {}
+
     public record UpdateProfileRequest(@NotBlank @Size(max = 120) String shopName, @Size(max = 120) String ownerName,
                                        @Size(max = 30) String phone, @Size(max = 80) String city,
                                        @Size(max = 255) String address, @Size(max = 30) String ice,

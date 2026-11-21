@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { download } from '../../api.js';
+import { useAuth } from '../../auth.jsx';
 import { useApi } from '../../hooks.js';
 import { fmtWeight, Money, useI18n } from '../../i18n.jsx';
 import Louiz from '../../components/Louiz.jsx';
@@ -16,14 +17,15 @@ export default function Stock() {
   const [page, setPage] = useState(0);
   const { data, error, loading } = useApi(`/shop/items?status=${status}&q=${encodeURIComponent(q)}&karat=${karat}&page=${page}&size=24`);
   const [dlErr, setDlErr] = useState(null);
+  const owner = useAuth().me.role !== 'STAFF';
   const exportItems = async () => { try { await download('/shop/export/items.xlsx', 'stock.xlsx'); } catch (e) { setDlErr(e); } };
   const pages = data ? Math.ceil(data.total / data.size) : 0;
 
   return (
     <>
       <PageHead title={t('nav.stock')}>
-        <button className="btn" onClick={exportItems}>⬇ {t('exportExcel')}</button>
-        <Link className="btn primary" to="/app/stock/new">＋ {t('stock.add')}</Link>
+        {owner && <button className="btn" onClick={exportItems}>⬇ {t('exportExcel')}</button>}
+        {owner && <Link className="btn primary" to="/app/stock/new">＋ {t('stock.add')}</Link>}
       </PageHead>
       <ErrorBox error={dlErr} />
       <div className="card row" style={{ marginBottom: 14 }}>
@@ -57,7 +59,7 @@ export default function Stock() {
                 <span className="muted">{i.ref} · {i.karat}K · <span className="num">{fmtWeight(i.weightG)} g</span></span>
                 <span className="hint">{t('stock.making')}: <Money v={i.makingPerGram} />/g</span>
                 <span className="hint num">{t('stock.totalWeight')}: {fmtWeight(Number(i.weightG) * i.quantity)} g</span>
-                <Link className="btn sm" to={`/app/stock/${i.id}/edit`}>{i.quantity === 0 ? t('stock.restock') : t('edit')}</Link>
+                {owner && <Link className="btn sm" to={`/app/stock/${i.id}/edit`}>{i.quantity === 0 ? t('stock.restock') : t('edit')}</Link>}
               </div>
             </div>
           ))}

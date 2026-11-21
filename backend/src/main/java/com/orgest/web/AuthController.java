@@ -43,7 +43,7 @@ public class AuthController {
     public MeResponse login(@Valid @RequestBody LoginRequest body, HttpServletRequest req, HttpServletResponse res) {
         AppUser u = auth.authenticate(body.username(), body.password(), req.getRemoteAddr());
         setCookie(res, jwt.issue(u), jwt.ttl());
-        return AuthService.toMe(u);
+        return auth.meOf(u);
     }
 
     @PostMapping("/logout")
@@ -54,8 +54,8 @@ public class AuthController {
 
     @GetMapping("/me")
     public MeResponse me() {
-        AppUser u = users.findById(CurrentUser.get().id()).orElseThrow(AppException::notFound);
-        return AuthService.toMe(u);
+        AppUser u = users.findById(CurrentUser.get().userId()).orElseThrow(AppException::notFound);
+        return auth.meOf(u);
     }
 
     public void setCookie(HttpServletResponse res, String value, Duration maxAge) {

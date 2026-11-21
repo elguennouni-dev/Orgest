@@ -41,13 +41,18 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                     Number tv = parsed.get().getClaim("tv");
                     AppUser u = users.findById(id).orElse(null);
                     if (u != null && tv != null && tv.intValue() == u.tokenVersion) {
-                        if (u.role == Enums.Role.SHOP && !u.subscriptionValid() && isBlocked(req)) {
+                        AppUser tenant = u;
+                        if (u.role == Enums.Role.STAFF) {
+                            tenant = !u.active || u.ownerId == null ? null : users.findById(u.ownerId).orElse(null);
+                            if (tenant == null || tenant.role != Enums.Role.SHOP) { chain.doFilter(req, res); return; }
+                        }
+                        if (u.role != Enums.Role.ADMIN && !tenant.subscriptionValid() && isBlocked(req)) {
                             res.setStatus(HttpServletResponse.SC_FORBIDDEN);
                             res.setContentType("application/json");
                             res.getWriter().write("{\"code\":\"SUBSCRIPTION_EXPIRED\"}");
                             return;
                         }
-                        var principal = new UserPrincipal(u.id, u.role, u.username);
+                        var principal = new UserPrincipal(tenant.id, u.role, u.username, u.id);
                         var auth = new UsernamePasswordAuthenticationToken(principal, null,
                                 List.of(new SimpleGrantedAuthority("ROLE_" + u.role.name())));
                         SecurityContextHolder.getContext().setAuthentication(auth);

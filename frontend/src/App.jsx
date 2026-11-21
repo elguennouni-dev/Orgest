@@ -23,6 +23,7 @@ import Workshop from './pages/shop/Workshop.jsx';
 import Installments from './pages/shop/Installments.jsx';
 import Reports from './pages/shop/Reports.jsx';
 import Account from './pages/shop/Account.jsx';
+import Team from './pages/shop/Team.jsx';
 import Clients from './pages/admin/Clients.jsx';
 import NewClient from './pages/admin/NewClient.jsx';
 import ClientDetail from './pages/admin/ClientDetail.jsx';
@@ -32,8 +33,15 @@ function Guard({ role, children }) {
   const { me, loading } = useAuth();
   if (loading) return <Loader full />;
   if (!me) return <Navigate to="/login" replace />;
-  if (me.role !== role) return <Navigate to={me.role === 'ADMIN' ? '/admin' : '/app'} replace />;
+  const roles = Array.isArray(role) ? role : [role];
+  if (!roles.includes(me.role)) return <Navigate to={me.role === 'ADMIN' ? '/admin' : '/app'} replace />;
   return children;
+}
+
+/** Pages réservées au commerçant : un employé est renvoyé vers la caisse. */
+function OwnerOnly({ children }) {
+  const { me } = useAuth();
+  return me.role === 'STAFF' ? <Navigate to="/app/sale" replace /> : children;
 }
 
 export default function App() {
@@ -48,11 +56,11 @@ export default function App() {
       <Route path="/outils" element={<Page><ToolsHub /></Page>} />
       <Route path="/outils/:slug" element={<Page><ToolPage /></Page>} />
 
-      <Route path="/app" element={<Guard role="SHOP"><ShopLayout /></Guard>}>
-        <Route index element={<Dashboard />} />
+      <Route path="/app" element={<Guard role={['SHOP', 'STAFF']}><ShopLayout /></Guard>}>
+        <Route index element={<OwnerOnly><Dashboard /></OwnerOnly>} />
         <Route path="stock" element={<Stock />} />
-        <Route path="stock/new" element={<ItemForm />} />
-        <Route path="stock/:id/edit" element={<ItemForm />} />
+        <Route path="stock/new" element={<OwnerOnly><ItemForm /></OwnerOnly>} />
+        <Route path="stock/:id/edit" element={<OwnerOnly><ItemForm /></OwnerOnly>} />
         <Route path="sale" element={<Sale mode="SALE" />} />
         <Route path="exchange" element={<Sale mode="EXCHANGE" />} />
         <Route path="sales" element={<Sales />} />
@@ -61,8 +69,9 @@ export default function App() {
         <Route path="buyback/:id" element={<BuybackReceipt />} />
         <Route path="workshop" element={<Workshop />} />
         <Route path="installments" element={<Installments />} />
-        <Route path="reports" element={<Reports />} />
-        <Route path="account" element={<Account />} />
+        <Route path="reports" element={<OwnerOnly><Reports /></OwnerOnly>} />
+        <Route path="team" element={<OwnerOnly><Team /></OwnerOnly>} />
+        <Route path="account" element={<OwnerOnly><Account /></OwnerOnly>} />
       </Route>
 
       <Route path="/admin" element={<Guard role="ADMIN"><AdminLayout /></Guard>}>

@@ -23,7 +23,7 @@ export default function Login() {
   const [error, setError] = useState(null);
   const [busy, setBusy] = useState(false);
 
-  if (me) return <Navigate to={me.role === 'ADMIN' ? '/admin' : '/app'} replace />;
+  if (me) return <Navigate to={me.role === 'ADMIN' ? '/admin' : me.role === 'STAFF' ? '/app/sale' : '/app'} replace />;
 
   let mood = 'wave', bubble = 'lz.login.wave';
   if (error) { mood = 'worried'; bubble = 'lz.login.err'; }
@@ -37,7 +37,7 @@ export default function Login() {
     setBusy(true); setError(null);
     try {
       const u = await login(username.trim(), password);
-      nav(u.role === 'ADMIN' ? '/admin' : '/app', { replace: true });
+      nav(u.role === 'ADMIN' ? '/admin' : u.role === 'STAFF' ? '/app/sale' : '/app', { replace: true });
     } catch (err) {
       setError(err); setBusy(false);
     }

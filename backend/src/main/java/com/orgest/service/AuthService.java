@@ -4,6 +4,7 @@ import com.orgest.common.AppException;
 import com.orgest.common.Money;
 import com.orgest.config.OrgestProperties;
 import com.orgest.domain.AppUser;
+import com.orgest.domain.Enums;
 import com.orgest.repo.UserRepository;
 import com.orgest.security.LoginRateLimiter;
 import com.orgest.web.Dtos.MeResponse;
@@ -62,6 +63,15 @@ public class AuthService {
         users.save(u);
         audit.log(u.id, u.username, "LOGIN_OK", null, ip);
         return u;
+    }
+
+    /** Profil renvoyé au SPA : pour un employé, les infos de la boutique viennent du propriétaire. */
+    public MeResponse meOf(AppUser u) {
+        if (u.role != Enums.Role.STAFF) return toMe(u);
+        AppUser owner = users.findById(u.ownerId).orElseThrow(AppException::notFound);
+        MeResponse m = toMe(owner);
+        return new MeResponse(u.id, u.username, Enums.Role.STAFF.name(), m.shopName(), m.ownerName(), m.phone(), m.city(),
+                m.address(), m.ice(), m.receiptFooter(), u.active && owner.active, m.subscriptionEnd(), m.subscriptionValid(), m.daysLeft());
     }
 
     public static MeResponse toMe(AppUser u) {

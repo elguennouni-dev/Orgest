@@ -117,7 +117,7 @@ function Shell({ groups, children, searchable }) {
         <LangToggle />
         <div className="userbox">
           <div className="av">{initial}</div>
-          <div className="nm">{me.ownerName || me.username}<small>{me.role === 'ADMIN' ? t('role.admin') : t('role.owner')}</small></div>
+          <div className="nm">{me.ownerName || me.username}<small>{me.role === 'ADMIN' ? t('role.admin') : me.role === 'STAFF' ? t('role.staff') : t('role.owner')}</small></div>
           <button type="button" onClick={logout} aria-label={t('logout')} title={t('logout')}><Icon d={P.out} /></button>
         </div>
       </aside>
@@ -131,12 +131,18 @@ function Shell({ groups, children, searchable }) {
   );
 }
 
+const STAFF_GROUPS = [
+  { title: 'nav.g.cash', items: [['/app/sale', 'nav.sale', 'sale'], ['/app/exchange', 'nav.exchange', 'exchange'], ['/app/buyback', 'nav.buyback', 'buyback']] },
+  { title: 'nav.g.inv', items: [['/app/stock', 'nav.stock', 'stock'], ['/app/workshop', 'nav.workshop', 'workshop']] },
+  { title: 'nav.g.follow', items: [['/app/installments', 'nav.installments', 'calendar'], ['/app/sales', 'nav.sales', 'list']] },
+];
+
 const SHOP_GROUPS = [
   { items: [['/app', 'nav.dashboard', 'dash', true]] },
   { title: 'nav.g.cash', items: [['/app/sale', 'nav.sale', 'sale'], ['/app/exchange', 'nav.exchange', 'exchange'], ['/app/buyback', 'nav.buyback', 'buyback']] },
   { title: 'nav.g.inv', items: [['/app/stock', 'nav.stock', 'stock'], ['/app/workshop', 'nav.workshop', 'workshop']] },
   { title: 'nav.g.follow', items: [['/app/installments', 'nav.installments', 'calendar'], ['/app/sales', 'nav.sales', 'list'], ['/app/reports', 'nav.reports', 'chart']] },
-  { title: 'nav.g.account', items: [['/app/account', 'nav.myshop', 'user']] },
+  { title: 'nav.g.account', items: [['/app/team', 'nav.team', 'user'], ['/app/account', 'nav.myshop', 'user']] },
 ];
 
 function useShortcuts() {
@@ -155,9 +161,9 @@ export function ShopLayout() {
   const { me } = useAuth();
   const loc = useLocation();
   useShortcuts();
-  const blocked = !me.subscriptionValid && !loc.pathname.startsWith('/app/account');
+  const blocked = !me.subscriptionValid && !(me.role === 'SHOP' && loc.pathname.startsWith('/app/account'));
   return (
-    <Shell groups={SHOP_GROUPS} searchable>
+    <Shell groups={me.role === 'STAFF' ? STAFF_GROUPS : SHOP_GROUPS} searchable>
       {blocked ? <Expired /> : <Outlet />}
     </Shell>
   );

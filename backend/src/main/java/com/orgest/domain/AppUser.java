@@ -24,6 +24,8 @@ public class AppUser {
     @Column(name = "token_version", nullable = false) public int tokenVersion = 0;
     @Column(name = "failed_attempts", nullable = false) public int failedAttempts = 0;
     @Column(name = "locked_until") public Instant lockedUntil;
+    /** Renseigné pour un employé (role STAFF) : id du commerçant propriétaire. */
+    @Column(name = "owner_id") public Long ownerId;
     @Column(name = "created_at", nullable = false) public Instant createdAt = Instant.now();
 
     public boolean subscriptionValid() {

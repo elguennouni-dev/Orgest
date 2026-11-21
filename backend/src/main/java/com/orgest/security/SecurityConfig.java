@@ -46,7 +46,14 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/api/public/**").permitAll()
                 .requestMatchers("/api/auth/me").authenticated()
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                .requestMatchers("/api/shop/**").hasRole("SHOP")
+                // Réservé au commerçant (propriétaire) : prix, rapports/exports, stock (créer/modifier/supprimer), compte, équipe.
+                .requestMatchers("/api/shop/team/**", "/api/shop/account/**", "/api/shop/reports", "/api/shop/dashboard",
+                        "/api/shop/export/**").hasRole("SHOP")
+                .requestMatchers(HttpMethod.PUT, "/api/shop/prices").hasRole("SHOP")
+                .requestMatchers(HttpMethod.POST, "/api/shop/items", "/api/shop/items/*/photo").hasRole("SHOP")
+                .requestMatchers(HttpMethod.PUT, "/api/shop/items/*").hasRole("SHOP")
+                .requestMatchers(HttpMethod.DELETE, "/api/shop/items/*").hasRole("SHOP")
+                .requestMatchers("/api/shop/**").hasAnyRole("SHOP", "STAFF")
                 .anyRequest().denyAll())
             .exceptionHandling(e -> e
                 .authenticationEntryPoint((req, res, ex) -> json(res, 401, "UNAUTHENTICATED"))

@@ -11,5 +11,8 @@ public interface UserRepository extends JpaRepository<AppUser, Long> {
     boolean existsByUsernameIgnoreCase(String username);
     boolean existsByRole(Enums.Role role);
     List<AppUser> findByRoleOrderByCreatedAtDesc(Enums.Role role);
+    List<AppUser> findByOwnerIdOrderByCreatedAtAsc(Long ownerId);
+    Optional<AppUser> findByIdAndOwnerId(Long id, Long ownerId);
+    long countByOwnerId(Long ownerId);
     Optional<AppUser> findByIdAndRole(Long id, Enums.Role role);
 }
