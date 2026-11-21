@@ -209,4 +209,22 @@ public final class Dtos {
     public record PostDto(Long id, String slug, String title, String excerpt, String content, String category, String cover,
                           String coverAlt, String metaTitle, String metaDescription, String keywords, int readMinutes,
                           boolean published, Instant publishedAt, Instant updatedAt, String lang) {}
+
+    // ---------- Devis ----------
+    public record QuoteRequest(@Size(max = 120) String customerName, @Size(max = 30) String customerPhone,
+                               @Size(max = 500) String note, @Min(1) @Max(365) Integer validDays,
+                               @NotEmpty @Size(max = 30) List<@Valid LineIn> lines) {}
+
+    public record QuoteStatusRequest(@NotNull String status) {}
+
+    public record QuoteConvertRequest(Enums.PaymentMode paymentMode,
+                                      @DecimalMin("0") @DecimalMax("1000000000") BigDecimal downPayment,
+                                      @Min(0) @Max(36) Integer months, Enums.SalePay payMethod) {}
+
+    public record QuoteDto(Long id, String number, String status, String customerName, String customerPhone,
+                           String note, LocalDate validUntil, boolean expired, BigDecimal subtotal, Long saleId,
+                           Instant createdAt, List<LineDto> lines) {}
+
+    public record QuoteSummary(Long id, String number, String status, String customerName, BigDecimal subtotal,
+                               LocalDate validUntil, boolean expired, Instant createdAt) {}
 }

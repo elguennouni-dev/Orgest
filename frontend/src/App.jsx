@@ -17,6 +17,9 @@ import ItemForm from './pages/shop/ItemForm.jsx';
 import Sale from './pages/shop/Sale.jsx';
 import Sales from './pages/shop/Sales.jsx';
 import SaleReceipt from './pages/shop/SaleReceipt.jsx';
+import Quotes from './pages/shop/Quotes.jsx';
+import QuoteForm from './pages/shop/QuoteForm.jsx';
+import QuoteView from './pages/shop/QuoteView.jsx';
 import BuyBack from './pages/shop/BuyBack.jsx';
 import BuybackReceipt from './pages/shop/BuybackReceipt.jsx';
 import Workshop from './pages/shop/Workshop.jsx';
@@ -70,6 +73,10 @@ export default function App() {
         <Route path="exchange" element={<Sale mode="EXCHANGE" />} />
         <Route path="sales" element={<Sales />} />
         <Route path="sales/:id" element={<SaleReceipt />} />
+        <Route path="quotes" element={<Quotes />} />
+        <Route path="quotes/new" element={<QuoteForm />} />
+        <Route path="quotes/:id" element={<QuoteView />} />
+        <Route path="quotes/:id/edit" element={<QuoteForm />} />
         <Route path="buyback" element={<BuyBack />} />
         <Route path="buyback/:id" element={<BuybackReceipt />} />
         <Route path="workshop" element={<Workshop />} />

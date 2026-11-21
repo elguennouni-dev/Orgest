@@ -140,3 +140,36 @@ export function BuybackReceipt({ b }) {
     </>
   );
 }
+
+export function QuoteDoc({ quote }) {
+  const { t } = useI18n();
+  return (
+    <>
+      <ShopHeader title={t('quote.docTitle')} number={quote.number} date={quote.createdAt} />
+      {(quote.customerName || quote.customerPhone) && (
+        <div>{t('customer')}: <b>{quote.customerName || ''}</b> {quote.customerPhone && <span className="num">({quote.customerPhone})</span>}</div>
+      )}
+      <hr />
+      <table className="lines">
+        <thead><tr><th>{t('receipt.item')}</th><th>{t('karat')}</th><th>{t('weightG')}</th><th>{t('receipt.pricePerG')}</th><th>{t('receipt.making')}</th><th>{t('total')}</th></tr></thead>
+        <tbody>
+          {quote.lines.map((l, i) => (
+            <tr key={i}>
+              <td className="desc">{l.description}</td>
+              <td className="k" data-label={t('karat')}>{purity(l.karat)}</td>
+              <td className="num w" data-label={t('weightG')}>{l.quantity > 1 ? `${l.quantity} × ` : ''}{fmtWeight(l.weightG)} {t('unit.g')}</td>
+              <td className="num p" data-label={t('receipt.pricePerG')}>{fmtMoney(l.pricePerGram)}</td>
+              <td className="num m" data-label={t('receipt.making')}>{fmtMoney(l.makingPerGram)}</td>
+              <td className="num tt">{fmtMoney(l.lineTotal)}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <div className="tot big"><span>{t('total')}</span><span className="num">{fmtMoney(quote.subtotal)} {t('dh')}</span></div>
+      <div className="tot"><span>{t('quote.validUntil')}</span><b className="num">{fmtDate(quote.validUntil)}</b></div>
+      {quote.note && <p dir="auto">{quote.note}</p>}
+      <p>{t('quote.disclaimer')}</p>
+      <Footer signatures />
+    </>
+  );
+}
