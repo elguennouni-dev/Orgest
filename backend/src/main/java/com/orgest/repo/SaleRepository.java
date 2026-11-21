@@ -42,7 +42,7 @@ public interface SaleRepository extends JpaRepository<Sale, Long> {
     @Query("select s.customerId, sum(s.creditDue) from Sale s where s.shopId = :shop and s.customerId in :ids group by s.customerId")
     List<Object[]> creditByCustomer(@Param("shop") Long shop, @Param("ids") java.util.Collection<Long> ids);
 
-    @jakarta.persistence.Lock(jakarta.persistence.LockModeType.PESSIMISTIC_WRITE)
+    @org.springframework.data.jpa.repository.Lock(jakarta.persistence.LockModeType.PESSIMISTIC_WRITE)
     List<Sale> findByShopIdAndCustomerIdAndCreditDueGreaterThanOrderByCreatedAtAsc(Long shopId, Long customerId, BigDecimal min);
 
     Page<Sale> findByShopIdAndCustomerIdOrderByCreatedAtDesc(Long shopId, Long customerId, Pageable pageable);
