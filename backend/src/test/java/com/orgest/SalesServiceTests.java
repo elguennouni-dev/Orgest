@@ -45,7 +45,7 @@ class SalesServiceTests {
             it.forEach(saved::add);
             return saved;
         });
-        svc = new SalesService(sales, buybacks, installments, items, counters, mock(AuditService.class), mock(com.orgest.service.CustomerService.class));
+        svc = new SalesService(sales, buybacks, installments, items, counters, mock(AuditService.class), mock(com.orgest.service.CustomerService.class), mock(com.orgest.service.PushService.class));
     }
 
     private Item stockItem(long id, int karat, String weight) {

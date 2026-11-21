@@ -50,6 +50,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/shop/team/**", "/api/shop/account/**", "/api/shop/reports", "/api/shop/dashboard",
                         "/api/shop/export/**").hasRole("SHOP")
                 .requestMatchers(HttpMethod.PUT, "/api/shop/prices").hasRole("SHOP")
+                .requestMatchers("/api/shop/push/**").hasRole("SHOP")
                 .requestMatchers(HttpMethod.POST, "/api/shop/logo").hasRole("SHOP")
                 .requestMatchers(HttpMethod.DELETE, "/api/shop/logo").hasRole("SHOP")
                 .requestMatchers(HttpMethod.POST, "/api/shop/items", "/api/shop/items/*/photo").hasRole("SHOP")

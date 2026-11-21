@@ -26,10 +26,12 @@ public class SalesService {
     private final CounterService counters;
     private final AuditService audit;
     private final CustomerService customers;
+    private final PushService push;
 
     public SalesService(SaleRepository sales, BuybackRepository buybacks, InstallmentRepository installments,
-                        ItemRepository items, CounterService counters, AuditService audit, CustomerService customers) {
+                        ItemRepository items, CounterService counters, AuditService audit, CustomerService customers, PushService push) {
         this.customers = customers;
+        this.push = push;
         this.sales = sales;
         this.buybacks = buybacks;
         this.installments = installments;
@@ -198,6 +200,7 @@ public class SalesService {
         for (Installment in : plan) in.saleId = s.id;
         installments.saveAll(plan);
         audit.log(shopId, null, type == Enums.SaleType.EXCHANGE ? "EXCHANGE_CREATE" : "SALE_CREATE", s.number, null);
+        push.notifySale(shopId, s.id, s.number, s.subtotal, s.customerName);
         return detailOf(s, plan, tradeIn);
     }
 

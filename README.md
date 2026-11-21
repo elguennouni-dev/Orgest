@@ -74,6 +74,13 @@ Orgest is a multi-tenant web SaaS that runs the daily work of a Moroccan jewelle
 | 📊 **Reports** | Readable sales chart (day / week / month grouping), best day, averages, Excel exports with formula-injection protection. |
 | 🛡️ **Admin** | Create shop accounts with generated passwords, renew 1/3/6/12 months, suspend, payment history, **editable pricing plans**, **SEO blog editor**. Expired accounts lose data access. |
 | 🌍 **UI** | FR / AR with RTL, responsive phone layout, guided tour by the mascot *Louiz*, smooth motion (respects *reduced motion*). |
+| 📱 **PWA & offline** | Installable app. Stock, prices and profile are cached on the device; sales made without a connection are queued in IndexedDB and synced automatically (idempotent `clientRef`, conflicts shown in a banner). |
+| 🔎 **Scan checkout** | USB barcode scanner (types the reference + Enter) or phone camera (`BarcodeDetector`) adds the item to the sale. |
+| 🏷️ **Labels** | Code 128 barcodes (own encoder, cross-checked against a reference implementation) on an A4 3×8 sheet or a 50×25 mm roll; shop logo on receipts; A4 voucher format. |
+| 💳 **Payments & credit** | Cash, cheque, card, transfer or **customer credit** (optional advance); customer book; settlements are applied oldest-first and over-payment is refused; "credits to collect" on the dashboard. |
+| 🥈 **Silver** | Ag 800 / 925 / 999 next to gold 18/21/24 (prices, stock, sales, buy-back, workshop); weights switch to kg above 1 000 g. |
+| 👥 **Team** | One account per employee (`shop.code`): sells, exchanges, buys back and follows installments; prices, stock edits, dashboard, reports, exports, account and team are owner-only (enforced server-side). |
+| 🔔 **Push** | A Web Push notification on every sale for the owner's devices (RFC 8291 + VAPID implemented without third-party libraries; endpoints restricted to browser push services). |
 | 🔐 **Security** | JWT in HttpOnly cookie + CSRF, BCrypt, lockout &amp; rate limiting, per-shop data isolation, audit log — see the OWASP table below. |
 
 ### Tech stack
@@ -184,6 +191,13 @@ Orgest est un SaaS web multi-boutiques qui gère le quotidien d'une bijouterie m
 | 📊 **Rapports** | Graphique lisible (regroupement jour / semaine / mois), meilleur jour, moyennes, exports Excel protégés contre l'injection de formules. |
 | 🛡️ **Admin** | Création des comptes (mot de passe généré), renouvellement 1/3/6/12 mois, suspension, historique des paiements, **tarifs modifiables**, **éditeur de blog SEO**. Un compte expiré n'accède plus aux données. |
 | 🌍 **Interface** | FR / AR avec RTL, mise en page mobile, visite guidée par la mascotte *Louiz*, animations douces (respecte *réduire les animations*). |
+| 📱 **PWA & hors ligne** | Application installable. Stock, prix et profil sont mis en cache ; les ventes faites sans connexion sont gardées dans IndexedDB puis synchronisées automatiquement (`clientRef` idempotent, conflits signalés dans un bandeau). |
+| 🔎 **Caisse par scan** | Lecteur USB (tape la référence + Entrée) ou caméra du téléphone (`BarcodeDetector`) : l'article est ajouté à la vente. |
+| 🏷️ **Étiquettes** | Codes-barres Code 128 (encodeur maison, vérifié contre une implémentation de référence) en planche A4 3×8 ou rouleau 50×25 mm ; logo de la boutique sur les reçus ; format bon A4. |
+| 💳 **Paiements & crédit** | Espèces, chèque, carte, virement ou **crédit client** (avance possible) ; carnet clients ; règlements imputés du plus ancien au plus récent, trop-perçu refusé ; « crédits à encaisser » au tableau de bord. |
+| 🥈 **Argent** | Ag 800 / 925 / 999 à côté de l'or 18/21/24 (prix, stock, ventes, rachat, atelier) ; poids en kg au-delà de 1 000 g. |
+| 👥 **Équipe** | Un compte par employé (`boutique.code`) : vend, échange, rachète et suit les échéances ; prix, modification du stock, tableau de bord, rapports, exports, compte et équipe réservés au propriétaire (contrôlé côté serveur). |
+| 🔔 **Notifications** | Notification Web Push à chaque vente sur les appareils du propriétaire (RFC 8291 + VAPID sans bibliothèque tierce ; points d'accès limités aux services push des navigateurs). |
 | 🔐 **Sécurité** | JWT en cookie HttpOnly + CSRF, BCrypt, verrouillage et limitation, isolation des données par boutique, journal d'audit — voir le tableau OWASP ci-dessous. |
 
 ### Technologies

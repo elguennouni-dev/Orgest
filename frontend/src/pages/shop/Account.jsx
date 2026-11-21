@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { api } from '../../api.js';
 import { useAuth } from '../../auth.jsx';
 import { fmtDate, useI18n } from '../../i18n.jsx';
 import { ErrorBox, Field, PageHead } from '../../components/ui.jsx';
 import { waLink } from '../../config.js';
+import { disablePush, enablePush, currentSubscription, pushSupported } from '../../lib/push.js';
 
 export default function Account() {
   const { t } = useI18n();
@@ -15,6 +16,17 @@ export default function Account() {
   const [perr, setPerr] = useState(null);
   const set = (k) => (e) => setF({ ...f, [k]: e.target.value });
   const [logoV, setLogoV] = useState(0);
+  const [pushOn, setPushOn] = useState(false);
+  const [pushErr, setPushErr] = useState('');
+  const canPush = pushSupported();
+  useEffect(() => { if (canPush) currentSubscription().then((s) => setPushOn(!!s && Notification.permission === 'granted')).catch(() => {}); }, [canPush]);
+  const togglePush = async () => {
+    setPushErr('');
+    try {
+      if (pushOn) { await disablePush(); setPushOn(false); } else { await enablePush(); setPushOn(true); }
+    } catch (x) { setPushErr(x?.message === 'DENIED' ? t('push.denied') : t('err.generic')); }
+  };
+  const testPush = async () => { try { await api('/shop/push/test', { method: 'POST' }); } catch (x) { setPushErr(t('err.generic')); } };
   const uploadLogo = async (e) => {
     const file = e.target.files?.[0]; e.target.value = '';
     if (!file) return;
@@ -39,6 +51,17 @@ export default function Account() {
       {msg && <div className="okbox" style={{ marginBottom: 12 }}>{msg}</div>}
       <div className="grid g2" style={{ alignItems: 'start' }}>
         <div className="stack">
+          <div className="card stack">
+            <h2>{t('push.title')}</h2>
+            <p className="muted" style={{ margin: 0 }}>{canPush ? t('push.help') : t('push.unsupported')}</p>
+            {canPush && (
+              <div className="row">
+                <button type="button" className={'btn' + (pushOn ? '' : ' primary')} onClick={togglePush}>{pushOn ? t('push.disable') : t('push.enable')}</button>
+                {pushOn && <button type="button" className="btn" onClick={testPush}>{t('push.test')}</button>}
+              </div>
+            )}
+            {pushErr && <p role="alert" style={{ color: 'var(--bad)', margin: 0 }}>{pushErr}</p>}
+          </div>
           <div className="card stack">
             <h2>{t('logo.title')}</h2>
             <p className="muted" style={{ margin: 0 }}>{t('logo.help')}</p>
