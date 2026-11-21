@@ -89,7 +89,7 @@ export default function Landing() {
         </div>
         <p className="muted" style={{ marginTop: 16 }}>{t('landing.payInfo')}</p>
       </section>
-      <Faq title="Questions fréquentes · أسئلة شائعة" />
+      <Faq title="Questions fréquentes · أسئلة متكررة" />
       <SiteFooter />
     </div>
   );

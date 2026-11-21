@@ -298,7 +298,7 @@ public class SeoService {
         String url = base + "/outils/" + t.slug();
         StringBuilder b = new StringBuilder("<main class=\"seo-static\"><article lang=\"" + t.lang() + "\" dir=\"" + (ar ? "rtl" : "ltr") + "\">\n<nav><a href=\"/outils\">" + (ar ? "الأدوات" : "Outils") + "</a></nav>\n<h1>")
             .append(esc(t.title())).append("</h1>\n<p>").append(esc(t.intro())).append("</p>\n<h2>").append(ar ? "المعادلة" : "La formule").append("</h2>\n<p>")
-            .append(esc(t.formula())).append("</p>\n<p>").append(esc(t.example())).append("</p>\n<h2>").append(ar ? "أسئلة شائعة" : "Questions fréquentes").append("</h2>\n");
+            .append(esc(t.formula())).append("</p>\n<p>").append(esc(t.example())).append("</p>\n<h2>").append(ar ? "أسئلة متكررة" : "Questions fréquentes").append("</h2>\n");
         for (ToolCatalog.Faq f : t.faq()) b.append("<h3>").append(esc(f.q())).append("</h3>\n<p>").append(esc(f.a())).append("</p>\n");
         b.append("<p><em>").append(ar ? DISCLAIMER_AR : DISCLAIMER_FR).append("</em></p></article></main>");
         Map<String, Object> app = new LinkedHashMap<>();

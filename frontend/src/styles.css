@@ -758,7 +758,8 @@ tbody tr:nth-child(5) { animation-delay: .12s; } tbody tr:nth-child(n+6) { anima
 .tline .qty b { min-width: 26px; text-align: center; font-size: 16px; }
 
 /* ---------- FAQ + conversion (SEO) ---------- */
-.faq-list { display: flex; flex-direction: column; gap: 10px; max-width: 820px; }
+.faq-list { display: flex; flex-direction: column; gap: 10px; max-width: 820px; margin-inline: auto; }
+#faq h2, .faq-h { text-align: center; }
 .faq-it { background: #fff; border: 1px solid var(--border); border-radius: 16px; }
 .faq-it summary { cursor: pointer; list-style: none; padding: 16px 18px; min-height: 56px; display: flex; align-items: center; justify-content: space-between; gap: 12px; font-weight: 500; }
 .faq-it summary::-webkit-details-marker { display: none; }

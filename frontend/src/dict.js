@@ -286,7 +286,7 @@ export const dict = {
     'plans.add': 'زيد خطة', 'plans.preview': 'معاينة', 'plans.saved': 'تسجلات الأثمنة ✓',
     'blogA.title': 'مقالات المدونة', 'blogA.new': 'مقال جديد', 'blogA.empty': 'ما كاين حتى مقال. كتب أول مقال SEO.', 'blogA.draft': 'مسودة', 'blogA.live': 'منشور', 'blogA.view': 'عرض',
     'blogA.edit': 'تعديل المقال', 'blogA.t': 'العنوان (H1)', 'blogA.slug': 'العنوان فالرابط (slug)', 'blogA.slugHint': 'حروف لاتينية صغيرة وأرقام وشرطات. مثال: reprise-or-ancien', 'blogA.category': 'الصنف', 'blogA.excerpt': 'ملخص (كيبان فاللائحة)',
-    'blogA.lang': 'لغة المقال', 'blogA.ck.faq': 'قسم «أسئلة شائعة» (H2) بأسئلة على شكل H3',
+    'blogA.lang': 'لغة المقال', 'blogA.ck.faq': 'قسم «أسئلة متكررة» (H2) بأسئلة على شكل H3',
     'blogA.content': 'المحتوى (Markdown)', 'blogA.mdHelp': '## عنوان · ### عنوان فرعي · - لائحة · 1. لائحة مرقمة · **عريض** · *مائل* · [رابط](https://…) · > إطار · | جدول |', 'blogA.cover': 'صورة الغلاف', 'blogA.coverAlt': 'النص البديل للصورة (SEO)',
     'blogA.coverSave': 'سجل المقال أولا باش تزيد الصورة.', 'blogA.seo': 'تحسين محركات البحث (SEO)', 'blogA.metaTitle': 'عنوان SEO (≤ 60 حرف)', 'blogA.metaDesc': 'Meta description (120–160 حرف)', 'blogA.keywords': 'الكلمات المفتاحية (مفصولة بفاصلة)',
     'blogA.minutes': 'دقائق القراءة', 'blogA.publish': 'نشر فالموقع', 'blogA.serp': 'معاينة Google', 'blogA.delete': 'حذف', 'blogA.confirmDel': 'حذف هاد المقال نهائيا؟', 'blogA.words': '{n} كلمة',

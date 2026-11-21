@@ -24,7 +24,7 @@ const UI = {
   },
   ar: {
     g: 'غ', crumb: 'مسار التصفح', hubEyebrow: 'Orgest · الأدوات', hubTitle: 'أدوات مجانية لأصحاب محلات الذهب', hubLead: 'حاسبات بسيطة، بلا تسجيل: ثمن الذهب القديم، العيارات، جدول التقسيط.', seoTitle: 'أدوات مجانية لأصحاب محلات الذهب — الذهب القديم، العيارات، التقسيط', seoDesc: 'حاسبات مجانية لأصحاب محلات المجوهرات بالمغرب: ثمن الذهب القديم، تحويل العيارات وجدول التقسيط بالسنتيم.', switchLabel: 'الأدوات بالفرنسية', switchTo: 'Français', empty: 'ما كاين حتى أداة دابا.',
-    tools: 'الأدوات', all: 'كل الأدوات', dh: 'درهم', formula: 'المعادلة', faq: 'أسئلة شائعة', free: 'مجاني · بلا تسجيل · أرقامك تبقى على جهازك',
+    tools: 'الأدوات', all: 'كل الأدوات', dh: 'درهم', formula: 'المعادلة', faq: 'أسئلة متكررة', free: 'مجاني · بلا تسجيل · أرقامك تبقى على جهازك',
     gross: 'الوزن الخام (غ)', ded: 'نسبة الخصم (%)', buy: 'ثمن الشراء لليوم (درهم/غ)', net: 'الوزن الصافي', amount: 'المبلغ الواجب دفعه',
     refPrice: 'ثمن الغرام (درهم)', refCarat: 'العيار المرجعي', carat: 'العيار', purity: 'الذهب الخالص', perGram: 'قيمة الغرام',
     price: 'ثمن القطعة (درهم)', down: 'التسبيق (درهم)', months: 'عدد الأشهر', rem: 'الباقي للأداء', due: 'تاريخ الاستحقاق', total: 'المجموع', month: 'القسط',
@@ -177,7 +177,7 @@ export function ToolPage() {
               <h2>{u.formula}</h2>
               <div className="formula">{tool.formula}</div>
               <p>{tool.example}</p>
-              <h2>{u.faq}</h2>
+              <h2 className="faq-h">{u.faq}</h2>
               <div className="faq-list">{tool.faq.map((f, i) => <details className="faq-it" key={f.q} open={i === 0}><summary>{f.q}</summary><p>{f.a}</p></details>)}</div>
               <div className="post-cta">
                 <h2>{u.ctaH}</h2><p>{u.ctaP}</p>

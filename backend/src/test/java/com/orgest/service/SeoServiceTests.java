@@ -156,7 +156,7 @@ class SeoServiceTests {
     }
 
     @Test void arabicPostIsRtlWithLocaleTocAndFaqSchema() {
-        String md = "## الخطوة الأولى\nنص\n\n## الخطوة الثانية\nنص\n\n## الخطوة الثالثة\nنص\n\n## أسئلة شائعة\n### كم يستغرق الأمر؟\nدقيقة واحدة.\n### هل هو مجاني؟\nلا.";
+        String md = "## الخطوة الأولى\nنص\n\n## الخطوة الثانية\nنص\n\n## الخطوة الثالثة\nنص\n\n## أسئلة متكررة\n### كم يستغرق الأمر؟\nدقيقة واحدة.\n### هل هو مجاني؟\nلا.";
         when(content.publicPost("ar-post")).thenReturn(new PostDto(2L, "ar-post", "عنوان المقال", "مقتطف", md, "تقسيط", null, null, null, null, "ذهب", 4, true, PUB, UPD, "ar"));
         String h = seo.post(BASE, "ar-post").html();
         assertTrue(h.contains("<html lang=\"ar\" dir=\"rtl\">"));
