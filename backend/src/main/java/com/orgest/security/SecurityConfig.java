@@ -51,6 +51,7 @@ public class SecurityConfig {
             .exceptionHandling(e -> e
                 .authenticationEntryPoint((req, res, ex) -> json(res, 401, "UNAUTHENTICATED"))
                 .accessDeniedHandler((req, res, ex) -> json(res, 403, "FORBIDDEN")))
+            .addFilterBefore(new ApiGuardFilter(), UsernamePasswordAuthenticationFilter.class)
             .addFilterBefore(new SecurityHeadersFilter(), UsernamePasswordAuthenticationFilter.class)
             .addFilterBefore(new JwtAuthFilter(jwt, users), UsernamePasswordAuthenticationFilter.class)
             .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class);

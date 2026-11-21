@@ -15,12 +15,12 @@ export class ApiError extends Error {
 
 export async function ensureCsrf(force = false) {
   if (force || !getCookie('XSRF-TOKEN')) {
-    await fetch('/api/auth/csrf', { credentials: 'same-origin' });
+    await fetch('/api/auth/csrf', { credentials: 'same-origin', headers: { 'X-Orgest-Client': 'web' } });
   }
 }
 
 export async function api(path, { method = 'GET', body, form } = {}, retried = false) {
-  const headers = { Accept: 'application/json' };
+  const headers = { Accept: 'application/json', 'X-Orgest-Client': 'web' };
   if (method !== 'GET') {
     await ensureCsrf();
     const token = getCookie('XSRF-TOKEN');
@@ -50,7 +50,7 @@ export async function api(path, { method = 'GET', body, form } = {}, retried = f
 }
 
 export async function download(path, filename) {
-  const res = await fetch('/api' + path, { credentials: 'same-origin' });
+  const res = await fetch('/api' + path, { credentials: 'same-origin', headers: { 'X-Orgest-Client': 'web' } });
   if (!res.ok) throw new ApiError(res.status, 'DOWNLOAD_FAILED');
   const url = URL.createObjectURL(await res.blob());
   const a = document.createElement('a');

@@ -358,7 +358,7 @@ chmod 644 /etc/cron.d/orgest-backup
 log "Attente du démarrage du backend…"
 ok=0
 for _ in $(seq 1 60); do
-  if [[ "$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:$APP_PORT/api/auth/csrf)" == "204" ]]; then ok=1; break; fi
+  if [[ "$(curl -s -H 'X-Orgest-Client: web' -o /dev/null -w '%{http_code}' http://127.0.0.1:$APP_PORT/api/auth/csrf)" == "204" ]]; then ok=1; break; fi
   sleep 2
 done
 if [[ $ok -ne 1 ]]; then

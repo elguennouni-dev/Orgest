@@ -151,6 +151,8 @@ The same worked examples are asserted in Java **and** JavaScript, so the screen 
 
 CSRF: double-submit `XSRF-TOKEN` cookie + `X-XSRF-TOKEN` header on every non-GET request, on top of `SameSite=Strict`.
 
+API exposure: the backend listens on `127.0.0.1` only, so it is reachable solely through the frontend's Nginx. On top of that, `ApiGuardFilter` answers **404** to any `/api/**` call that is not made by our own frontend (typed URL, other site, missing `X-Orgest-Client` header); images, SEO pages and crawler files stay public. This is a guard against curiosity — data protection still rests on authentication and CSRF.
+
 ### Project structure
 
 ```
