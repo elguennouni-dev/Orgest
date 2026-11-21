@@ -164,25 +164,51 @@ public class SeoService {
                 b.toString(), List.of(org, site, app, faqLd)));
     }
 
+    static final String BLOG_TITLE_AR = "مدونة Orgest — نصائح لأصحاب محلات الذهب: الذهب، السلعة، التقسيط";
+    static final String BLOG_DESC_AR = "أدلة قصيرة وعملية لأصحاب محلات المجوهرات: ثمن الذهب، شراء الذهب القديم، البيع بالتقسيط، الجرد وتدبير المحل.";
+
+    /** /blog : page d'accueil du blog avec le choix de la langue (chaque langue a sa propre page). */
     public Page blog(String base) {
-        List<PostSummary> posts = content.publicPosts();
-        StringBuilder b = new StringBuilder("<main class=\"seo-static\"><h1>Le blog Orgest : conseils pour bijoutiers</h1>\n<p>").append(esc(BLOG_DESC)).append("</p>\n");
+        StringBuilder b = new StringBuilder("<main class=\"seo-static\"><h1>Blog Orgest · مدونة Orgest</h1>\n");
+        b.append("<p><a href=\"/blog/fr\" hreflang=\"fr\" lang=\"fr\">Lire le blog en français</a></p>\n");
+        b.append("<p><a href=\"/blog/ar\" hreflang=\"ar\" lang=\"ar\" dir=\"rtl\">اقرأ المدونة بالعربية</a></p>\n<p><a href=\"/\">Accueil</a></p></main>");
+        Map<String, Object> coll = new LinkedHashMap<>();
+        coll.put("@type", "CollectionPage"); coll.put("name", "Blog Orgest"); coll.put("url", base + "/blog");
+        coll.put("isPartOf", Map.of("@id", base + "/#website"));
+        return new Page(200, build(new Meta(BLOG_TITLE, BLOG_DESC, base + "/blog", "website", base + "/assets/icon-512.png", null, true, null, "fr"),
+                b.toString(), List.of(coll, breadcrumb(base, null, null, "fr")), blogAlternates(base)));
+    }
+
+    private String blogAlternates(String base) {
+        return "    <link rel=\"alternate\" hreflang=\"fr\" href=\"" + esc(base + "/blog/fr") + "\" />\n"
+             + "    <link rel=\"alternate\" hreflang=\"ar\" href=\"" + esc(base + "/blog/ar") + "\" />\n"
+             + "    <link rel=\"alternate\" hreflang=\"x-default\" href=\"" + esc(base + "/blog") + "\" />\n";
+    }
+
+    /** /blog/fr et /blog/ar : uniquement les articles de la langue demandée. */
+    public Page blog(String base, String lang) {
+        boolean ar = "ar".equals(lang);
+        String l = ar ? "ar" : "fr";
+        List<PostSummary> posts = content.publicPosts().stream().filter(p -> l.equals(p.lang() == null ? "fr" : p.lang())).toList();
+        String title = ar ? BLOG_TITLE_AR : BLOG_TITLE, desc = ar ? BLOG_DESC_AR : BLOG_DESC;
+        StringBuilder b = new StringBuilder("<main class=\"seo-static\" lang=\"" + l + "\" dir=\"" + (ar ? "rtl" : "ltr") + "\"><h1>")
+                .append(ar ? "مدونة Orgest: نصائح لأصحاب محلات الذهب" : "Le blog Orgest : conseils pour bijoutiers").append("</h1>\n<p>").append(esc(desc)).append("</p>\n");
         List<Map<String, Object>> items = new ArrayList<>();
         int i = 1;
         for (PostSummary p : posts) {
-            b.append("<article lang=\"").append("ar".equals(p.lang()) ? "ar" : "fr").append("\"><h2><a href=\"/blog/").append(esc(p.slug())).append("\">").append(esc(p.title())).append("</a></h2>");
+            b.append("<article><h2><a href=\"/blog/").append(esc(p.slug())).append("\">").append(esc(p.title())).append("</a></h2>");
             if (p.category() != null) b.append("<p><em>").append(esc(p.category())).append("</em></p>");
             if (p.excerpt() != null) b.append("<p>").append(esc(p.excerpt())).append("</p>");
             b.append("</article>\n");
             items.add(Map.of("@type", "ListItem", "position", i++, "url", base + "/blog/" + p.slug(), "name", p.title()));
         }
-        b.append("<p><a href=\"/\">Accueil</a></p></main>");
+        b.append("<p><a href=\"/blog/").append(ar ? "fr\" hreflang=\"fr\" lang=\"fr\">Français" : "ar\" hreflang=\"ar\" lang=\"ar\">العربية").append("</a> · <a href=\"/\">").append(ar ? "الرئيسية" : "Accueil").append("</a></p></main>");
         Map<String, Object> coll = new LinkedHashMap<>();
-        coll.put("@type", "CollectionPage"); coll.put("name", BLOG_TITLE); coll.put("url", base + "/blog"); coll.put("description", BLOG_DESC); coll.put("inLanguage", "fr");
+        coll.put("@type", "CollectionPage"); coll.put("name", title); coll.put("url", base + "/blog/" + l); coll.put("description", desc); coll.put("inLanguage", l);
         coll.put("isPartOf", Map.of("@id", base + "/#website"));
         if (!items.isEmpty()) coll.put("mainEntity", Map.of("@type", "ItemList", "itemListElement", items));
-        return new Page(200, build(new Meta(BLOG_TITLE, BLOG_DESC, base + "/blog", "website", base + "/assets/icon-512.png", null, true, null, "fr"),
-                b.toString(), List.of(coll, breadcrumb(base, null, null))));
+        return new Page(200, build(new Meta(title, desc, base + "/blog/" + l, "website", base + "/assets/icon-512.png", null, true, null, l),
+                b.toString(), List.of(coll, breadcrumb(base, null, null, l)), blogAlternates(base)));
     }
 
     public Page post(String base, String slug) {
@@ -199,7 +225,7 @@ public class SeoService {
         String desc = !blank(p.metaDescription()) ? p.metaDescription() : (!blank(p.excerpt()) ? p.excerpt() : snippet(p.content(), 160));
         boolean ar = "ar".equals(p.lang());
         String lang = ar ? "ar" : "fr";
-        StringBuilder b = new StringBuilder("<main class=\"seo-static\"><article lang=\"" + lang + "\" dir=\"" + (ar ? "rtl" : "ltr") + "\">\n<nav><a href=\"/blog\">" + (ar ? "المدونة" : "Blog") + "</a>");
+        StringBuilder b = new StringBuilder("<main class=\"seo-static\"><article lang=\"" + lang + "\" dir=\"" + (ar ? "rtl" : "ltr") + "\">\n<nav><a href=\"/blog/" + lang + "\">" + (ar ? "المدونة" : "Blog") + "</a>");
         if (!blank(p.category())) b.append(" › ").append(esc(p.category()));
         b.append("</nav>\n<h1>").append(esc(p.title())).append("</h1>\n");
         if (p.cover() != null) b.append("<img src=\"").append(esc(img)).append("\" alt=\"").append(esc(blank(p.coverAlt()) ? p.title() : p.coverAlt())).append("\">\n");
@@ -218,7 +244,7 @@ public class SeoService {
         art.put("author", Map.of("@type", "Organization", "name", (ar ? "فريق " : "Équipe ") + BRAND, "url", base + "/"));
         art.put("publisher", Map.of("@type", "Organization", "name", BRAND, "logo", Map.of("@type", "ImageObject", "url", base + "/assets/icon-512.png")));
         if (!blank(p.keywords())) art.put("keywords", p.keywords());
-        List<Map<String, Object>> ld = new ArrayList<>(List.of(art, breadcrumb(base, p.title(), url)));
+        List<Map<String, Object>> ld = new ArrayList<>(List.of(art, breadcrumb(base, p.title(), url, lang)));
         List<String[]> qa = MarkdownHtml.faq(p.content());
         if (!qa.isEmpty()) {
             Map<String, Object> f = new LinkedHashMap<>();
@@ -229,10 +255,12 @@ public class SeoService {
         return new Page(200, build(new Meta(title, desc, url, "article", img, p.updatedAt(), true, p.keywords(), lang), b.toString(), ld));
     }
 
-    private Map<String, Object> breadcrumb(String base, String title, String url) {
+    private Map<String, Object> breadcrumb(String base, String title, String url) { return breadcrumb(base, title, url, "fr"); }
+
+    private Map<String, Object> breadcrumb(String base, String title, String url, String lang) {
         List<Map<String, Object>> l = new ArrayList<>();
         l.add(Map.of("@type", "ListItem", "position", 1, "name", "Accueil", "item", base + "/"));
-        l.add(Map.of("@type", "ListItem", "position", 2, "name", "Blog", "item", base + "/blog"));
+        l.add(Map.of("@type", "ListItem", "position", 2, "name", "ar".equals(lang) ? "المدونة" : "Blog", "item", base + "/blog/" + lang));
         if (title != null) l.add(Map.of("@type", "ListItem", "position", 3, "name", title, "item", url));
         return Map.of("@type", "BreadcrumbList", "itemListElement", l);
     }
@@ -291,7 +319,9 @@ public class SeoService {
     // ---------- Injection dans index.html ----------
     record Meta(String title, String description, String canonical, String type, String image, Instant modified, boolean index, String keywords, String lang) {}
 
-    String build(Meta m, String bodyHtml, List<Map<String, Object>> jsonLd) {
+    String build(Meta m, String bodyHtml, List<Map<String, Object>> jsonLd) { return build(m, bodyHtml, jsonLd, ""); }
+
+    String build(Meta m, String bodyHtml, List<Map<String, Object>> jsonLd, String extraHead) {
         String t = template();
         StringBuilder h = new StringBuilder("\n");
         h.append("    <meta name=\"description\" content=\"").append(esc(m.description)).append("\" />\n");
@@ -309,6 +339,7 @@ public class SeoService {
         h.append("    <meta name=\"twitter:card\" content=\"").append(m.image != null && m.type.equals("article") ? "summary_large_image" : "summary").append("\" />\n");
         h.append("    <meta name=\"twitter:title\" content=\"").append(esc(m.title)).append("\" />\n");
         h.append("    <meta name=\"twitter:description\" content=\"").append(esc(m.description)).append("\" />\n");
+        h.append(extraHead);
         if (!jsonLd.isEmpty()) {
             List<Map<String, Object>> graph = new ArrayList<>();
             for (Map<String, Object> o : jsonLd) graph.add(o);
@@ -403,7 +434,9 @@ public class SeoService {
         String latest = posts.stream().map(PostSummary::updatedAt).max(Instant::compareTo).map(DAY::format).orElse(null);
         StringBuilder sb = new StringBuilder("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\n");
         url(sb, base + "/", latest, "weekly", "1.0");
-        url(sb, base + "/blog", latest, "daily", "0.8");
+        url(sb, base + "/blog", latest, "daily", "0.6");
+        url(sb, base + "/blog/fr", latest, "daily", "0.8");
+        url(sb, base + "/blog/ar", latest, "daily", "0.8");
         url(sb, base + "/outils", null, "monthly", "0.8");
         for (ToolCatalog.Tool t : ToolCatalog.ALL) url(sb, base + "/outils/" + t.slug(), null, "monthly", "0.8");
         for (PostSummary p : posts) url(sb, base + "/blog/" + p.slug(), DAY.format(p.updatedAt()), "monthly", "0.7");

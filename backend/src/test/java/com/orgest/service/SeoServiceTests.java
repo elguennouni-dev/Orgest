@@ -120,6 +120,21 @@ class SeoServiceTests {
         assertTrue(x.contains("<loc>https://orgest.tech/blog/reprise-or</loc><lastmod>2026-03-05</lastmod>"));
     }
 
+    @Test void blogLanguagePagesAreSeparateAndCrossLinked() {
+        when(content.publicPosts()).thenReturn(List.of(
+                new PostSummary(1L, "reprise-or", "Reprise d'or", "Extrait", "Cat", null, null, 3, true, PUB, UPD, "fr"),
+                new PostSummary(2L, "ar-post", "عنوان المقال", "مقتطف", "التقسيط", null, null, 4, true, PUB, UPD, "ar")));
+        String fr = seo.blog(BASE, "fr").html();
+        assertTrue(fr.contains("<html lang=\"fr\" dir=\"ltr\">") && fr.contains("href=\"https://orgest.tech/blog/fr\""));
+        assertTrue(fr.contains("/blog/reprise-or") && !fr.contains("/blog/ar-post"));
+        String ar = seo.blog(BASE, "ar").html();
+        assertTrue(ar.contains("<html lang=\"ar\" dir=\"rtl\">") && ar.contains("rel=\"canonical\" href=\"https://orgest.tech/blog/ar\""));
+        assertTrue(ar.contains("/blog/ar-post") && !ar.contains("/blog/reprise-or\""));
+        assertTrue(ar.contains("hreflang=\"fr\"") && ar.contains("hreflang=\"ar\"") && ar.contains("hreflang=\"x-default\""));
+        String x = seo.sitemap(BASE);
+        assertTrue(x.contains("<loc>https://orgest.tech/blog/fr</loc>") && x.contains("<loc>https://orgest.tech/blog/ar</loc>"));
+    }
+
     @Test void llmsTxtFollowsTheConventionAndListsArticles() {
         String l = seo.llms(BASE);
         assertTrue(l.startsWith("# Orgest\n\n> "));

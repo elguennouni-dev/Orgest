@@ -928,3 +928,8 @@ tbody tr:nth-child(5) { animation-delay: .12s; } tbody tr:nth-child(n+6) { anima
 .bh-ph.p1 { width: 54%; aspect-ratio: 4 / 5; } .bh-ph.p2 { width: 44%; aspect-ratio: 1 / 1; top: 8%; } .bh-ph.p3 { width: 50%; aspect-ratio: 4 / 3; inset-inline-start: 26%; }
 @media (max-width: 900px) { .b-hero-l { height: 300px; } }
 .b-article .cover-fig .cover { height: auto; width: 100%; display: block; }
+.b-other { align-self: flex-start; color: var(--gold-300); font-weight: 600; text-decoration: none; border-bottom: 1px solid rgba(245, 196, 67, .4); padding-bottom: 2px; }
+.b-other:hover { border-color: var(--gold-300); }
+[dir='rtl'] .b-other { direction: rtl; }
+[dir='rtl'] .b-other { unicode-bidi: plaintext; }
+.blog[dir='rtl'] .b-feature .txt { text-align: right; }

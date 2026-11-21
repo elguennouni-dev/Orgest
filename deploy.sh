@@ -299,6 +299,15 @@ location = /blog {
     limit_req_status 429;
     $SEC_HEADERS
 }
+location ~ ^/blog/(fr|ar)/?\$ {
+    rewrite ^/blog/(fr|ar)/?\$ /api/public/seo/blog-lang/\$1 break;
+    proxy_pass http://127.0.0.1:$APP_PORT;
+    proxy_set_header Host \$host; proxy_set_header X-Forwarded-Proto \$scheme;
+    error_page 500 502 503 504 = @spa;
+    limit_req zone=orgest_public burst=40 nodelay;
+    limit_req_status 429;
+    $SEC_HEADERS
+}
 location ~ ^/blog/([a-z0-9-]+)/?\$ {
     rewrite ^/blog/([a-z0-9-]+)/?\$ /api/public/seo/blog/\$1 break;
     proxy_pass http://127.0.0.1:$APP_PORT;

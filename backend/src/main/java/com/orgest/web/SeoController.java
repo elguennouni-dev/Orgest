@@ -34,6 +34,7 @@ public class SeoController {
 
     @GetMapping("/seo/home") public ResponseEntity<String> home(HttpServletRequest r) { return page(seo.home(base(r))); }
     @GetMapping("/seo/blog") public ResponseEntity<String> blog(HttpServletRequest r) { return page(seo.blog(base(r))); }
+    @GetMapping("/seo/blog-lang/{lang}") public ResponseEntity<String> blogLang(@PathVariable String lang, HttpServletRequest r) { return page(seo.blog(base(r), lang)); }
     @GetMapping("/seo/blog/{slug}") public ResponseEntity<String> post(@PathVariable String slug, HttpServletRequest r) { return page(seo.post(base(r), slug)); }
 
     @GetMapping("/seo/tools") public ResponseEntity<String> tools(HttpServletRequest r) { return page(seo.tools(base(r))); }

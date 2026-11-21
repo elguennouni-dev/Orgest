@@ -12,6 +12,7 @@ export const PHOTOS = {
 const POOLS = {
   "Cours de l'or": ['chaines', 'manchette'], 'Caisse et ventes': ['alliances', 'bagues'], 'Gestion de boutique': ['vitrine', 'plateau'],
   'Atelier': ['plateau', 'manchette'], 'Nouveautés Orgest': ['vitrine', 'bagues'],
+  'شراء وبيع الذهب': ['chaines', 'alliances'], 'التقسيط': ['alliances', 'solitaire'], 'تدبير المحل': ['vitrine', 'plateau'],
 };
 const ALL = Object.keys(PHOTOS);
 const hash = (s) => { let h = 0; for (const c of String(s || '')) h = (h * 31 + c.charCodeAt(0)) >>> 0; return h; };

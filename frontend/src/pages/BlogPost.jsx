@@ -1,7 +1,7 @@
 import { Link, useParams } from 'react-router-dom';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useApi, useSeo } from '../hooks.js';
-import { fmtDate } from '../i18n.jsx';
+import { fmtDate, useI18n } from '../i18n.jsx';
 import { SiteFooter, SiteHeader } from '../components/Site.jsx';
 import Louiz from '../components/Louiz.jsx';
 import { assignPhotos, photoFor } from '../lib/blogPhoto.js';
@@ -25,10 +25,13 @@ const COPY = {
 
 export default function BlogPost() {
   const { slug } = useParams();
+  const { lang: siteLang, setLang } = useI18n();
   const { data: p, error, loading } = useApi(`/public/posts/${encodeURIComponent(slug)}`);
   const { data: all } = useApi('/public/posts');
-  const related = useMemo(() => (all || []).filter((x) => x.slug !== slug).sort((a, b) => ((b.lang === p?.lang) * 2 + (b.category === p?.category)) - ((a.lang === p?.lang) * 2 + (a.category === p?.category))).slice(0, 3), [all, slug, p?.category]);
+  const related = useMemo(() => (all || []).filter((x) => x.slug !== slug && (x.lang || 'fr') === (p?.lang || 'fr')).sort((a, b) => ((b.lang === p?.lang) * 2 + (b.category === p?.category)) - ((a.lang === p?.lang) * 2 + (a.category === p?.category))).slice(0, 3), [all, slug, p?.category]);
   const L = p?.lang === 'ar' ? 'ar' : 'fr';
+  // L'en-tête et le pied de page suivent la langue de l'article.
+  useEffect(() => { if (p && siteLang !== L) setLang(L); }, [p?.slug]); // eslint-disable-line react-hooks/exhaustive-deps
   const c = COPY[L];
   const toc = useMemo(() => (p ? headings(p.content) : []), [p]);
   const photo = p ? photoFor(p, false, assignPhotos(all && all.some((x) => x.slug === p.slug) ? all : [...(all || []), p])) : null;
@@ -47,11 +50,11 @@ export default function BlogPost() {
       <main className="b-main" style={{ minHeight: '60vh' }}>
         {loading && !p ? <div className="empty-louiz"><Louiz mood="thinking" size={110} /></div>
           : error ? (
-            <div className="empty-louiz"><Louiz mood="worried" size={120} /><h2>404</h2><Link className="btn primary" to="/blog">← Blog</Link></div>
+            <div className="empty-louiz"><Louiz mood="worried" size={120} /><h2>404</h2><Link className="btn primary" to="/blog/fr">← Blog</Link></div>
           ) : (
             <article className="b-article" lang={L} dir={L === 'ar' ? 'rtl' : 'ltr'} style={{ gridTemplateColumns: 'minmax(0, 1fr)', justifyItems: 'center' }}>
               <div className="body" style={{ width: '100%' }}>
-                <nav aria-label="Breadcrumb" style={{ fontSize: 14 }}><Link to="/blog">{c.blog}</Link>{p.category ? ` › ${p.category}` : ''}</nav>
+                <nav aria-label="Breadcrumb" style={{ fontSize: 14 }}><Link to={`/blog/${L}`}>{c.blog}</Link>{p.category ? ` › ${p.category}` : ''}</nav>
                 <span className="b-tag">{p.category} · {p.readMinutes} {c.min}</span>
                 <h1 style={{ fontSize: 'clamp(28px, 4vw, 40px)', fontWeight: 600, lineHeight: 1.25 }}>{p.title}</h1>
                 <div className="by"><Louiz mood="happy" size={44} /><span><strong>{c.by}</strong><br /><span className="muted">{fmtDate(p.publishedAt || p.updatedAt)}</span></span></div>

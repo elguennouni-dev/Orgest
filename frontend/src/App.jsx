@@ -5,7 +5,7 @@ import { AdminLayout, ShopLayout } from './components/Layouts.jsx';
 import { MotionRoot, Page } from './components/Motion.jsx';
 import Landing from './pages/Landing.jsx';
 import Login from './pages/Login.jsx';
-import Blog from './pages/Blog.jsx';
+import Blog, { BlogIndex } from './pages/Blog.jsx';
 import BlogPost from './pages/BlogPost.jsx';
 import { ToolPage, ToolsHub } from './pages/Tools.jsx';
 import Plans from './pages/admin/Plans.jsx';
@@ -54,7 +54,9 @@ export default function App() {
     <Routes>
       <Route path="/" element={<Page><Landing /></Page>} />
       <Route path="/login" element={<Page><Login /></Page>} />
-      <Route path="/blog" element={<Page><Blog /></Page>} />
+      <Route path="/blog" element={<BlogIndex />} />
+      <Route path="/blog/fr" element={<Page><Blog lang="fr" /></Page>} />
+      <Route path="/blog/ar" element={<Page><Blog lang="ar" /></Page>} />
       <Route path="/blog/:slug" element={<Page><BlogPost /></Page>} />
       <Route path="/outils" element={<Page><ToolsHub /></Page>} />
       <Route path="/outils/:slug" element={<Page><ToolPage /></Page>} />
