@@ -3,6 +3,7 @@ import { useI18n } from '../i18n.jsx';
 import { SiteFooter, SiteHeader } from '../components/Site.jsx';
 import { Icon, P } from '../components/icons.jsx';
 import Louiz from '../components/Louiz.jsx';
+import Showcase from '../components/Showcase.jsx';
 import Faq from '../components/Faq.jsx';
 import { waLink } from '../config.js';
 import { useApi, useSeo } from '../hooks.js';
@@ -39,6 +40,8 @@ export default function Landing() {
           </div>
         </div>
       </section>
+
+      <Showcase />
 
       <section className="site-sec" id="features">
         <h2>{t('landing.featuresTitle')}</h2>
