@@ -9,9 +9,9 @@ import Louiz from './Louiz.jsx';
 import Expired from '../pages/shop/Expired.jsx';
 
 export function LangToggle() {
-  const { lang, setLang } = useI18n();
+  const { lang, setLang, t } = useI18n();
   return (
-    <div className="langtog no-print" role="group" aria-label="Langue / اللغة">
+    <div className="langtog no-print" role="group" aria-label={t('a11y.lang')}>
       <button type="button" className={lang === 'fr' ? 'on' : ''} aria-pressed={lang === 'fr'} onClick={() => setLang('fr')}>FR</button>
       <button type="button" className={lang === 'ar' ? 'on' : ''} aria-pressed={lang === 'ar'} onClick={() => setLang('ar')}>العربية</button>
     </div>
@@ -86,7 +86,7 @@ function Shell({ groups, children, searchable }) {
   return (
     <div className="shell">
       <div className="topbar no-print">
-        <button className="btn" type="button" onClick={() => setOpen(true)} aria-label="Menu"><Icon d={P.menu} /></button>
+        <button className="btn" type="button" onClick={() => setOpen(true)} aria-label={t('a11y.menu')}><Icon d={P.menu} /></button>
         <span className="t">Orgest</span>
         <LangToggle />
       </div>
@@ -96,7 +96,7 @@ function Shell({ groups, children, searchable }) {
           <span className="mark"><Logo variant="icon" /></span>
           <div><b>Orgest</b><small>{me.shopName || me.username}{me.city ? ` · ${me.city}` : ''}</small></div>
         </div>
-        <nav className="nav" aria-label="Menu">
+        <nav className="nav" aria-label={t('a11y.menu')}>
           {groups.map((g, gi) => (
             <div className="grp" key={gi}>
               {g.title && <span>{t(g.title)}</span>}

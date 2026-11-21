@@ -1,6 +1,7 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useApi, useSeo } from '../hooks.js';
+import { useI18n } from '../i18n.jsx';
 import { SiteFooter, SiteHeader } from '../components/Site.jsx';
 import Louiz from '../components/Louiz.jsx';
 import { waLink } from '../config.js';
@@ -12,6 +13,7 @@ const fmtD = (d) => d.toLocaleDateString('fr-FR');
 
 const UI = {
   fr: {
+    g: 'g', crumb: 'Fil d’Ariane', hubEyebrow: 'Orgest · Outils', hubTitle: 'Outils gratuits pour bijoutiers', hubLead: 'Calculateurs simples, sans inscription : reprise d’or ancien, carats, échéancier à tempérament.', seoTitle: 'Outils gratuits pour bijoutiers — reprise d’or, carats, échéancier', seoDesc: 'Calculateurs gratuits pour bijoutiers au Maroc : reprise d’or ancien, conversion des carats, échéancier à tempérament au centime.', switchLabel: 'Outils en arabe', switchTo: 'العربية', empty: 'Aucun outil pour le moment.',
     tools: 'Outils', all: 'Tous les outils', dh: 'DH', formula: 'La formule', faq: 'Questions fréquentes', free: 'Gratuit · sans inscription · vos chiffres restent sur votre appareil',
     gross: 'Poids brut (g)', ded: 'Déduction (%)', buy: 'Prix d’achat du jour (DH/g)', net: 'Poids net', amount: 'Montant à verser',
     refPrice: 'Prix du gramme (DH)', refCarat: 'Carat de référence', carat: 'Carat', purity: 'Or pur', perGram: 'Valeur du gramme',
@@ -21,6 +23,7 @@ const UI = {
     demo: 'Demander une démo sur WhatsApp', msg: (t) => `Bonjour, j’ai utilisé l’outil « ${t} » et je voudrais une démonstration d’Orgest.`, other: 'Autres outils', soon: 'Avertissement',
   },
   ar: {
+    g: 'غ', crumb: 'مسار التصفح', hubEyebrow: 'Orgest · الأدوات', hubTitle: 'أدوات مجانية لأصحاب محلات الذهب', hubLead: 'حاسبات بسيطة، بلا تسجيل: ثمن الذهب القديم، العيارات، جدول التقسيط.', seoTitle: 'أدوات مجانية لأصحاب محلات الذهب — الذهب القديم، العيارات، التقسيط', seoDesc: 'حاسبات مجانية لأصحاب محلات المجوهرات بالمغرب: ثمن الذهب القديم، تحويل العيارات وجدول التقسيط بالسنتيم.', switchLabel: 'الأدوات بالفرنسية', switchTo: 'Français', empty: 'ما كاين حتى أداة دابا.',
     tools: 'الأدوات', all: 'كل الأدوات', dh: 'درهم', formula: 'المعادلة', faq: 'أسئلة شائعة', free: 'مجاني · بلا تسجيل · أرقامك تبقى على جهازك',
     gross: 'الوزن الخام (غ)', ded: 'نسبة الخصم (%)', buy: 'ثمن الشراء لليوم (درهم/غ)', net: 'الوزن الصافي', amount: 'المبلغ الواجب دفعه',
     refPrice: 'ثمن الغرام (درهم)', refCarat: 'العيار المرجعي', carat: 'العيار', purity: 'الذهب الخالص', perGram: 'قيمة الغرام',
@@ -56,7 +59,7 @@ function Reprise({ u }) {
         <Num label={u.buy} value={price} onChange={setPrice} />
       </div>
       <div className="tool-res">
-        <div><span>{u.net}</span><b className="num">{ok ? fmt(netWeight(g, d), 3) : '—'} g</b></div>
+        <div><span>{u.net}</span><b className="num">{ok ? fmt(netWeight(g, d), 3) : '—'} {u.g}</b></div>
         <div className="big"><span>{u.amount}</span><b className="num">{ok ? fmt(tradeInValue(g, d, p)) : '—'} {u.dh}</b></div>
       </div>
     </div>
@@ -116,26 +119,31 @@ function Echeancier({ u }) {
 const KIND = { reprise: Reprise, carats: Carats, echeancier: Echeancier };
 
 export function ToolsHub() {
-  useSeo({ title: 'Outils gratuits pour bijoutiers — reprise d’or, carats, échéancier', description: 'Calculateurs gratuits pour bijoutiers au Maroc : reprise d’or ancien, conversion des carats, échéancier à tempérament au centime.' });
+  const { lang, setLang } = useI18n();
+  const L = lang === 'ar' ? 'ar' : 'fr';
+  const u = UI[L];
+  useSeo({ title: u.seoTitle, description: u.seoDesc });
   const { data } = useApi('/public/tools');
-  const list = data || [];
+  const list = (data || []).filter((x) => x.lang === L);
   return (
-    <div className="site blog" lang="fr" dir="ltr">
+    <div className="site blog" lang={L} dir={L === 'ar' ? 'rtl' : 'ltr'}>
       <SiteHeader />
       <section className="b-hero"><div className="in"><div className="stack" style={{ gap: 16 }}>
-        <span className="eyebrow" style={{ color: 'var(--gold-700)' }}>Orgest · Outils</span>
-        <h1>Outils gratuits pour bijoutiers</h1>
-        <p>Calculateurs simples, sans inscription : reprise d’or ancien, carats, échéancier à tempérament. <span dir="rtl" lang="ar">أدوات مجانية لأصحاب محلات الذهب.</span></p>
-      </div><div className="b-hero-l"><Louiz mood="happy" size={220} /></div></div></section>
+        <span className="eyebrow" style={{ color: 'var(--gold-300)' }}>{u.hubEyebrow}</span>
+        <h1>{u.hubTitle}</h1>
+        <p>{u.hubLead}</p>
+        <button type="button" className="b-other" style={{ background: 'none', border: 0, borderBottom: '1px solid rgba(245,196,67,.4)', cursor: 'pointer', font: 'inherit' }} onClick={() => setLang(L === 'ar' ? 'fr' : 'ar')} aria-label={u.switchLabel} lang={L === 'ar' ? 'fr' : 'ar'}>{u.switchTo} →</button>
+      </div><div className="b-hero-l" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}><Louiz mood="happy" size={220} /></div></div></section>
       <main className="b-main">
         <div className="b-grid">
           {list.map((t) => (
-            <article className="b-card" key={t.slug} lang={t.lang} dir={t.lang === 'ar' ? 'rtl' : 'ltr'}>
-              <div className="txt"><span className="b-tag">{t.lang === 'ar' ? 'العربية' : 'Français'}</span>
+            <article className="b-card" key={t.slug}>
+              <div className="txt">
                 <strong><Link to={`/outils/${t.slug}`} style={{ color: 'inherit', textDecoration: 'none' }}>{t.title}</Link></strong><p>{t.description}</p></div>
             </article>
           ))}
         </div>
+        {data && list.length === 0 && <p className="muted">{u.empty}</p>}
       </main>
       <SiteFooter />
     </div>
@@ -146,8 +154,10 @@ export function ToolPage() {
   const { slug } = useParams();
   const { data, loading } = useApi('/public/tools');
   const tool = (data || []).find((x) => x.slug === slug);
-  const L = tool?.lang === 'ar' ? 'ar' : 'fr';
+  const { lang: siteLang, setLang } = useI18n();
+  const L = tool?.lang === 'ar' ? 'ar' : (tool ? 'fr' : (siteLang === 'ar' ? 'ar' : 'fr'));
   const u = UI[L];
+  useEffect(() => { if (tool && siteLang !== L) setLang(L); }, [tool?.slug]); // eslint-disable-line react-hooks/exhaustive-deps
   useSeo(tool ? { title: tool.metaTitle, description: tool.description } : { title: 'Outils — Orgest' });
   const Body = tool ? KIND[tool.kind] : null;
   const others = (data || []).filter((x) => x.lang === tool?.lang && x.slug !== slug);
@@ -156,11 +166,11 @@ export function ToolPage() {
       <SiteHeader />
       <main className="b-main" style={{ minHeight: '60vh' }}>
         {!tool ? (
-          <div className="empty-louiz"><Louiz mood={loading ? 'thinking' : 'worried'} size={110} />{!loading && <><h2>404</h2><Link className="btn primary" to="/outils">← Outils</Link></>}</div>
+          <div className="empty-louiz"><Louiz mood={loading ? 'thinking' : 'worried'} size={110} />{!loading && <><h2>404</h2><Link className="btn primary" to="/outils">{L === 'ar' ? '→' : '←'} {u.tools}</Link></>}</div>
         ) : (
           <article className="b-article" lang={L} dir={L === 'ar' ? 'rtl' : 'ltr'} style={{ gridTemplateColumns: 'minmax(0, 1fr)', justifyItems: 'center' }}>
             <div className="body" style={{ width: '100%' }}>
-              <nav aria-label="Breadcrumb" style={{ fontSize: 14 }}><Link to="/outils">{u.tools}</Link></nav>
+              <nav aria-label={u.crumb} style={{ fontSize: 14 }}><Link to="/outils">{u.tools}</Link></nav>
               <h1 style={{ fontSize: 'clamp(26px, 4vw, 38px)', fontWeight: 600, lineHeight: 1.3 }}>{tool.title}</h1>
               <p>{tool.intro}</p>
               <div className="tool-card"><Body u={u} /><p className="hint" style={{ marginTop: 12 }}>{u.free}</p></div>

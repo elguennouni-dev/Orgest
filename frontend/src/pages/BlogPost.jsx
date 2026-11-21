@@ -10,13 +10,13 @@ import { waLink } from '../config.js';
 
 const COPY = {
   fr: {
-    blog: 'Blog', toc: 'Sommaire', by: 'Équipe Orgest', about: 'Orgest est un logiciel de gestion pour bijouteries au Maroc. L’équipe rédige ces guides à partir des questions du comptoir : poids, carats, reprise d’or, ventes à tempérament.',
+    crumb: 'Fil d’Ariane', authorLabel: 'Auteur', blog: 'Blog', toc: 'Sommaire', by: 'Équipe Orgest', about: 'Orgest est un logiciel de gestion pour bijouteries au Maroc. L’équipe rédige ces guides à partir des questions du comptoir : poids, carats, reprise d’or, ventes à tempérament.',
     disclaimer: 'Ce guide est informatif : les prix et pourcentages cités sont des exemples et ne remplacent ni votre prix du jour, ni l’avis d’un comptable ou d’un juriste.',
     ctaH: 'Gérez votre bijouterie sans calculatrice', ctaP: 'Stock au gramme, prix du jour, reprise d’or, ventes à tempérament et reçus : Orgest fait les calculs pour vous.',
     demo: 'Demander une démo sur WhatsApp', pricing: 'Voir les tarifs', related: 'À lire aussi', min: 'min', msg: (t) => `Bonjour, j’ai lu « ${t} » et je voudrais une démonstration d’Orgest.`, q: (t) => `Bonjour, une question sur « ${t} »`, ask: 'Une question ?', write: 'Écrivez-nous sur WhatsApp',
   },
   ar: {
-    blog: 'المدونة', toc: 'فهرس المقال', by: 'فريق Orgest', about: 'Orgest برنامج لتدبير محلات الذهب والمجوهرات بالمغرب. يكتب الفريق هذه الأدلة انطلاقاً من أسئلة الكونطوار: الوزن، العيار، استرجاع الذهب القديم والبيع بالتقسيط.',
+    crumb: 'مسار التصفح', authorLabel: 'الكاتب', blog: 'المدونة', toc: 'فهرس المقال', by: 'فريق Orgest', about: 'Orgest برنامج لتدبير محلات الذهب والمجوهرات بالمغرب. يكتب الفريق هذه الأدلة انطلاقاً من أسئلة الكونطوار: الوزن، العيار، استرجاع الذهب القديم والبيع بالتقسيط.',
     disclaimer: 'هذا الدليل للإخبار والتوضيح فقط: الأثمنة والنسب المذكورة أمثلة ولا تغني عن ثمن اليوم المعتمد عندك ولا عن استشارة محاسب أو مستشار قانوني.',
     ctaH: 'دبّر محل الذهب ديالك بلا آلة حاسبة', ctaP: 'الستوك بالغرام، ثمن اليوم، استرجاع الذهب القديم، التقسيط والوصولات: Orgest كيدير ليك الحساب.',
     demo: 'اطلب عرضاً تجريبياً عبر واتساب', pricing: 'شوف الأثمنة', related: 'اقرأ أيضاً', min: 'د', msg: (t) => `السلام عليكم، قريت مقال «${t}» وبغيت عرض تجريبي ديال Orgest.`, q: (t) => `السلام عليكم، عندي سؤال على مقال «${t}»`, ask: 'عندك سؤال؟', write: 'كتب لينا على واتساب',
@@ -54,7 +54,7 @@ export default function BlogPost() {
           ) : (
             <article className="b-article" lang={L} dir={L === 'ar' ? 'rtl' : 'ltr'} style={{ gridTemplateColumns: 'minmax(0, 1fr)', justifyItems: 'center' }}>
               <div className="body" style={{ width: '100%' }}>
-                <nav aria-label="Breadcrumb" style={{ fontSize: 14 }}><Link to={`/blog/${L}`}>{c.blog}</Link>{p.category ? ` › ${p.category}` : ''}</nav>
+                <nav aria-label={c.crumb} style={{ fontSize: 14 }}><Link to={`/blog/${L}`}>{c.blog}</Link>{p.category ? ` › ${p.category}` : ''}</nav>
                 <span className="b-tag">{p.category} · {p.readMinutes} {c.min}</span>
                 <h1 style={{ fontSize: 'clamp(28px, 4vw, 40px)', fontWeight: 600, lineHeight: 1.25 }}>{p.title}</h1>
                 <div className="by"><Louiz mood="happy" size={44} /><span><strong>{c.by}</strong><br /><span className="muted">{fmtDate(p.publishedAt || p.updatedAt)}</span></span></div>
@@ -80,7 +80,7 @@ export default function BlogPost() {
                     <a className="btn" href="/#pricing">{c.pricing}</a>
                   </div>
                 </div>
-                <aside className="author" aria-label="Auteur">
+                <aside className="author" aria-label={c.authorLabel}>
                   <Louiz mood="proud" size={64} />
                   <div><strong>{c.by}</strong><p>{c.about}</p></div>
                 </aside>

@@ -63,7 +63,7 @@ export default function Labels() {
           <div className="label" key={k}>
             <div className="ls">{me.shopName}</div>
             <div className="ln" dir="auto">{item.name}</div>
-            <div className="lk num">{purity(item.karat)} · {fmtWeight(item.weightG)} g</div>
+            <div className="lk num">{purity(item.karat)} · {fmtWeight(item.weightG)} {t('unit.g')}</div>
             <Barcode value={item.ref} height={30} />
           </div>
         ))}

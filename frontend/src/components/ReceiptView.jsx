@@ -76,7 +76,7 @@ export function SaleReceipt({ sale }) {
             <tr key={i}>
               <td className="desc">{l.description}</td>
               <td className="k" data-label={t('karat')}>{purity(l.karat)}</td>
-              <td className="num w" data-label={t('weightG')}>{l.quantity > 1 ? `${l.quantity} × ` : ''}{fmtWeight(l.weightG)} g</td>
+              <td className="num w" data-label={t('weightG')}>{l.quantity > 1 ? `${l.quantity} × ` : ''}{fmtWeight(l.weightG)} {t('unit.g')}</td>
               <td className="num p" data-label={t('receipt.pricePerG')}>{fmtMoney(l.pricePerGram)}</td>
               <td className="num m" data-label={t('receipt.making')}>{fmtMoney(l.makingPerGram)}</td>
               <td className="num tt">{fmtMoney(l.lineTotal)}</td>
@@ -87,7 +87,7 @@ export function SaleReceipt({ sale }) {
       <div className="tot"><span>{t('receipt.subtotal')}</span><b className="num">{fmtMoney(sale.subtotal)} {t('dh')}</b></div>
       {sale.buyback && (
         <div className="tot">
-          <span>− {t('receipt.tradeIn')} ({purity(sale.buyback.karat)} · <span className="num">{fmtWeight(sale.buyback.netWeightG)} g × {fmtMoney(sale.buyback.pricePerGram)}</span>)</span>
+          <span>− {t('receipt.tradeIn')} ({purity(sale.buyback.karat)} · <span className="num">{fmtWeight(sale.buyback.netWeightG)} {t('unit.g')} × {fmtMoney(sale.buyback.pricePerGram)}</span>)</span>
           <b className="num">{fmtMoney(sale.tradeInAmount)} {t('dh')}</b>
         </div>
       )}
@@ -130,9 +130,9 @@ export function BuybackReceipt({ b }) {
       <hr />
       {b.description && <div>{b.description}</div>}
       <div className="tot"><span>{t('karat')}</span><b>{purity(b.karat)}</b></div>
-      <div className="tot"><span>{t('buyback.gross')}</span><b className="num">{fmtWeight(b.grossWeightG)} g</b></div>
+      <div className="tot"><span>{t('buyback.gross')}</span><b className="num">{fmtWeight(b.grossWeightG)} {t('unit.g')}</b></div>
       <div className="tot"><span>{t('buyback.deduction')}</span><b className="num">{fmtMoney(b.deductionPct)} %</b></div>
-      <div className="tot"><span>{t('buyback.net')}</span><b className="num">{fmtWeight(b.netWeightG)} g</b></div>
+      <div className="tot"><span>{t('buyback.net')}</span><b className="num">{fmtWeight(b.netWeightG)} {t('unit.g')}</b></div>
       <div className="tot"><span>{t('receipt.pricePerG')}</span><b className="num">{fmtMoney(b.pricePerGram)} {t('dh')}</b></div>
       <div className="tot big"><span>{t('receipt.amountPaid')}</span><span className="num">{fmtMoney(b.total)} {t('dh')}</span></div>
       <p className="center">{t('receipt.buybackDecl')}</p>

@@ -1,6 +1,8 @@
 // Dictionnaires FR / AR. Les clés manquantes retombent sur le français.
 export const dict = {
   fr: {
+    'unit.g': 'g', 'unit.kg': 'kg',
+    'a11y.lang': 'Langue', 'a11y.menu': 'Menu', 'a11y.type': 'Type d’opération', 'a11y.items': 'Articles', 'a11y.alert': 'Alerte', 'a11y.quick': 'Actions rapides', 'a11y.kpi': 'Indicateurs', 'a11y.author': 'Auteur', 'a11y.breadcrumb': 'Fil d’Ariane', 'a11y.site': 'Site', 'a11y.guide': 'Guide Louiz',
     tagline: "Système de Gestion des Commerçants d'Or",
     loading: 'Chargement…', save: 'Enregistrer', saved: 'Enregistré ✓', cancel: 'Annuler', close: 'Fermer', edit: 'Modifier',
     delete: 'Supprimer', remove: 'Retirer', confirm: 'Confirmer ?', search: 'Rechercher…', seeAll: 'Tout voir', print: 'Imprimer',
@@ -9,7 +11,7 @@ export const dict = {
     dh: 'DH', logout: 'Déconnexion', allKarats: 'Tous les carats', exportExcel: 'Exporter Excel',
 
     'nav.dashboard': 'Tableau de bord', 'nav.stock': 'Stock', 'nav.sale': 'Vente', 'nav.exchange': 'Échange',
-    'nav.buyback': "Achat d'or", 'nav.workshop': 'Commandes atelier', 'nav.installments': 'Échéances (تقسيط)',
+    'nav.buyback': "Achat d'or", 'nav.workshop': 'Commandes atelier', 'nav.installments': 'Échéances',
     'nav.sales': 'Historique des ventes', 'nav.reports': 'Rapports & Excel', 'nav.account': 'Mon compte',
     'nav.clients': 'Clients', 'nav.newClient': 'Nouveau client',
 
@@ -29,7 +31,7 @@ export const dict = {
     'plan.i1': 'Toutes les fonctionnalités', 'plan.i2': 'Stock avec photos illimité', 'plan.i3': 'Reçus A5 et ticket 80 mm', 'plan.i4': 'Support WhatsApp',
 
     'site.features': 'Fonctionnalités', 'site.pricing': 'Tarifs', 'site.blog': 'Blog', 'site.tools': 'Outils gratuits', 'site.help': 'Aide', 'site.login': 'Se connecter', 'site.try': 'Essayer Orgest',
-    'site.footerText': 'La caisse et la gestion de stock des bijoutiers marocains, en français et en العربية.', 'site.product': 'Produit', 'site.support': 'Aide',
+    'site.footerText': 'La caisse et la gestion de stock des bijoutiers marocains, en français et en arabe.', 'site.product': 'Produit', 'site.support': 'Aide',
     'site.contact': 'WhatsApp', 'site.made': '© 2026 Orgest · Fait au Maroc',
     'landing.eyebrow': 'Pour les bijoutiers marocains', 'landing.louiz': 'Salam ! Je suis Louiz, je vous guide dans Orgest.',
     'landing.readBlog': 'Lire le blog',
@@ -38,8 +40,8 @@ export const dict = {
     'login.show': 'Afficher le mot de passe', 'login.hide': 'Masquer le mot de passe', 'login.new': 'Nouveau sur Orgest ?', 'login.askWa': 'Demander un accès sur WhatsApp',
     'login.opening': 'Ouverture de la caisse…', 'login.fill': 'Saisissez votre identifiant et votre mot de passe.',
     'login.hero1': 'La caisse pensée pour les', 'login.hero2': 'bijoutiers marocains', 'login.hero3': '.',
-    'login.heroText': "Cours de l'or du jour, stock au gramme près, ventes, échanges, rachats et تقسيط — dans une seule application, en français ou en arabe.",
-    'login.f1': 'Le cours du jour calcule tout pour vous', 'login.f2': 'Stock au gramme, par carat', 'login.f3': 'Reçus imprimés, rappels تقسيط', 'login.made': '© 2026 Orgest · Fait au Maroc',
+    'login.heroText': "Cours de l'or du jour, stock au gramme près, ventes, échanges, rachats et échéances — dans une seule application, en français ou en arabe.",
+    'login.f1': 'Le cours du jour calcule tout pour vous', 'login.f2': 'Stock au gramme, par carat', 'login.f3': 'Reçus imprimés, rappels d’échéances', 'login.made': '© 2026 Orgest · Fait au Maroc',
     'lz.login.wave': 'Salam ! Content de vous revoir.', 'lz.login.id': 'Votre identifiant.', 'lz.login.pw': 'Je ferme les yeux, promis !', 'lz.login.peek': 'Je jette un œil… juste un.',
     'lz.login.err': 'Oups… vérifiez les champs.', 'lz.login.ok': 'Mabrouk, c’est ouvert ! On y va.',
 
@@ -62,7 +64,7 @@ export const dict = {
     'dash.todo.shop': 'Infos de la boutique', 'dash.todo.sale': 'Première vente', 'dash.todo.prices': 'Prix de l’or du jour', 'dash.todo.stock': 'Ajouter vos bijoux au stock',
     'dash.enter': 'Saisir', 'dash.addShort': 'Ajouter', 'dash.fill': 'Compléter',
     'dash.workshopTitle': 'Commandes atelier', 'dash.workshopEmpty': 'Aucune commande en cours. Suivez ici l’or confié à l’artisan, le poids rendu et la perte.',
-    'dash.newOrder': '+ Nouvelle commande', 'dash.instTitle': 'Échéances (تقسيط)', 'dash.instEmpty': 'Aucun retard. Les rappels WhatsApp apparaîtront ici.',
+    'dash.newOrder': '+ Nouvelle commande', 'dash.instTitle': 'Échéances', 'dash.instEmpty': 'Aucun retard. Les rappels WhatsApp apparaîtront ici.',
     'dash.noneLate': 'Aucune échéance en retard', 'dash.avgBasket': 'panier moyen', 'dash.piece': 'pièce', 'dash.reprint': 'Réimprimer le reçu',
     'qa.sale': 'Vente', 'qa.sale.s': 'Encaisser un bijou', 'qa.ex': 'Échange', 'qa.ex.s': 'Ancien contre nouveau',
     'qa.buy': "Achat d'or", 'qa.buy.s': 'Racheter au poids', 'qa.add': 'Ajouter au stock', 'qa.add.s': 'Nouvelle pièce',
@@ -73,18 +75,18 @@ export const dict = {
     'pos.emptyTitle': 'Votre stock est encore vide', 'pos.emptyText': 'Ajoutez vos bijoux une seule fois : ensuite, vendre une pièce, c’est la toucher. Le poids et le prix du jour se remplissent tout seuls.',
     'pos.addStock': '+ Ajouter au stock', 'pos.offStock': 'Vendre une pièce hors stock', 'pos.ticket': 'Ticket', 'pos.articles': '{n} article(s)',
     'pos.touch': 'Touchez un article pour l’ajouter', 'pos.oldGold': "Reprise d'or ancien", 'pos.oldGoldSub': 'Déduite du total à payer',
-    'pos.customer': 'Client', 'pos.customerOpt': '(optionnel · obligatoire pour تقسيط)', 'pos.add': '+ Ajouter', 'pos.payment': 'Paiement',
+    'pos.customer': 'Client', 'pos.customerOpt': '(optionnel · obligatoire à tempérament)', 'pos.add': '+ Ajouter', 'pos.payment': 'Paiement',
     'pos.subtotal': 'Sous-total', 'pos.rest': 'Reste à payer', 'pos.refund': 'À rembourser', 'pos.validate': 'Valider et imprimer le reçu · Ctrl+Entrée', 'pos.needOne': 'Ajoutez au moins un article pour valider.',
     'pos.priceChip': 'Saisir', 'pos.offTitle': 'Pièce hors stock', 'pos.offDesc': 'Description', 'pos.addLine': 'Ajouter au ticket',
     'pos.noPrice': 'Prix du jour manquant pour ce carat.',
     'louiz.sleepy': 'Je fais une petite sieste… touchez pour me réveiller.', 'louiz.error': 'Oups, un souci. Réessayez dans un instant.',
     'louiz.done': 'Mabrouk ! Vente enregistrée.', 'louiz.emptyStock': 'Aucune pièce ici pour le moment.',
     'tour.skip': 'Passer la visite', 'tour.back': 'Retour', 'tour.toDash': 'Aller au tableau de bord', 'tour.setPrices': 'Saisir les prix du jour',
-    'tour.g1': 'Touchez le bijou dans la liste', 'tour.g2': 'Choisissez Comptant ou تقسيط', 'tour.g3': 'Validez : le reçu s’imprime',
+    'tour.g1': 'Touchez le bijou dans la liste', 'tour.g2': 'Choisissez Comptant ou À tempérament', 'tour.g3': 'Validez : le reçu s’imprime',
     'tour.0.bubble': 'Salam ! Moi, c’est Louiz.', 'tour.0.kicker': 'Bienvenue', 'tour.0.title': 'Orgest, votre caisse de bijoutier', 'tour.0.body': 'Je vous montre l’essentiel en une minute. Vous pourrez me rappeler à tout moment depuis le tableau de bord.', 'tour.0.next': 'C’est parti',
     'tour.1.bubble': 'Chaque matin, une seule chose…', 'tour.1.kicker': 'Étape 1 · chaque matin', 'tour.1.title': 'Saisissez le cours de l’or', 'tour.1.body': 'Je m’en sers pour calculer tout seul les ventes, les échanges et les rachats de la journée.', 'tour.1.next': 'Suivant',
     'tour.2.bubble': 'Ensuite, votre vitrine !', 'tour.2.kicker': 'Étape 2 · une seule fois', 'tour.2.title': 'Ajoutez vos bijoux au stock', 'tour.2.body': 'Pour chaque pièce, cinq infos suffisent : carat, poids, catégorie, prix ou façon, photo. Le stock se met à jour à chaque vente.', 'tour.2.next': 'Suivant',
-    'tour.3.bubble': 'Et là, ça va vite.', 'tour.3.kicker': 'Étape 3 · à la caisse', 'tour.3.title': 'Vendre en 3 gestes', 'tour.3.body': 'Comptant ou à tempérament (تقسيط), avec ou sans reprise d’or ancien.', 'tour.3.next': 'Suivant',
+    'tour.3.bubble': 'Et là, ça va vite.', 'tour.3.kicker': 'Étape 3 · à la caisse', 'tour.3.title': 'Vendre en 3 gestes', 'tour.3.body': 'Comptant ou à tempérament, avec ou sans reprise d’or ancien.', 'tour.3.next': 'Suivant',
     'tour.4.bubble': 'Mabrouk ! Vous êtes prêt.', 'tour.4.kicker': 'C’est fini', 'tour.4.title': 'Tout est en place', 'tour.4.body': 'Commencez par le cours du jour : 30 secondes, et votre caisse est prête pour la journée.', 'tour.4.next': '',
 
     'landing.login': 'Connexion', 'landing.cta': 'Demander un compte',
@@ -97,14 +99,14 @@ export const dict = {
     'showcase.cap.dashboard': 'Ventes du jour, stock en poids, crédits à encaisser et cours de l’or d’un coup d’œil.',
     'showcase.cap.sale': 'Touchez une pièce : le prix se calcule avec le poids, le cours du jour et la façon.',
     'showcase.cap.stock': 'Photos, quantités, scan du code-barres et étiquettes à imprimer.',
-    'showcase.cap.installments': 'Chaque échéance du تقسيط suivie, avec rappel WhatsApp en un clic.',
+    'showcase.cap.installments': 'Chaque échéance à tempérament suivie, avec rappel WhatsApp en un clic.',
     'showcase.cap.customers': 'Carnet clients avec crédit, paiements partiels et historique.',
     'landing.featuresTitle': 'Tout ce dont une bijouterie a besoin',
     'landing.f.stock': 'Stock en photos', 'landing.f.stock.d': "Photographiez chaque bijou : l'image carrée, le poids, le carat et la façon.",
     'landing.f.sale': 'Vente rapide', 'landing.f.sale.d': 'Prix du jour, poids × prix + façon, total calculé automatiquement.',
     'landing.f.exchange': 'Échange', 'landing.f.exchange.d': "Reprise de l'ancien bijou déduite du nouveau, la différence est calculée pour vous.",
     'landing.f.buyback': "Achat d'or ancien", 'landing.f.buyback.d': 'Reçu d’achat avec poids net, déduction et prix au gramme.',
-    'landing.f.installments': 'Tempérament (تقسيط)', 'landing.f.installments.d': 'Échéancier mensuel, suivi des retards et rappel WhatsApp.',
+    'landing.f.installments': 'Vente à tempérament', 'landing.f.installments.d': 'Échéancier mensuel, suivi des retards et rappel WhatsApp.',
     'landing.f.workshop': 'Commandes chez le fabricant', 'landing.f.workshop.d': 'Or remis, poids reçu, perte, acompte et date de livraison.',
     'landing.f.receipts': 'Reçus imprimables', 'landing.f.receipts.d': 'Format A5 ou ticket 80 mm avec les informations de votre boutique.',
     'landing.f.excel': 'Export Excel', 'landing.f.excel.d': 'Téléchargez vos ventes, achats et stock en un clic.',
@@ -136,7 +138,7 @@ export const dict = {
 
     'sale.pickItems': 'Choisissez les articles', 'sale.lines': 'Articles de la vente', 'sale.noLines': 'Touchez un article pour l’ajouter.',
     'sale.oldGold': "Reprise d'or ancien", 'sale.addOldGold': "Ajouter une reprise d'or", 'sale.payment': 'Paiement', 'sale.cash': 'Comptant',
-    'sale.installment': 'À tempérament (تقسيط)', 'sale.down': 'Avance (DH)', 'sale.months': 'Nombre de mois', 'sale.monthly': 'Mensualité',
+    'sale.installment': 'À tempérament', 'sale.down': 'Avance (DH)', 'sale.months': 'Nombre de mois', 'sale.monthly': 'Mensualité',
     'sale.lockedHint': 'prix figé en dirhams', 'sale.remainder': 'Reste à étaler', 'sale.last': 'dernière', 'sale.firstDue': '1re échéance', 'pos.fixPrice': 'Chaque article doit avoir un prix par gramme supérieur à 0.', 'pos.fixOld': 'Vérifiez l’or repris : poids, déduction (max 99 %) et prix par gramme.', 'sale.confirm': 'Valider et imprimer le reçu',
     'exchange.help': "Échange : l'ancien bijou est repris au prix d'achat (avec déduction éventuelle) puis déduit du prix du nouveau. Deux opérations liées sur un seul reçu.",
 
@@ -156,7 +158,7 @@ export const dict = {
     'inst.none': 'Aucune échéance en cours.', 'inst.noName': 'Client sans nom', 'inst.next': 'Prochaine échéance', 'inst.remaining': 'Reste',
     'inst.details': 'Détails', 'inst.overdue': '{n} en retard', 'inst.paid': 'Payée', 'inst.late': 'En retard', 'inst.pending': 'À venir',
     'inst.markPaid': 'Marquer payée', 'inst.confirmPay': 'Confirmer le paiement de cette échéance ?',
-    'inst.progress': 'Encaissé {a} / {b} DH ({p} %) — avance comprise', 'inst.progress': 'تقبض {a} / {b} درهم ({p}%) — مع التسبيق', 'inst.waReminder': 'Bonjour, rappel : votre échéance de {a} DH est prévue le {d}. Merci.',
+    'inst.progress': 'Encaissé {a} / {b} DH ({p} %) — avance comprise', 'inst.progress': 'Encaissé {a} / {b} DH ({p} %) — acompte inclus', 'inst.waReminder': 'Bonjour, rappel : votre échéance de {a} DH est prévue le {d}. Merci.',
 
     'reports.sales': 'Ventes', 'reports.avg': 'Panier moyen', 'reports.exchanges': 'Échanges', 'reports.buybacks': "Achats d'or", 'reports.best': 'Meilleur jour', 'reports.avgDay': 'Moyenne par jour', 'reports.overDays': 'sur {n} jour(s)', 'reports.activeDays': 'Jours avec ventes', 'reports.touchHint': 'Touchez une barre pour voir le détail', 'reports.unit': 'Montants en DH', 'reports.perDay': 'par jour', 'reports.perWeek': 'par semaine', 'reports.perMonth': 'par mois', 'reports.noSales': 'Aucune vente sur cette période.', 'reports.weekOf': 'Semaine du {d}', 'reports.monthOf': 'Mois {d}', 'reports.detail': 'Voir le détail chiffré', 'receipt.refunded': 'Rendu au client', 'reports.byDay': 'Ventes par jour',
     'reports.exportSales': 'Ventes (Excel)', 'reports.exportBuybacks': 'Achats (Excel)', 'reports.exportItems': 'Stock (Excel)',
@@ -206,6 +208,8 @@ export const dict = {
   },
 
   ar: {
+    'unit.g': 'غ', 'unit.kg': 'كغ',
+    'a11y.lang': 'اللغة', 'a11y.menu': 'القائمة', 'a11y.type': 'نوع العملية', 'a11y.items': 'السلعة', 'a11y.alert': 'تنبيه', 'a11y.quick': 'إجراءات سريعة', 'a11y.kpi': 'المؤشرات', 'a11y.author': 'الكاتب', 'a11y.breadcrumb': 'مسار التصفح', 'a11y.site': 'الموقع', 'a11y.guide': 'دليل Louiz',
     tagline: 'نظام تدبير تجار الذهب',
     loading: 'جاري التحميل…', save: 'حفظ', saved: 'تم الحفظ ✓', cancel: 'إلغاء', close: 'إغلاق', edit: 'تعديل',
     delete: 'حذف', remove: 'إزالة', confirm: 'تأكيد؟', search: 'بحث…', seeAll: 'عرض الكل', print: 'طباعة',
@@ -279,7 +283,7 @@ export const dict = {
     'pos.addStock': '+ زيد للستوك', 'pos.offStock': 'بيع قطعة خارج الستوك', 'pos.ticket': 'التيكي', 'pos.articles': '{n} قطعة',
     'pos.touch': 'لمس قطعة باش تزيدها', 'pos.oldGold': 'استرجاع الذهب القديم', 'pos.oldGoldSub': 'كيتنقص من المجموع',
     'pos.customer': 'الزبون', 'pos.customerOpt': '(اختياري · ضروري للتقسيط)', 'pos.add': '+ زيد', 'pos.payment': 'الأداء',
-    'pos.subtotal': 'المجموع الجزئي', 'pos.rest': 'الباقي للأداء', 'pos.refund': 'للإرجاع', 'pos.validate': 'أكد واطبع الوصل · Ctrl+Entrée', 'pos.needOne': 'زيد قطعة على الأقل باش تأكد.',
+    'pos.subtotal': 'المجموع الجزئي', 'pos.rest': 'الباقي للأداء', 'pos.refund': 'للإرجاع', 'pos.validate': 'أكد واطبع الوصل · Ctrl+Enter', 'pos.needOne': 'زيد قطعة على الأقل باش تأكد.',
     'pos.priceChip': 'سجل', 'pos.offTitle': 'قطعة خارج الستوك', 'pos.offDesc': 'الوصف', 'pos.addLine': 'زيد للتيكي',
     'pos.noPrice': 'ثمن اليوم ناقص لهاد العيار.',
     'louiz.sleepy': 'كنعس شوية… لمسني باش نفيق.', 'louiz.error': 'وقع مشكل. عاود من بعد شوية.',

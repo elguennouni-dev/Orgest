@@ -57,9 +57,9 @@ export default function Stock() {
               </div>
               <div className="body">
                 <b>{i.name}</b>
-                <span className="muted">{i.ref} · {purity(i.karat)} · <span className="num">{fmtWeight(i.weightG)} g</span></span>
-                <span className="hint">{t('stock.making')}: <Money v={i.makingPerGram} />/g</span>
-                <span className="hint num">{t('stock.totalWeight')}: {fmtWeight(Number(i.weightG) * i.quantity)} g</span>
+                <span className="muted">{i.ref} · {purity(i.karat)} · <span className="num">{fmtWeight(i.weightG)} {t('unit.g')}</span></span>
+                <span className="hint">{t('stock.making')}: <Money v={i.makingPerGram} />/{t('unit.g')}</span>
+                <span className="hint num">{t('stock.totalWeight')}: {fmtWeight(Number(i.weightG) * i.quantity)} {t('unit.g')}</span>
                 {owner && <Link className="btn sm" to={`/app/stock/${i.id}/edit`}>{i.quantity === 0 ? t('stock.restock') : t('edit')}</Link>}
               </div>
             </div>

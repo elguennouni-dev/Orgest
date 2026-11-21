@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { dict } from './dict.js';
+import { setPurityLang } from './lib/purity.js';
 
 const Ctx = createContext(null);
 
@@ -12,6 +13,7 @@ export function LangProvider({ children }) {
     document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
     try { localStorage.setItem('orgest_lang', lang); } catch { /* ignore */ }
   }, [lang]);
+  setPurityLang(lang);
   const t = useCallback((key, vars) => {
     let s = (dict[lang] && dict[lang][key]) || (dict.fr && dict.fr[key]) || key;
     if (vars) for (const [k, v] of Object.entries(vars)) s = s.replace(`{${k}}`, v);

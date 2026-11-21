@@ -14,7 +14,7 @@ export default function Tour({ onClose }) {
   const k = (s) => t(`tour.${i}.${s}`);
   return (
     <div className="tour-bg" onMouseDown={(e) => { if (e.target === e.currentTarget) onClose(); }}>
-      <div className="tour" role="dialog" aria-modal="true" aria-label="Louiz">
+      <div className="tour" role="dialog" aria-modal="true" aria-label={t('a11y.guide')}>
         <div className="mascot">
           <Louiz mood={MOODS[i]} size={150} />
           <div className="sp">{k('bubble')}</div>

@@ -19,9 +19,9 @@ export function Logo({ variant = 'wordmark', size, gap = '#14120E', ink = '#FFFF
 }
 
 export function LangSwitch() {
-  const { lang, setLang } = useI18n();
+  const { lang, setLang, t } = useI18n();
   return (
-    <div className="langswitch" role="group" aria-label="Langue / اللغة">
+    <div className="langswitch" role="group" aria-label={t('a11y.lang')}>
       <button type="button" className={lang === 'ar' ? 'on' : ''} onClick={() => setLang('ar')}>العربية</button>
       <button type="button" className={lang === 'fr' ? 'on' : ''} onClick={() => setLang('fr')}>Français</button>
     </div>
@@ -58,7 +58,7 @@ export function Modal({ title, onClose, children }) {
       <div className="modal" role="dialog" aria-modal="true">
         <div className="row spread" style={{ marginBottom: 12 }}>
           <h2>{title}</h2>
-          <button className="btn sm" type="button" onClick={onClose} aria-label="Fermer">✕</button>
+          <button className="btn sm" type="button" onClick={onClose} aria-label={t('close')}>✕</button>
         </div>
         {children}
       </div>

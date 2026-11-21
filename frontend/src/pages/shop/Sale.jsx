@@ -150,19 +150,19 @@ export default function Sale({ mode }) {
     <div className="pos">
       <header className="pos-top no-print">
         <h1>{isEx ? t('nav.exchange') : t('pos.title')}</h1>
-        <div className="seg" role="group" aria-label="Type">
+        <div className="seg" role="group" aria-label={t('a11y.type')}>
           <Link to="/app/sale" className={!isEx ? 'on' : ''} aria-current={!isEx}>{t('nav.sale')}</Link>
           <Link to="/app/exchange" className={isEx ? 'on' : ''} aria-current={isEx}>{t('nav.exchange')}</Link>
           <Link to="/app/buyback">{t('nav.buyback')}</Link>
         </div>
         <Link to="/app" className="price-chip" title={t('dash.pricesTitle')}>
           <Icon d={P.warn} size={16} sw={2} />
-          {KARATS.filter((k) => k < 100 || sellOf(k) > 0).map((k) => `${purity(k)} ${sellOf(k) > 0 ? fmtMoney(sellOf(k)) : '—'}`).join(' · ')} {t('dh')}/g{!pricesSet && ` · ${t('pos.priceChip')}`}
+          {KARATS.filter((k) => k < 100 || sellOf(k) > 0).map((k, i) => <span key={k}>{i > 0 && ' · '}<bdi>{purity(k)} {sellOf(k) > 0 ? fmtMoney(sellOf(k)) : '—'}</bdi></span>)} <bdi>{t('dh')}/{t('unit.g')}</bdi>{!pricesSet && ` · ${t('pos.priceChip')}`}
         </Link>
       </header>
 
       <div className="pos-body">
-        <section className="pos-items" aria-label="Articles">
+        <section className="pos-items" aria-label={t('a11y.items')}>
           <div className="bar">
             <label className="search grow" style={{ flex: '1 1 280px' }}>
               <Icon d={P.search} size={18} />
@@ -194,7 +194,7 @@ export default function Sale({ mode }) {
                 {list.map((it) => (
                   <button key={it.id} type="button" className={'pcard' + (lines.some((l) => l.itemId === it.id) ? ' sel' : '')} onClick={() => toggle(it)} aria-pressed={lines.some((l) => l.itemId === it.id)}>
                     <div className="ph">{it.hasPhoto ? <img loading="lazy" src={`/api/shop/items/${it.id}/photo`} alt="" /> : <span>◈</span>}<span className="k">{purity(it.karat)}</span></div>
-                    <div className="bd"><b>{it.name}</b><span className="muted num">{fmtWeight(it.weightG)} g · {it.ref}</span></div>
+                    <div className="bd"><b>{it.name}</b><span className="muted num">{fmtWeight(it.weightG)} {t('unit.g')} · {it.ref}</span></div>
                     {(it.quantity ?? 1) > 1 && <span className="qbadge num">×{it.quantity}</span>}
                   </button>
                 ))}
@@ -210,7 +210,7 @@ export default function Sale({ mode }) {
 
           {lines.length === 0 ? <div className="dash">{t('pos.touch')}</div> : lines.map((l) => (
             <div key={l.key} className="tline">
-              <div className="t"><b>{l.label}</b><span className="num muted">{purity(l.karat)} · {l.qty > 1 ? `${l.qty} × ` : ''}{fmtWeight(l.weightG)} g</span></div>
+              <div className="t"><b>{l.label}</b><span className="num muted">{purity(l.karat)} · {l.qty > 1 ? `${l.qty} × ` : ''}{fmtWeight(l.weightG)} {t('unit.g')}</span></div>
               <div className="qty" role="group" aria-label={t('stock.qty')}>
                 <button type="button" className="btn sm" aria-label="−" disabled={l.qty <= 1} onClick={() => upd(l.key, 'qty', l.qty - 1)}>−</button>
                 <b className="num">{l.qty}</b>
@@ -239,7 +239,7 @@ export default function Sale({ mode }) {
               <Field label={t('buyback.gross')}><input className="input" type="number" min="0" step="0.001" inputMode="decimal" value={old.gross} onChange={(e) => setOld({ ...old, gross: e.target.value })} dir="ltr" /></Field>
               <Field label={t('buyback.deduction')}><input className="input" type="number" min="0" max="99" step="0.1" inputMode="decimal" value={old.ded} onChange={(e) => setOld({ ...old, ded: e.target.value })} dir="ltr" /></Field>
               <Field label={t('buyback.priceG')}><input className="input" type="number" min="0" step="0.01" placeholder={String(buyOf(old.karat))} value={old.price} onChange={(e) => setOld({ ...old, price: e.target.value })} dir="ltr" /></Field>
-              <div className="hint" style={{ gridColumn: '1 / -1' }}>{t('buyback.net')}: <b className="num">{fmtWeight(calc.net)} g</b> → <Money v={calc.tradeIn} /></div>
+              <div className="hint" style={{ gridColumn: '1 / -1' }}>{t('buyback.net')}: <b className="num">{fmtWeight(calc.net)} {t('unit.g')}</b> → <Money v={calc.tradeIn} /></div>
             </div>
           )}
 

@@ -48,9 +48,9 @@ export default function Workshop() {
                     <td>{w.number}</td>
                     <td className="wrap"><b>{w.description}</b><br /><span className="muted">{w.customerName || '—'} · {purity(w.karat)}</span></td>
                     <td className="wrap">{w.artisanName}<br /><span className="muted num">{w.artisanPhone}</span></td>
-                    <td className="num">{fmtWeight(w.givenWeightG)} g</td>
-                    <td className="num">{w.receivedWeightG != null ? `${fmtWeight(w.receivedWeightG)} g` : '—'}</td>
-                    <td className="num">{w.lossG != null ? `${fmtWeight(w.lossG)} g` : '—'}</td>
+                    <td className="num">{fmtWeight(w.givenWeightG)} {t('unit.g')}</td>
+                    <td className="num">{w.receivedWeightG != null ? `${fmtWeight(w.receivedWeightG)} {t('unit.g')}` : '—'}</td>
+                    <td className="num">{w.lossG != null ? `${fmtWeight(w.lossG)} {t('unit.g')}` : '—'}</td>
                     <td className="num">{fmtDate(w.dueDate)}</td>
                     <td><span className={'badge ' + BADGE[w.status]}>{t('wstatus.' + w.status)}</span></td>
                     <td>
@@ -97,9 +97,9 @@ export default function Workshop() {
       {ready && (
         <Modal title={t('workshop.markReady')} onClose={() => setReady(null)}>
           <div className="stack">
-            <p>{ready.description} — {t('workshop.given')}: <b className="num">{fmtWeight(ready.givenWeightG)} g</b></p>
+            <p>{ready.description} — {t('workshop.given')}: <b className="num">{fmtWeight(ready.givenWeightG)} {t('unit.g')}</b></p>
             <Field label={t('workshop.received')} hint={t('workshop.lossHint')}><input className="input" type="number" min="0.001" step="0.001" value={recv} onChange={(e) => setRecv(e.target.value)} dir="ltr" autoFocus /></Field>
-            {recv && <p>{t('workshop.loss')}: <b className="num">{fmtWeight(Number(ready.givenWeightG) - Number(recv))} g</b></p>}
+            {recv && <p>{t('workshop.loss')}: <b className="num">{fmtWeight(Number(ready.givenWeightG) - Number(recv))} {t('unit.g')}</b></p>}
             <ErrorBox error={err} />
             <button className="btn primary" disabled={!(Number(recv) > 0)} onClick={() => setStatus(ready.id, 'READY', Number(recv))}>{t('save')}</button>
           </div>

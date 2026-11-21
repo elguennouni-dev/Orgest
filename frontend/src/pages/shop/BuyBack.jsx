@@ -49,7 +49,7 @@ export default function BuyBack() {
             <Field label={t('buyback.priceG')} hint={`${t('dash.buyPrice')}: ${fmtMoney(buy(f.karat))}`}><input className="input" type="number" min="0" step="0.01" placeholder={String(buy(f.karat))} value={f.price} onChange={set('price')} dir="ltr" /></Field>
           </div>
           <div className="card" style={{ background: 'var(--gold-50)' }}>
-            <div className="row spread"><span>{t('buyback.net')}</span><b className="num">{fmtWeight(calc.net)} g</b></div>
+            <div className="row spread"><span>{t('buyback.net')}</span><b className="num">{fmtWeight(calc.net)} {t('unit.g')}</b></div>
             <div className="row spread" style={{ fontSize: 20 }}><b>{t('receipt.amountPaid')}</b><b><Money v={calc.total} /></b></div>
           </div>
           <ErrorBox error={error} />
@@ -59,7 +59,7 @@ export default function BuyBack() {
           <h2>{t('buyback.recent')}</h2>
           <div className="tablewrap"><table><tbody>
             {list.data?.content.map((b) => (
-              <tr key={b.id}><td>{b.number}</td><td className="muted">{fmtDateTime(b.createdAt)}</td><td>{purity(b.karat)} · {fmtWeight(b.netWeightG)} g</td><td><Money v={b.total} /></td><td><Link className="btn sm" to={`/app/buyback/${b.id}`}>{t('receipt.open')}</Link></td></tr>
+              <tr key={b.id}><td>{b.number}</td><td className="muted">{fmtDateTime(b.createdAt)}</td><td>{purity(b.karat)} · {fmtWeight(b.netWeightG)} {t('unit.g')}</td><td><Money v={b.total} /></td><td><Link className="btn sm" to={`/app/buyback/${b.id}`}>{t('receipt.open')}</Link></td></tr>
             ))}
             {list.data?.content.length === 0 && <tr><td className="muted">{t('buyback.none')}</td></tr>}
           </tbody></table></div>

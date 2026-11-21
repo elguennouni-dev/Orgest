@@ -40,7 +40,7 @@ export function SiteHeader() {
     <header className={'site-head' + (scrolled ? ' scrolled' : '') + (open ? ' menu-open' : '')}>
       <div className="in">
         <Link to="/" aria-label="Orgest" className="brand-l"><Logo size={36} /></Link>
-        <nav id="site-nav" aria-label="Site" className={open ? 'open' : ''} onClick={(e) => { if (e.target.closest('a')) setOpen(false); }}>
+        <nav id="site-nav" aria-label={t('a11y.site')} className={open ? 'open' : ''} onClick={(e) => { if (e.target.closest('a')) setOpen(false); }}>
           <a href="/#features">{t('site.features')}</a>
           <a href="/#pricing">{t('site.pricing')}</a>
           <NavLink to="/blog">{t('site.blog')}</NavLink>
@@ -52,7 +52,7 @@ export function SiteHeader() {
         <LangToggle />
         <Link to="/login" className="lnk desk">{t('site.login')}</Link>
         <a className="btn primary desk" href={wa} target="_blank" rel="noopener noreferrer">{t('site.try')}</a>
-        <button type="button" className="burger" aria-label="Menu" aria-expanded={open} aria-controls="site-nav" onClick={() => setOpen(!open)}>
+        <button type="button" className="burger" aria-label={t('a11y.menu')} aria-expanded={open} aria-controls="site-nav" onClick={() => setOpen(!open)}>
           <span /><span /><span />
         </button>
       </div>

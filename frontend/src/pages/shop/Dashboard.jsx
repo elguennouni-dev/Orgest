@@ -4,7 +4,7 @@ import { api } from '../../api.js';
 import { useAuth } from '../../auth.jsx';
 import { useApi } from '../../hooks.js';
 import { fmtDateTime, fmtInt, fmtMoney, fmtWeight, Money, useI18n } from '../../i18n.jsx';
-import { purity, weightLabel } from '../../lib/purity.js';
+import { purity, silverLabel, weightLabel } from '../../lib/purity.js';
 import { ErrorBox, Loading } from '../../components/ui.jsx';
 import { Icon, P } from '../../components/icons.jsx';
 import Louiz from '../../components/Louiz.jsx';
@@ -135,7 +135,7 @@ export default function Dashboard() {
       </header>
 
       {!entered && !dismissed && (
-        <section className="alert-louiz" aria-label="Alerte">
+        <section className="alert-louiz" aria-label={t('a11y.alert')}>
           <Louiz mood="worried" size={76} />
           <div className="tx"><strong style={{ fontSize: 16, fontWeight: 600 }}>{t('dash.alertTitle')}</strong><span>{t('dash.alertText')}</span></div>
           <div className="row" style={{ gap: 8 }}>
@@ -145,7 +145,7 @@ export default function Dashboard() {
         </section>
       )}
 
-      <section className="quick" aria-label="Actions rapides">
+      <section className="quick" aria-label={t('a11y.quick')}>
         {actions.map((a) => (
           <Link key={a.to} to={a.to} className="qa">
             <span className="ic" style={{ background: a.bg, color: a.fg }}><Icon d={a.ic} size={24} /></span>
@@ -155,10 +155,10 @@ export default function Dashboard() {
         ))}
       </section>
 
-      <section className="kpis" aria-label="KPI">
+      <section className="kpis" aria-label={t('a11y.kpi')}>
         <div className="kpi2"><span className="l">{t('dash.salesToday')}</span><span className="v num">{fmtInt(d.salesToday)} <small>{t('dh')}</small></span><span className="s">{t('dash.salesCount', { n: d.salesCountToday })}{d.salesCountToday > 0 ? ` · ${t('dash.avgBasket')} ${fmtInt(avg)} ${t('dh')}` : ''}</span></div>
         <div className="kpi2"><span className="l">{t('dash.salesMonth')}</span><span className="v num">{fmtInt(d.salesMonth)} <small>{t('dh')}</small></span><span className="s">{t('dash.buybackMonth')} : {fmtInt(d.buybackMonth)} {t('dh')}</span></div>
-        <div className="kpi2"><span className="l">{t('dash.stock')}</span><span className="v num">{fmtInt(d.stockCount)} <small>{t('dash.piece')}</small></span><span className="s">{fmtWeight(d.stockWeightG)} g{Number(d.silverWeightG) > 0 ? ` + Ag ${weightLabel(d.silverWeightG, fmtWeight)}` : ''} · {t('dash.value')} ≈ {fmtInt(d.stockValue)} {t('dh')}</span></div>
+        <div className="kpi2"><span className="l">{t('dash.stock')}</span><span className="v num">{fmtInt(d.stockCount)} <small>{t('dash.piece')}</small></span><span className="s"><bdi>{fmtWeight(d.stockWeightG)} {t('unit.g')}</bdi>{Number(d.silverWeightG) > 0 && <> + <bdi>{silverLabel()} {weightLabel(d.silverWeightG, fmtWeight, t('unit.g'), t('unit.kg'))}</bdi></>} · {t('dash.value')} ≈ <bdi>{fmtInt(d.stockValue)} {t('dh')}</bdi></span></div>
         <div className="kpi2"><span className="l">{t('dash.credits')}</span><span className="v num">{fmtInt(d.creditsDue)} <small>{t('dh')}</small></span><span className="s"><Link to="/app/customers">{t('dash.creditCust', { n: d.creditCustomers })}</Link></span></div>
         <div className="kpi2"><span className="l">{t('dash.installments')}</span><span className="v num">{fmtInt(d.installmentsOutstanding)} <small>{t('dh')}</small></span><span className={'s' + (d.overdueInstallments === 0 ? ' ok' : '')}>{d.overdueInstallments === 0 ? t('dash.noneLate') : t('dash.overdue', { n: d.overdueInstallments })}</span></div>
       </section>
