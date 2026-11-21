@@ -1,3 +1,4 @@
+import OfflineBar from './OfflineBar.jsx';
 import { useEffect, useRef, useState } from 'react';
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth.jsx';
@@ -122,6 +123,7 @@ function Shell({ groups, children, searchable }) {
         </div>
       </aside>
       <main className="main" key={loc.pathname} ref={mainRef}>
+        {me.role !== 'ADMIN' && <OfflineBar />}
         <div className="inner">
           {children}
         </div>

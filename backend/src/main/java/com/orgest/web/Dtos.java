@@ -112,7 +112,8 @@ public final class Dtos {
                               @NotNull Enums.PaymentMode paymentMode,
                               @DecimalMin("0") @DecimalMax("1000000000") BigDecimal downPayment,
                               @Min(0) @Max(36) Integer months,
-                              Enums.SalePay payMethod) {}
+                              Enums.SalePay payMethod,
+                              @Size(max = 40) @Pattern(regexp = "^[A-Za-z0-9-]{8,40}$") String clientRef) {}
 
     public record LineDto(String description, int karat, BigDecimal weightG, BigDecimal pricePerGram,
                           BigDecimal makingPerGram, BigDecimal lineTotal, int quantity) {}

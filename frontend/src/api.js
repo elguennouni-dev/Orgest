@@ -1,4 +1,5 @@
 // Client REST : cookies HttpOnly (JWT) + en-tête CSRF (double-submit cookie XSRF-TOKEN).
+import { fallback, isNetworkError, remember } from './lib/offline.js';
 function getCookie(name) {
   const m = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)'));
   return m ? decodeURIComponent(m[1]) : null;
@@ -32,7 +33,14 @@ export async function api(path, { method = 'GET', body, form } = {}, retried = f
     headers['Content-Type'] = 'application/json';
     payload = JSON.stringify(body);
   }
-  const res = await fetch('/api' + path, { method, headers, body: payload, credentials: 'same-origin' });
+  let res;
+  try {
+    res = await fetch('/api' + path, { method, headers, body: payload, credentials: 'same-origin' });
+  } catch (e) {
+    // Hors ligne : les lectures essentielles (profil, prix, stock, clients) sont servies depuis le cache local.
+    if (method === 'GET' && isNetworkError(e)) { const cached = await fallback(path); if (cached !== undefined) return cached; }
+    throw e;
+  }
   if (res.status === 204) return null;
   const isJson = (res.headers.get('content-type') || '').includes('json');
   const data = isJson ? await res.json().catch(() => null) : null;
@@ -46,6 +54,7 @@ export async function api(path, { method = 'GET', body, form } = {}, retried = f
     if (code === 'SUBSCRIPTION_EXPIRED') window.dispatchEvent(new Event('orgest:expired'));
     throw new ApiError(res.status, code, data);
   }
+  if (method === 'GET') remember(path, data).catch(() => {});
   return data;
 }
 

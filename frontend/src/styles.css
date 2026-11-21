@@ -812,3 +812,10 @@ tbody tr:nth-child(5) { animation-delay: .12s; } tbody tr:nth-child(n+6) { anima
   .label-sheet.roll { grid-template-columns: 50mm; grid-auto-rows: 25mm; }
   .label-sheet.roll .label { width: 50mm; height: 25mm; page-break-after: always; }
 }
+
+/* ----- Hors ligne ----- */
+.offbar { position: sticky; top: 0; z-index: 40; display: grid; gap: 1px; font-size: 14px; }
+.offbar > div { padding: 8px 14px; display: flex; gap: 10px; align-items: center; justify-content: center; flex-wrap: wrap; }
+.offbar .off { background: #3b2f0e; color: #ffe08a; }
+.offbar .wait { background: var(--gold-50); color: var(--gold-700); }
+.offbar .bad { background: #fde8e6; color: #8a1f14; }

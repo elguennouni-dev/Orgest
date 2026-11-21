@@ -86,6 +86,11 @@ public class SalesService {
     // ---------- Vente / Échange ----------
     @Transactional
     public SaleDto createSale(Long shopId, SaleRequest r) {
+        if (r.clientRef() != null) {
+            // Envoi déjà reçu (réessai après coupure réseau) : on renvoie la vente existante, sans la recréer.
+            Sale existing = sales.findByShopIdAndClientRef(shopId, r.clientRef()).orElse(null);
+            if (existing != null) return getSale(shopId, existing.id);
+        }
         Enums.SaleType type = r.type() == null ? Enums.SaleType.SALE : r.type();
         if (type == Enums.SaleType.EXCHANGE && r.oldGold() == null) throw AppException.bad("OLD_GOLD_REQUIRED");
 
@@ -100,6 +105,7 @@ public class SalesService {
         s.shopId = shopId;
         s.number = counters.next(shopId, "SALE", "V-");
         s.type = type;
+        s.clientRef = r.clientRef();
         s.customerName = Text.blankToNull(r.customerName());
         s.customerPhone = Text.blankToNull(r.customerPhone());
         s.payMethod = r.payMethod() == null ? Enums.SalePay.CASH : r.payMethod();

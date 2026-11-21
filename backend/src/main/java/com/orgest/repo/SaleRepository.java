@@ -15,6 +15,8 @@ public interface SaleRepository extends JpaRepository<Sale, Long> {
     @Query("select s from Sale s left join fetch s.lines where s.id = :id and s.shopId = :shop")
     Optional<Sale> findDetail(@Param("id") Long id, @Param("shop") Long shop);
 
+    Optional<Sale> findByShopIdAndClientRef(Long shopId, String clientRef);
+
     Page<Sale> findByShopIdOrderByCreatedAtDesc(Long shopId, Pageable pageable);
 
     @Query("select s from Sale s where s.shopId = :shop and s.createdAt >= :from and s.createdAt < :to order by s.createdAt desc")

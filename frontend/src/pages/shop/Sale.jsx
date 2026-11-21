@@ -10,6 +10,8 @@ import Louiz from '../../components/Louiz.jsx';
 import { lineTotal, round2, saleSummary } from '../../lib/money.js';
 import { cameraScanSupported, exactRef } from '../../lib/scan.js';
 import ScanModal from '../../components/ScanModal.jsx';
+import { newRef } from '../../lib/offline.js';
+import { enqueueSale, isNetworkError } from '../../lib/sync.js';
 
 let uid = 0;
 const PAY_METHODS = ['CASH', 'CHEQUE', 'CARD', 'TRANSFER', 'CREDIT'];
@@ -33,6 +35,8 @@ export default function Sale({ mode }) {
   const [error, setError] = useState(null);
   const [busy, setBusy] = useState(false);
   const [scanning, setScanning] = useState(false);
+  const [queued, setQueued] = useState(false);
+  const clientRef = useRef(newRef());
   const [scanMsg, setScanMsg] = useState(null);
 
   const sellOf = (k) => Number(prices.data?.find((p) => p.karat === k)?.sellPerGram || 0);
@@ -75,8 +79,9 @@ export default function Sale({ mode }) {
   const submit = async () => {
     if (!canSubmit) return;
     setBusy(true); setError(null);
+    let body = null;
     try {
-      const body = {
+      body = {
         type: isEx ? 'EXCHANGE' : 'SALE',
         customerName: cust.name || null,
         customerPhone: cust.phone || null,
@@ -88,10 +93,18 @@ export default function Sale({ mode }) {
         payMethod: pay.method,
         downPayment: pay.mode === 'INSTALLMENT' || isCredit ? Number(pay.down || 0) : null,
         months: pay.mode === 'INSTALLMENT' ? Number(pay.months) : null,
+        clientRef: clientRef.current,
       };
       const sale = await api('/shop/sales', { method: 'POST', body });
       nav(`/app/sales/${sale.id}`, { state: { celebrate: true } });
-    } catch (e) { setError(e); setBusy(false); }
+    } catch (e) {
+      if (isNetworkError(e)) {
+        // Pas de connexion : la vente est gardée sur l'appareil et partira toute seule au retour d'Internet.
+        await enqueueSale(body, { total: calc.balance, customer: cust.name, n: lines.length });
+        clientRef.current = newRef();
+        setLines([]); setCust({ name: '', phone: '' }); setQueued(true); setBusy(false);
+      } else { setError(e); setBusy(false); }
+    }
   };
 
   // Entrée valide la vente (sauf dans la recherche et les champs texte).
@@ -300,6 +313,12 @@ export default function Sale({ mode }) {
         </button>
       )}
 
+      {queued && (
+        <Modal title={t('off.savedTitle')} onClose={() => setQueued(false)}>
+          <p>{t('off.savedText')}</p>
+          <div className="row" style={{ justifyContent: 'flex-end' }}><button type="button" className="btn primary" onClick={() => setQueued(false)}>OK</button></div>
+        </Modal>
+      )}
       {scanning && <ScanModal onClose={() => setScanning(false)} onCode={addByCode} />}
       {free && (
         <Modal title={t('pos.offTitle')} onClose={() => setFree(null)}>

@@ -73,7 +73,7 @@ class SalesServiceTests {
 
     private static SaleRequest req(Enums.SaleType type, String customer, List<LineIn> lines, BuybackRequest old,
                                    Enums.PaymentMode mode, String down, Integer months) {
-        return new SaleRequest(type, customer, "0600000000", lines, old, mode, down == null ? null : d(down), months, null);
+        return new SaleRequest(type, customer, "0600000000", lines, old, mode, down == null ? null : d(down), months, null, null);
     }
 
     @Test
@@ -99,7 +99,7 @@ class SalesServiceTests {
         assertEquals("CASH", a.payMethod());
         stock(stockItem(2, 18, "10.000"));
         SaleDto b = svc.createSale(SHOP, new SaleRequest(Enums.SaleType.SALE, null, "0600000000",
-                List.of(item(2, "640", "100")), null, Enums.PaymentMode.CASH, null, null, Enums.SalePay.CHEQUE));
+                List.of(item(2, "640", "100")), null, Enums.PaymentMode.CASH, null, null, Enums.SalePay.CHEQUE, null));
         assertEquals("CHEQUE", b.payMethod());
     }
 
@@ -107,16 +107,16 @@ class SalesServiceTests {
     void creditSaleKeepsRemainderDueAndRequiresCustomer() {
         stock(stockItem(1, 18, "10.000"));
         SaleDto s = svc.createSale(SHOP, new SaleRequest(Enums.SaleType.SALE, "Ali", "0600000000",
-                List.of(item(1, "640", "100")), null, Enums.PaymentMode.CASH, d("1000"), null, Enums.SalePay.CREDIT));
+                List.of(item(1, "640", "100")), null, Enums.PaymentMode.CASH, d("1000"), null, Enums.SalePay.CREDIT, null));
         assertEquals("CREDIT", s.payMethod());
         assertEquals(d("1000.00"), s.downPayment());
         assertEquals(d("6400.00"), s.creditDue());
         stock(stockItem(2, 18, "10.000"));
         assertEquals("CUSTOMER_REQUIRED", assertThrows(AppException.class, () -> svc.createSale(SHOP, new SaleRequest(Enums.SaleType.SALE, null, null,
-                List.of(item(2, "640", "100")), null, Enums.PaymentMode.CASH, null, null, Enums.SalePay.CREDIT))).code());
+                List.of(item(2, "640", "100")), null, Enums.PaymentMode.CASH, null, null, Enums.SalePay.CREDIT, null))).code());
         stock(stockItem(3, 18, "10.000"));
         assertEquals("DOWN_TOO_HIGH", assertThrows(AppException.class, () -> svc.createSale(SHOP, new SaleRequest(Enums.SaleType.SALE, "Ali", null,
-                List.of(item(3, "640", "100")), null, Enums.PaymentMode.CASH, d("7400"), null, Enums.SalePay.CREDIT))).code());
+                List.of(item(3, "640", "100")), null, Enums.PaymentMode.CASH, d("7400"), null, Enums.SalePay.CREDIT, null))).code());
     }
 
     @Test
@@ -126,6 +126,23 @@ class SalesServiceTests {
                 Enums.PaymentMode.CASH, null, null));
         assertEquals(925, s.lines().get(0).karat());
         assertEquals(d("1200.00"), s.subtotal());   // 100 g × (10 + 2)
+    }
+
+    @Test
+    void sameClientRefIsIdempotent() {
+        stock(stockItem(1, 18, "10.000"));
+        SaleRequest r = new SaleRequest(Enums.SaleType.SALE, null, null, List.of(item(1, "640", "100")), null,
+                Enums.PaymentMode.CASH, null, null, null, "abcdef12-3456");
+        SaleDto first = svc.createSale(SHOP, r);
+        Sale stored = new Sale();
+        stored.id = first.id();
+        stored.shopId = SHOP; stored.number = first.number(); stored.type = Enums.SaleType.SALE;
+        stored.subtotal = first.subtotal(); stored.balance = first.balance(); stored.paymentMode = Enums.PaymentMode.CASH;
+        when(sales.findByShopIdAndClientRef(SHOP, "abcdef12-3456")).thenReturn(java.util.Optional.of(stored));
+        when(sales.findDetail(first.id(), SHOP)).thenReturn(java.util.Optional.of(stored));
+        SaleDto again = svc.createSale(SHOP, r);
+        assertEquals(first.id(), again.id());
+        verify(sales, times(1)).save(any(Sale.class));
     }
 
     @Test
