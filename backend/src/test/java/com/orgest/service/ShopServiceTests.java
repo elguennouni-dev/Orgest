@@ -40,7 +40,7 @@ class ShopServiceTests {
     @Test
     void pricesDefaultToZeroForAllKarats() {
         List<PriceDto> p = svc.prices(SHOP);
-        assertEquals(List.of(18, 21, 24), p.stream().map(PriceDto::karat).toList());
+        assertEquals(List.of(18, 21, 24, 800, 925, 999), p.stream().map(PriceDto::karat).toList());
         assertTrue(p.stream().allMatch(x -> x.sellPerGram().signum() == 0 && x.buyPerGram().signum() == 0));
     }
 
