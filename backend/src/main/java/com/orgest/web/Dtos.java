@@ -179,7 +179,7 @@ public final class Dtos {
 
     public record ReportDto(LocalDate from, LocalDate to, long salesCount, BigDecimal salesTotal,
                             long exchangeCount, BigDecimal buybackTotal, BigDecimal buybackWeightG,
-                            BigDecimal averageTicket, List<DayPoint> byDay) {}
+                            BigDecimal averageTicket, BigDecimal makingChargesTotal, List<DayPoint> byDay) {}
 
     // ---------- Contenu public : tarifs + blog ----------
     public record SubPlanDto(Long id, int months, BigDecimal price, boolean popular, boolean active) {}

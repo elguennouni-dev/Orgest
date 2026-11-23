@@ -28,6 +28,10 @@ public interface SaleRepository extends JpaRepository<Sale, Long> {
     @Query("select count(s) from Sale s where s.shopId = :shop and s.createdAt >= :from and s.createdAt < :to")
     long countBetween(@Param("shop") Long shop, @Param("from") Instant from, @Param("to") Instant to);
 
+    @Query("select coalesce(sum(l.weightG * l.quantity * l.makingPerGram), 0) "
+         + "from SaleLine l join l.sale s where s.shopId = :shop and s.createdAt >= :from and s.createdAt < :to")
+    BigDecimal makingChargesBetween(@Param("shop") Long shop, @Param("from") Instant from, @Param("to") Instant to);
+
     /** Ventes du mois par catégorie d'article (lignes hors stock regroupées sous « AUTRE »). Colonnes : catégorie, total, pièces. */
     @Query("select coalesce(i.category, 'AUTRE'), coalesce(sum(l.lineTotal),0), coalesce(sum(l.quantity),0) "
          + "from SaleLine l join l.sale s left join Item i on i.id = l.itemId "

@@ -49,8 +49,8 @@ export default function Workshop() {
                     <td className="wrap"><b>{w.description}</b><br /><span className="muted">{w.customerName || '—'} · {purity(w.karat)}</span></td>
                     <td className="wrap">{w.artisanName}<br /><span className="muted num">{w.artisanPhone}</span></td>
                     <td className="num">{fmtWeight(w.givenWeightG)} {t('unit.g')}</td>
-                    <td className="num">{w.receivedWeightG != null ? `${fmtWeight(w.receivedWeightG)} {t('unit.g')}` : '—'}</td>
-                    <td className="num">{w.lossG != null ? `${fmtWeight(w.lossG)} {t('unit.g')}` : '—'}</td>
+                    <td className="num">{w.receivedWeightG != null ? `${fmtWeight(w.receivedWeightG)} ${t('unit.g')}` : '—'}</td>
+                    <td className="num">{w.lossG != null ? `${fmtWeight(w.lossG)} ${t('unit.g')}` : '—'}</td>
                     <td className="num">{fmtDate(w.dueDate)}</td>
                     <td><span className={'badge ' + BADGE[w.status]}>{t('wstatus.' + w.status)}</span></td>
                     <td>

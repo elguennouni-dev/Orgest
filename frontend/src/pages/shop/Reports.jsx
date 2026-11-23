@@ -34,7 +34,8 @@ export default function Reports() {
             <Kpi label={t('reports.sales')} value={<Money v={data.salesTotal} />} sub={t('dash.salesCount', { n: data.salesCount })} />
             <Kpi label={t('reports.avg')} value={<Money v={data.averageTicket} />} />
             <Kpi label={t('reports.exchanges')} value={<span className="num">{fmtInt(data.exchangeCount)}</span>} />
-            <Kpi label={t('reports.buybacks')} value={<Money v={data.buybackTotal} />} sub={`${fmtWeight(data.buybackWeightG)} {t('unit.g')}`} />
+            <Kpi label={t('reports.buybacks')} value={<Money v={data.buybackTotal} />} sub={`${fmtWeight(data.buybackWeightG)} ${t('unit.g')}`} />
+            <Kpi label={t('reports.makingCharges')} value={<Money v={data.makingChargesTotal} />} />
           </div>
           <div className="card">
             <h2>{t('reports.byDay')}</h2>

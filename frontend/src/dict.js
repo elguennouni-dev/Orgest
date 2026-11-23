@@ -189,6 +189,7 @@ export const dict = {
     'inst.markPaid': 'Marquer payée', 'inst.confirmPay': 'Confirmer le paiement de cette échéance ?',
     'inst.progress': 'Encaissé {a} / {b} DH ({p} %) — avance comprise', 'inst.progress': 'Encaissé {a} / {b} DH ({p} %) — acompte inclus', 'inst.waReminder': 'Bonjour, rappel : votre échéance de {a} DH est prévue le {d}. Merci.',
 
+    'reports.makingCharges': 'Total façon',
     'reports.sales': 'Ventes', 'reports.avg': 'Panier moyen', 'reports.exchanges': 'Échanges', 'reports.buybacks': "Achats d'or", 'reports.best': 'Meilleur jour', 'reports.avgDay': 'Moyenne par jour', 'reports.overDays': 'sur {n} jour(s)', 'reports.activeDays': 'Jours avec ventes', 'reports.touchHint': 'Touchez une barre pour voir le détail', 'reports.unit': 'Montants en DH', 'reports.perDay': 'par jour', 'reports.perWeek': 'par semaine', 'reports.perMonth': 'par mois', 'reports.noSales': 'Aucune vente sur cette période.', 'reports.weekOf': 'Semaine du {d}', 'reports.monthOf': 'Mois {d}', 'reports.detail': 'Voir le détail chiffré', 'receipt.refunded': 'Rendu au client', 'reports.byDay': 'Ventes par jour',
     'reports.exportSales': 'Ventes (Excel)', 'reports.exportBuybacks': 'Achats (Excel)', 'reports.exportItems': 'Stock (Excel)',
 
@@ -425,6 +426,7 @@ export const dict = {
     'inst.markPaid': 'تعليم كمدفوع', 'inst.confirmPay': 'واش تأكد أداء هاد القسط؟',
     'inst.progress': 'تقبض {a} / {b} درهم ({p}%) — مع التسبيق', 'inst.waReminder': 'السلام عليكم، تذكير: القسط ديالك {a} درهم كيحل نهار {d}. شكراً.',
 
+    'reports.makingCharges': 'مجموع الصياغة',
     'reports.sales': 'المبيعات', 'reports.avg': 'متوسط البيع', 'reports.exchanges': 'الاستبدالات', 'reports.buybacks': 'شراء الذهب', 'reports.best': 'أحسن نهار', 'reports.avgDay': 'المعدل فالنهار', 'reports.overDays': 'على {n} يوم', 'reports.activeDays': 'أيام فيها مبيعات', 'reports.touchHint': 'لمس شي عمود باش تشوف التفاصيل', 'reports.unit': 'المبالغ بالدرهم', 'reports.perDay': 'فالنهار', 'reports.perWeek': 'فالسيمانة', 'reports.perMonth': 'فالشهر', 'reports.noSales': 'ما كاين حتى بيع فهاد المدة.', 'reports.weekOf': 'سيمانة {d}', 'reports.monthOf': 'شهر {d}', 'reports.detail': 'شوف التفاصيل بالأرقام', 'receipt.refunded': 'رجع للزبون', 'reports.byDay': 'المبيعات حسب اليوم',
     'reports.exportSales': 'المبيعات (Excel)', 'reports.exportBuybacks': 'المشتريات (Excel)', 'reports.exportItems': 'السلعة (Excel)',
 

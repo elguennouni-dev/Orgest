@@ -94,6 +94,7 @@ public class ReportService {
         return new ReportDto(from, to, list.size(), Money.round2(total),
                 sales.exchangesBetween(shopId, Enums.SaleType.EXCHANGE, a, b),
                 buybacks.totalBetween(shopId, a, b), buybacks.weightBetween(shopId, a, b), avg,
+                Money.round2(sales.makingChargesBetween(shopId, a, b)),
                 byDay.entrySet().stream().map(e -> new DayPoint(e.getKey(), e.getValue())).toList());
     }
 

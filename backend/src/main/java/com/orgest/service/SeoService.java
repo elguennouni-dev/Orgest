@@ -120,7 +120,7 @@ public class SeoService {
          .append("<li><strong>Échange et reprise d’or ancien</strong> : poids net déduit automatiquement du total.</li>\n")
          .append("<li><strong>Ventes à tempérament</strong> : acompte, échéancier exact au centime, suivi des retards et rappels WhatsApp.</li>\n")
          .append("<li><strong>Atelier</strong> : or confié à l’artisan, poids remis et rendu, perte.</li>\n")
-         .append("<li><strong>Rapports</strong> : ventes, achats d’or, marge, export Excel.</li>\n")
+         .append("<li><strong>Rapports</strong> : ventes, achats d’or, total de la façon, export Excel.</li>\n")
          .append("<li><strong>Français et arabe</strong> : interface de droite à gauche incluse.</li>\n</ul>\n");
         if (!plans.isEmpty()) {
             b.append("<h2>Tarifs</h2>\n<ul>\n");
