@@ -53,6 +53,7 @@ export function ErrorBox({ error }) {
 }
 
 export function Modal({ title, onClose, children }) {
+  const { t } = useI18n();
   return (
     <div className="modal-bg" onMouseDown={(e) => { if (e.target === e.currentTarget) onClose(); }}>
       <div className="modal" role="dialog" aria-modal="true">
