@@ -5,6 +5,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 import com.orgest.common.AppException;
+import com.orgest.common.Money;
 import com.orgest.domain.Enums;
 import com.orgest.domain.Sale;
 import com.orgest.repo.*;
@@ -31,6 +32,7 @@ class ReportServiceTests {
                 mock(WorkshopRepository.class), mock(ShopService.class));
         when(buybacks.totalBetween(anyLong(), any(), any())).thenReturn(BigDecimal.ZERO);
         when(buybacks.weightBetween(anyLong(), any(), any())).thenReturn(BigDecimal.ZERO);
+        when(sales.makingChargesBetween(anyLong(), any(), any())).thenReturn(BigDecimal.ZERO);
         when(sales.exchangesBetween(anyLong(), any(), any(), any())).thenReturn(0L);
     }
 
@@ -66,10 +68,13 @@ class ReportServiceTests {
         Instant d1 = from.atTime(10, 0).atZone(com.orgest.common.Money.ZONE).toInstant();
         Instant d3 = to.atTime(15, 0).atZone(com.orgest.common.Money.ZONE).toInstant();
         when(sales.between(eq(1L), any(), any())).thenReturn(List.of(sale("1000.00", d1), sale("500.01", d1), sale("250.00", d3)));
+        when(sales.makingChargesBetween(1L, Money.startOf(from), Money.startOf(to.plusDays(1))))
+                .thenReturn(d("155.555"));
         ReportDto r = svc.report(1L, from, to);
         assertEquals(3, r.salesCount());
         assertEquals(d("1750.01"), r.salesTotal());
         assertEquals(d("583.34"), r.averageTicket());
+        assertEquals(d("155.56"), r.makingChargesTotal());
         assertEquals(3, r.byDay().size());
         assertEquals(d("1500.01"), r.byDay().get(0).total());
         assertEquals(0, r.byDay().get(1).total().compareTo(BigDecimal.ZERO));
@@ -82,5 +87,6 @@ class ReportServiceTests {
         ReportDto r = svc.report(1L, LocalDate.of(2026, 3, 1), LocalDate.of(2026, 3, 1));
         assertEquals(0, r.salesCount());
         assertEquals(0, r.averageTicket().compareTo(BigDecimal.ZERO));
+        assertEquals(d("0.00"), r.makingChargesTotal());
     }
 }
